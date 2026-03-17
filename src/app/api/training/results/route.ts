@@ -85,6 +85,9 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    const dbUrl = process.env.DATABASE_URL || "NOT SET";
+    console.log("DB URL prefix:", dbUrl.substring(0, 30) + "...");
+
     const results = await db.trainingResult.findMany({
       orderBy: { createdAt: "desc" },
     });
@@ -111,6 +114,8 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error("GET /api/training/results error:", error);
     const msg = error instanceof Error ? error.message : "Unknown error";
-    return NextResponse.json({ error: "Failed to load results", detail: msg }, { status: 500 });
+    const dbUrl = process.env.DATABASE_URL || "NOT SET";
+    const urlPreview = dbUrl === "NOT SET" ? "NOT SET" : dbUrl.substring(0, 15) + "..." + dbUrl.substring(dbUrl.length - 20);
+    return NextResponse.json({ error: "Failed to load results", detail: msg, dbUrlPreview: urlPreview }, { status: 500 });
   }
 }
