@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orderdz | Tableau de bord Formation</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
+
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  :root {
+    --nav-bg: #1e293b;
+    --page-bg: #f1f5f9;
+    --card-bg: #ffffff;
+    --border: #e2e8f0;
+    --text: #1e293b;
+    --text-secondary: #64748b;
+    --blue: #0052FF;
+    --blue-dark: #0041CC;
+    --green: #16a34a;
+    --green-light: #dcfce7;
+    --red: #dc2626;
+    --red-light: #fee2e2;
+    --amber: #f59e0b;
+    --amber-light: #fef3c7;
+    --amber-dark: #b45309;
+    --training-banner: #7c3aed;
+    --navy: #1e293b;
+  }
+
+  body {
+    font-family: 'Source Sans 3', system-ui, -apple-system, sans-serif;
+    background: var(--page-bg);
+    color: var(--text);
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ===== TRAINING BANNER ===== */
+  .training-banner {
+    background: var(--training-banner);
+    color: white;
+    text-align: center;
+    padding: 10px 16px;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .training-banner .pulse-dot {
+    width: 10px; height: 10px;
+    background: #a78bfa;
+    border-radius: 50%;
+    animation: pulse-ring 1.5s infinite;
+  }
+  @keyframes pulse-ring {
+    0% { box-shadow: 0 0 0 0 rgba(167,139,250,0.6); }
+    70% { box-shadow: 0 0 0 8px rgba(167,139,250,0); }
+    100% { box-shadow: 0 0 0 0 rgba(167,139,250,0); }
+  }
+
+  /* ===== NAV BAR ===== */
+  .nav-bar {
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    height: 52px;
+    gap: 28px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .nav-logo { font-weight: 700; font-size: 20px; color: var(--text); font-style: italic; margin-right: 8px; }
+  .nav-logo span { color: var(--blue); }
+  .nav-link { font-size: 14px; color: var(--text-secondary); text-decoration: none; padding: 14px 0; border-bottom: 2px solid transparent; transition: all 0.15s; white-space: nowrap; }
+  .nav-link:hover, .nav-link.active { color: var(--blue); border-bottom-color: var(--blue); }
+  .nav-spacer { flex: 1; }
+
+  /* ===== LANGUAGE SWITCHER ===== */
+  .lang-switcher { position: relative; }
+  .lang-trigger {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: #f8fafc; border: 1px solid var(--border); border-radius: 999px;
+    padding: 7px 12px; font-size: 13px; color: var(--text); cursor: pointer; font-family: inherit;
+  }
+  .lang-trigger:hover { background: #eef2ff; border-color: #c7d2fe; }
+  .lang-menu {
+    display: none; position: absolute; top: calc(100% + 8px); right: 0; min-width: 150px;
+    background: white; border: 1px solid var(--border); border-radius: 12px;
+    box-shadow: 0 16px 40px rgba(15,23,42,0.12); padding: 6px; z-index: 70;
+  }
+  .lang-menu.open { display: block; }
+  .lang-option {
+    width: 100%; border: none; background: transparent; text-align: left;
+    padding: 9px 10px; border-radius: 8px; font-size: 13px; cursor: pointer;
+    color: var(--text); font-family: inherit;
+  }
+  .lang-option:hover { background: #f8fafc; }
+  .lang-option.active { background: #eff6ff; color: var(--blue); font-weight: 600; }
+
+  /* ===== LOGIN SCREEN ===== */
+  .login-screen { min-height: 100vh; display: flex; flex-direction: column; }
+  .login-body { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px; }
+  .login-card { background: white; border-radius: 16px; padding: 48px; max-width: 440px; width: 100%; text-align: center; border: 1px solid var(--border); box-shadow: 0 4px 24px rgba(0,0,0,0.04); }
+  .login-card .icon-big { width: 72px; height: 72px; background: #ede9fe; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 32px; margin-bottom: 20px; }
+  .login-card h1 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+  .login-card .desc { font-size: 14px; color: var(--text-secondary); margin-bottom: 24px; }
+  .login-field { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 10px; font-size: 14px; font-family: inherit; color: var(--text); background: #f8fafc; outline: none; transition: border-color 0.15s, box-shadow 0.15s; margin-bottom: 12px; }
+  .login-field:focus { border-color: var(--training-banner); box-shadow: 0 0 0 3px rgba(124,58,237,0.12); background: white; }
+  .login-error { color: var(--red); font-size: 13px; font-weight: 500; margin-bottom: 12px; display: none; }
+  .login-error.visible { display: block; }
+  .btn-login { background: var(--training-banner); color: white; border: none; padding: 14px 48px; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s; width: 100%; }
+  .btn-login:hover { background: #6d28d9; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(124,58,237,0.3); }
+
+  /* ===== DASHBOARD ===== */
+  .dashboard { padding: 24px 32px 60px; max-width: 1400px; margin: 0 auto; }
+
+  /* Overview cards */
+  .overview-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .overview-card { background: var(--card-bg); border-radius: 12px; padding: 20px 24px; border: 1px solid var(--border); }
+  .overview-card .label { font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 4px; }
+  .overview-card .value { font-size: 28px; font-weight: 700; color: var(--text); }
+  .overview-card .sub { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+
+  /* Module comparison */
+  .module-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+  .module-card { background: var(--card-bg); border-radius: 12px; padding: 20px 24px; border: 1px solid var(--border); }
+  .module-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .module-card .module-icon { width: 28px; height: 28px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; }
+  .module-card .module-stats { display: flex; gap: 24px; }
+  .module-card .module-stat .num { font-size: 20px; font-weight: 700; }
+  .module-card .module-stat .lbl { font-size: 11px; color: var(--text-secondary); }
+
+  /* Filter bar */
+  .filter-bar { background: var(--card-bg); border-radius: 12px; padding: 16px 20px; border: 1px solid var(--border); margin-bottom: 24px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  .filter-group { display: flex; flex-direction: column; gap: 4px; }
+  .filter-group label { font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; }
+  .filter-group select, .filter-group input[type="date"], .filter-group input[type="text"] {
+    padding: 7px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px;
+    font-family: inherit; color: var(--text); background: #f8fafc; outline: none;
+  }
+  .filter-group select:focus, .filter-group input:focus { border-color: var(--training-banner); }
+  .filter-spacer { flex: 1; }
+  .btn-refresh { background: var(--training-banner); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; display: flex; align-items: center; gap: 6px; }
+  .btn-refresh:hover { background: #6d28d9; }
+
+  /* Results table */
+  .results-table-wrap { background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 24px; }
+  .results-table { width: 100%; border-collapse: collapse; }
+  .results-table thead th {
+    padding: 12px 16px; background: #f8fafc; border-bottom: 2px solid var(--border);
+    font-size: 12px; font-weight: 600; color: var(--text-secondary);
+    text-transform: uppercase; letter-spacing: 0.3px; text-align: left; white-space: nowrap;
+    cursor: pointer; user-select: none;
+  }
+  .results-table thead th:hover { color: var(--text); }
+  .results-table thead th .sort-arrow { font-size: 10px; margin-left: 4px; }
+  .results-table tbody tr { border-bottom: 1px solid #f1f5f9; transition: background 0.15s; }
+  .results-table tbody tr:hover { background: #f8fafc; }
+  .results-table tbody tr.passed-row { background: #f0fdf4; }
+  .results-table tbody tr.passed-row:hover { background: #dcfce7; }
+  .results-table tbody tr.failed-row { background: #fef2f2; }
+  .results-table tbody tr.failed-row:hover { background: #fee2e2; }
+  .results-table tbody td { padding: 12px 16px; font-size: 13px; }
+  .badge-pass { background: var(--green-light); color: var(--green); padding: 3px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; }
+  .badge-fail { background: var(--red-light); color: var(--red); padding: 3px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; }
+  .badge-module { padding: 3px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; }
+  .badge-status { background: #ede9fe; color: #7c3aed; }
+  .badge-confirmation { background: #dbeafe; color: #2563eb; }
+  .btn-details { background: #f8fafc; border: 1px solid var(--border); padding: 5px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; font-family: inherit; color: var(--text-secondary); }
+  .btn-details:hover { background: #eef2ff; border-color: #c7d2fe; color: var(--text); }
+
+  /* Pagination */
+  .pagination { display: flex; justify-content: center; align-items: center; gap: 8px; padding: 16px; }
+  .pagination button { padding: 6px 14px; border: 1px solid var(--border); border-radius: 6px; background: white; font-size: 13px; cursor: pointer; font-family: inherit; }
+  .pagination button:hover { background: #f8fafc; }
+  .pagination button.active { background: var(--training-banner); color: white; border-color: var(--training-banner); }
+  .pagination button:disabled { opacity: 0.4; cursor: default; }
+
+  /* Detail modal */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 200; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+  .modal-box { background: white; border-radius: 16px; width: 90%; max-width: 640px; max-height: 85vh; overflow-y: auto; box-shadow: 0 32px 64px rgba(0,0,0,0.2); animation: modal-in 0.3s cubic-bezier(0.22, 1, 0.36, 1); }
+  @keyframes modal-in { from { opacity: 0; transform: translateY(12px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  .modal-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .modal-header h3 { font-size: 16px; font-weight: 600; }
+  .modal-close { background: none; border: none; cursor: pointer; font-size: 20px; color: var(--text-secondary); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 6px; }
+  .modal-close:hover { background: #f1f5f9; }
+  .modal-body { padding: 24px; }
+  .detail-info { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  .detail-info .di-item .di-label { font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; }
+  .detail-info .di-item .di-value { font-size: 14px; font-weight: 500; }
+  .detail-scenarios h4 { font-size: 14px; font-weight: 600; margin-bottom: 12px; }
+  .detail-scenario { padding: 10px 14px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; }
+  .detail-scenario:last-child { border-bottom: none; }
+  .detail-scenario .ds-name { font-size: 13px; font-weight: 500; }
+  .detail-scenario .ds-score { font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 4px; }
+  .detail-scenario .ds-score.good { background: var(--green-light); color: var(--green); }
+  .detail-scenario .ds-score.medium { background: var(--amber-light); color: var(--amber-dark); }
+  .detail-scenario .ds-score.bad { background: var(--red-light); color: var(--red); }
+  .detail-scenario .ds-time { font-size: 12px; color: var(--text-secondary); }
+  .detail-trap { font-size: 11px; color: var(--red); font-weight: 600; margin-left: 8px; }
+
+  /* Score distribution */
+  .distribution-card { background: var(--card-bg); border-radius: 12px; padding: 24px; border: 1px solid var(--border); margin-bottom: 24px; }
+  .distribution-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 16px; }
+  .dist-bars { display: flex; gap: 12px; align-items: flex-end; height: 120px; }
+  .dist-bar-group { flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; }
+  .dist-bar { width: 100%; border-radius: 6px 6px 0 0; transition: height 0.6s cubic-bezier(0.22, 1, 0.36, 1); min-height: 4px; }
+  .dist-bar.green { background: var(--green); }
+  .dist-bar.yellow { background: var(--amber); }
+  .dist-bar.orange { background: #f97316; }
+  .dist-bar.red { background: var(--red); }
+  .dist-label { font-size: 11px; color: var(--text-secondary); margin-top: 6px; text-align: center; }
+  .dist-count { font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+
+  /* Loading */
+  .loading { text-align: center; padding: 60px 20px; color: var(--text-secondary); }
+  .loading .spinner { width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--training-banner); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Empty state */
+  .empty-state { text-align: center; padding: 40px 20px; color: var(--text-secondary); }
+  .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+
+  .hidden { display: none !important; }
+
+  /* ===== RTL SUPPORT ===== */
+  html[dir="rtl"] body { direction: rtl; }
+  html[dir="rtl"] .nav-logo { margin-right: 0; margin-left: 8px; }
+  html[dir="rtl"] .lang-menu { right: auto; left: 0; }
+  html[dir="rtl"] .lang-option { text-align: right; }
+  html[dir="rtl"] .results-table thead th { text-align: right; }
+  html[dir="rtl"] .results-table thead th .sort-arrow { margin-left: 0; margin-right: 4px; }
+  html[dir="rtl"] .detail-info, html[dir="rtl"] .filter-bar { direction: rtl; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 1024px) {
+    .overview-grid { grid-template-columns: repeat(2, 1fr); }
+    .module-grid { grid-template-columns: 1fr; }
+    .dashboard { padding: 16px; }
+    .filter-bar { flex-direction: column; }
+  }
+  @media (max-width: 600px) {
+    .overview-grid { grid-template-columns: 1fr; }
+    .results-table-wrap { overflow-x: auto; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== LOGIN SCREEN ==================== -->
+<div id="login-screen" class="login-screen">
+  <div class="training-banner">
+    <span class="pulse-dot"></span>
+    <span id="login-banner-text">Tableau de bord Formation</span>
+    <span class="pulse-dot"></span>
+  </div>
+  <div class="nav-bar" id="login-nav">
+    <span class="nav-logo">Order<span>*</span></span>
+    <div class="nav-spacer"></div>
+    <div class="lang-switcher">
+      <button class="lang-trigger" type="button" onclick="toggleLangMenu('login',event)">
+        <span id="login-lang-label">Fran&ccedil;ais</span> <span aria-hidden="true">&#9662;</span>
+      </button>
+      <div class="lang-menu" id="login-lang-menu">
+        <button class="lang-option active" type="button" onclick="setLanguage('fr')">Fran&ccedil;ais</button>
+        <button class="lang-option" type="button" onclick="setLanguage('ar')">&#1575;&#1604;&#1593;&#1585;&#1576;&#1610;&#1577;</button>
+      </div>
+    </div>
+  </div>
+  <div class="login-body">
+    <div class="login-card">
+      <div class="icon-big">&#128202;</div>
+      <h1 id="login-title">Tableau de bord Formation</h1>
+      <p class="desc" id="login-desc">Entrez le mot de passe administrateur pour acc&eacute;der aux r&eacute;sultats.</p>
+      <input type="password" class="login-field" id="login-password" placeholder="Mot de passe administrateur" autocomplete="off">
+      <div class="login-error" id="login-error"></div>
+      <button class="btn-login" id="btn-login" onclick="handleLogin()">Acc&eacute;der au tableau de bord</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== DASHBOARD ==================== -->
+<div id="dashboard-screen" class="hidden">
+  <div class="training-banner">
+    <span class="pulse-dot"></span>
+    <span id="dash-banner-text">Tableau de bord Formation</span>
+    <span class="pulse-dot"></span>
+  </div>
+  <div class="nav-bar" id="dash-nav">
+    <span class="nav-logo">Order<span>*</span></span>
+    <div class="nav-spacer"></div>
+    <div class="lang-switcher">
+      <button class="lang-trigger" type="button" onclick="toggleLangMenu('dash',event)">
+        <span id="dash-lang-label">Fran&ccedil;ais</span> <span aria-hidden="true">&#9662;</span>
+      </button>
+      <div class="lang-menu" id="dash-lang-menu">
+        <button class="lang-option active" type="button" onclick="setLanguage('fr')">Fran&ccedil;ais</button>
+        <button class="lang-option" type="button" onclick="setLanguage('ar')">&#1575;&#1604;&#1593;&#1585;&#1576;&#1610;&#1577;</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard">
+    <!-- Loading state -->
+    <div id="loading-state" class="loading">
+      <div class="spinner"></div>
+      <p id="loading-text">Chargement des r&eacute;sultats...</p>
+    </div>
+
+    <!-- Dashboard content (hidden until data loads) -->
+    <div id="dashboard-content" class="hidden">
+
+      <!-- Overview Stats -->
+      <div class="overview-grid" id="overview-grid">
+        <div class="overview-card">
+          <div class="label" id="ov-label-sessions">Sessions</div>
+          <div class="value" id="ov-sessions">0</div>
+        </div>
+        <div class="overview-card">
+          <div class="label" id="ov-label-agents">Agents</div>
+          <div class="value" id="ov-agents">0</div>
+        </div>
+        <div class="overview-card">
+          <div class="label" id="ov-label-avg">Score moyen</div>
+          <div class="value" id="ov-avg">0%</div>
+        </div>
+        <div class="overview-card">
+          <div class="label" id="ov-label-pass">Taux de r&eacute;ussite</div>
+          <div class="value" id="ov-pass">0%</div>
+        </div>
+      </div>
+
+      <!-- Module Comparison -->
+      <div class="module-grid" id="module-grid">
+        <div class="module-card">
+          <h3><span class="module-icon" style="background:#ede9fe;color:#7c3aed">&#128203;</span> <span id="mod-status-title">Module Statut</span></h3>
+          <div class="module-stats">
+            <div class="module-stat"><div class="num" id="mod-status-count">0</div><div class="lbl" id="mod-status-sessions-lbl">sessions</div></div>
+            <div class="module-stat"><div class="num" id="mod-status-avg">0%</div><div class="lbl" id="mod-status-avg-lbl">score moyen</div></div>
+            <div class="module-stat"><div class="num" id="mod-status-pass">0%</div><div class="lbl" id="mod-status-pass-lbl">r&eacute;ussite</div></div>
+          </div>
+        </div>
+        <div class="module-card">
+          <h3><span class="module-icon" style="background:#dbeafe;color:#2563eb">&#128221;</span> <span id="mod-conf-title">Module Confirmation</span></h3>
+          <div class="module-stats">
+            <div class="module-stat"><div class="num" id="mod-conf-count">0</div><div class="lbl" id="mod-conf-sessions-lbl">sessions</div></div>
+            <div class="module-stat"><div class="num" id="mod-conf-avg">0%</div><div class="lbl" id="mod-conf-avg-lbl">score moyen</div></div>
+            <div class="module-stat"><div class="num" id="mod-conf-pass">0%</div><div class="lbl" id="mod-conf-pass-lbl">r&eacute;ussite</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter Bar -->
+      <div class="filter-bar">
+        <div class="filter-group">
+          <label id="filter-module-label">Module</label>
+          <select id="filter-module" onchange="applyFilters()">
+            <option value="all" id="filter-all">Tous</option>
+            <option value="status" id="filter-status">Statut</option>
+            <option value="confirmation" id="filter-confirmation">Confirmation</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label id="filter-from-label">Du</label>
+          <input type="date" id="filter-from" onchange="applyFilters()">
+        </div>
+        <div class="filter-group">
+          <label id="filter-to-label">Au</label>
+          <input type="date" id="filter-to" onchange="applyFilters()">
+        </div>
+        <div class="filter-group">
+          <label id="filter-result-label">R&eacute;sultat</label>
+          <select id="filter-result" onchange="applyFilters()">
+            <option value="all" id="filter-result-all">Tous</option>
+            <option value="passed" id="filter-result-pass">R&eacute;ussi</option>
+            <option value="failed" id="filter-result-fail">&Eacute;chou&eacute;</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label id="filter-search-label">Recherche</label>
+          <input type="text" id="filter-search" placeholder="Nom de l'agent..." oninput="applyFilters()">
+        </div>
+        <div class="filter-spacer"></div>
+        <button class="btn-refresh" onclick="fetchData()">&#8635; <span id="btn-refresh-text">Actualiser</span></button>
+      </div>
+
+      <!-- Results Table -->
+      <div class="results-table-wrap">
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th onclick="sortBy('agentName')" id="th-agent">Agent <span class="sort-arrow">&#9650;</span></th>
+              <th onclick="sortBy('timestamp')" id="th-date">Date <span class="sort-arrow"></span></th>
+              <th onclick="sortBy('module')" id="th-module">Module <span class="sort-arrow"></span></th>
+              <th onclick="sortBy('finalScore')" id="th-score">Score <span class="sort-arrow"></span></th>
+              <th onclick="sortBy('passed')" id="th-result">R&eacute;sultat <span class="sort-arrow"></span></th>
+              <th onclick="sortBy('totalSeconds')" id="th-duration">Dur&eacute;e <span class="sort-arrow"></span></th>
+              <th id="th-actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="results-body"></tbody>
+        </table>
+        <div id="empty-results" class="empty-state hidden">
+          <div class="icon">&#128269;</div>
+          <p id="empty-text">Aucun r&eacute;sultat trouv&eacute;</p>
+        </div>
+        <div class="pagination" id="pagination"></div>
+      </div>
+
+      <!-- Score Distribution -->
+      <div class="distribution-card">
+        <h3 id="dist-title">Distribution des scores</h3>
+        <div class="dist-bars" id="dist-bars">
+          <div class="dist-bar-group">
+            <div class="dist-count" id="dist-count-4">0</div>
+            <div class="dist-bar green" id="dist-bar-4" style="height:4px"></div>
+            <div class="dist-label">90-100%</div>
+          </div>
+          <div class="dist-bar-group">
+            <div class="dist-count" id="dist-count-3">0</div>
+            <div class="dist-bar yellow" id="dist-bar-3" style="height:4px"></div>
+            <div class="dist-label">70-89%</div>
+          </div>
+          <div class="dist-bar-group">
+            <div class="dist-count" id="dist-count-2">0</div>
+            <div class="dist-bar orange" id="dist-bar-2" style="height:4px"></div>
+            <div class="dist-label">50-69%</div>
+          </div>
+          <div class="dist-bar-group">
+            <div class="dist-count" id="dist-count-1">0</div>
+            <div class="dist-bar red" id="dist-bar-1" style="height:4px"></div>
+            <div class="dist-label">0-49%</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ==================== DETAIL MODAL ==================== -->
+<div class="modal-overlay" id="detail-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="detail-modal-title">D&eacute;tails de la session</h3>
+      <button class="modal-close" onclick="closeDetail()">&times;</button>
+    </div>
+    <div class="modal-body" id="detail-modal-body"></div>
+  </div>
+</div>
+
+<script>
+// ===================================================================
+// CONFIGURATION
+// ===================================================================
+var API_URL = '/api/training/results';
+var currentLang = 'fr';
+var allResults = [];
+var filteredResults = [];
+var currentPage = 1;
+var pageSize = 15;
+var sortField = 'timestamp';
+var sortDir = 'desc';
+var adminPassword = '';
+
+// ===================================================================
+// I18N
+// ===================================================================
+var I18N = {
+  fr: {
+    langCurrent: "Fran\u00e7ais",
+    langMenu: { fr: "Fran\u00e7ais", ar: "Arabe" },
+    banner: "Tableau de bord Formation",
+    loginTitle: "Tableau de bord Formation",
+    loginDesc: "Entrez le mot de passe administrateur pour acc\u00e9der aux r\u00e9sultats.",
+    loginPlaceholder: "Mot de passe administrateur",
+    loginButton: "Acc\u00e9der au tableau de bord",
+    loginError: "Mot de passe incorrect",
+    loading: "Chargement des r\u00e9sultats...",
+    overview: { sessions: "Sessions", agents: "Agents", avg: "Score moyen", pass: "Taux de r\u00e9ussite" },
+    modules: {
+      statusTitle: "Module Statut",
+      confTitle: "Module Confirmation",
+      sessions: "sessions",
+      avg: "score moyen",
+      pass: "r\u00e9ussite"
+    },
+    filters: {
+      module: "Module",
+      all: "Tous",
+      status: "Statut",
+      confirmation: "Confirmation",
+      from: "Du",
+      to: "Au",
+      result: "R\u00e9sultat",
+      passed: "R\u00e9ussi",
+      failed: "\u00c9chou\u00e9",
+      search: "Recherche",
+      searchPlaceholder: "Nom de l'agent...",
+      refresh: "Actualiser"
+    },
+    table: {
+      agent: "Agent",
+      date: "Date",
+      module: "Module",
+      score: "Score",
+      result: "R\u00e9sultat",
+      duration: "Dur\u00e9e",
+      actions: "Actions",
+      details: "D\u00e9tails",
+      passed: "R\u00e9ussi",
+      failed: "\u00c9chou\u00e9",
+      empty: "Aucun r\u00e9sultat trouv\u00e9"
+    },
+    detail: {
+      title: "D\u00e9tails de la session",
+      agent: "Agent",
+      date: "Date",
+      module: "Module",
+      score: "Score",
+      result: "R\u00e9sultat",
+      duration: "Dur\u00e9e totale",
+      avgTime: "Temps moyen",
+      scenarios: "Sc\u00e9narios",
+      traps: "Pi\u00e8ges",
+      scenarioBreakdown: "D\u00e9tails par sc\u00e9nario",
+      trapFell: "PI\u00c8GE"
+    },
+    distribution: "Distribution des scores",
+    prev: "\u2190 Pr\u00e9c\u00e9dent",
+    next: "Suivant \u2192",
+    noData: "Aucune donn\u00e9e. Configurez l'URL Google Apps Script.",
+    moduleName: { status: "Statut", confirmation: "Confirmation" }
+  },
+  ar: {
+    langCurrent: "\u0627\u0644\u0639\u0631\u0628\u064a\u0629",
+    langMenu: { fr: "\u0627\u0644\u0641\u0631\u0646\u0633\u064a\u0629", ar: "\u0627\u0644\u0639\u0631\u0628\u064a\u0629" },
+    banner: "\u0644\u0648\u062d\u0629 \u062a\u062d\u0643\u0645 \u0627\u0644\u062a\u062f\u0631\u064a\u0628",
+    loginTitle: "\u0644\u0648\u062d\u0629 \u062a\u062d\u0643\u0645 \u0627\u0644\u062a\u062f\u0631\u064a\u0628",
+    loginDesc: "\u062f\u062e\u0651\u0644 \u0643\u0644\u0645\u0629 \u0627\u0644\u0645\u0631\u0648\u0631 \u0628\u0627\u0634 \u062a\u0634\u0648\u0641 \u0627\u0644\u0646\u062a\u0627\u0626\u062c.",
+    loginPlaceholder: "\u0643\u0644\u0645\u0629 \u0627\u0644\u0645\u0631\u0648\u0631",
+    loginButton: "\u062f\u062e\u0648\u0644",
+    loginError: "\u0643\u0644\u0645\u0629 \u0627\u0644\u0645\u0631\u0648\u0631 \u063a\u0627\u0644\u0637\u0629",
+    loading: "...\u062c\u0627\u0631\u064a \u062a\u062d\u0645\u064a\u0644 \u0627\u0644\u0646\u062a\u0627\u0626\u062c",
+    overview: { sessions: "\u0627\u0644\u062c\u0644\u0633\u0627\u062a", agents: "\u0627\u0644\u0623\u0639\u0648\u0627\u0646", avg: "\u0645\u0639\u062f\u0644 \u0627\u0644\u0646\u062a\u064a\u062c\u0629", pass: "\u0646\u0633\u0628\u0629 \u0627\u0644\u0646\u062c\u0627\u062d" },
+    modules: {
+      statusTitle: "\u0648\u062d\u062f\u0629 \u0627\u0644\u062d\u0627\u0644\u0629",
+      confTitle: "\u0648\u062d\u062f\u0629 \u0627\u0644\u062a\u0623\u0643\u064a\u062f",
+      sessions: "\u062c\u0644\u0633\u0627\u062a",
+      avg: "\u0627\u0644\u0645\u0639\u062f\u0644",
+      pass: "\u0627\u0644\u0646\u062c\u0627\u062d"
+    },
+    filters: {
+      module: "\u0627\u0644\u0648\u062d\u062f\u0629",
+      all: "\u0627\u0644\u0643\u0644",
+      status: "\u0627\u0644\u062d\u0627\u0644\u0629",
+      confirmation: "\u0627\u0644\u062a\u0623\u0643\u064a\u062f",
+      from: "\u0645\u0646",
+      to: "\u0625\u0644\u0649",
+      result: "\u0627\u0644\u0646\u062a\u064a\u062c\u0629",
+      passed: "\u0646\u0627\u062c\u062d",
+      failed: "\u0631\u0627\u0633\u0628",
+      search: "\u0628\u062d\u062b",
+      searchPlaceholder: "...\u0627\u0633\u0645 \u0627\u0644\u0639\u0648\u0646",
+      refresh: "\u062a\u062d\u062f\u064a\u062b"
+    },
+    table: {
+      agent: "\u0627\u0644\u0639\u0648\u0646",
+      date: "\u0627\u0644\u062a\u0627\u0631\u064a\u062e",
+      module: "\u0627\u0644\u0648\u062d\u062f\u0629",
+      score: "\u0627\u0644\u0646\u062a\u064a\u062c\u0629",
+      result: "\u0627\u0644\u062d\u0643\u0645",
+      duration: "\u0627\u0644\u0645\u062f\u0629",
+      actions: "\u0625\u062c\u0631\u0627\u0621\u0627\u062a",
+      details: "\u0627\u0644\u062a\u0641\u0627\u0635\u064a\u0644",
+      passed: "\u0646\u0627\u062c\u062d",
+      failed: "\u0631\u0627\u0633\u0628",
+      empty: "\u0645\u0627 \u0644\u0642\u064a\u0646\u0627 \u062d\u062a\u0649 \u0646\u062a\u064a\u062c\u0629"
+    },
+    detail: {
+      title: "\u062a\u0641\u0627\u0635\u064a\u0644 \u0627\u0644\u062c\u0644\u0633\u0629",
+      agent: "\u0627\u0644\u0639\u0648\u0646",
+      date: "\u0627\u0644\u062a\u0627\u0631\u064a\u062e",
+      module: "\u0627\u0644\u0648\u062d\u062f\u0629",
+      score: "\u0627\u0644\u0646\u062a\u064a\u062c\u0629",
+      result: "\u0627\u0644\u062d\u0643\u0645",
+      duration: "\u0627\u0644\u0645\u062f\u0629 \u0627\u0644\u0625\u062c\u0645\u0627\u0644\u064a\u0629",
+      avgTime: "\u0627\u0644\u0645\u0639\u062f\u0644",
+      scenarios: "\u0627\u0644\u062d\u0627\u0644\u0627\u062a",
+      traps: "\u0627\u0644\u0641\u062e\u0627\u062e",
+      scenarioBreakdown: "\u0627\u0644\u062a\u0641\u0627\u0635\u064a\u0644",
+      trapFell: "\u0641\u062e"
+    },
+    distribution: "\u062a\u0648\u0632\u064a\u0639 \u0627\u0644\u0646\u062a\u0627\u0626\u062c",
+    prev: "\u0627\u0644\u0633\u0627\u0628\u0642 \u2192",
+    next: "\u2190 \u0627\u0644\u062a\u0627\u0644\u064a",
+    noData: "\u0645\u0627 \u0643\u0627\u064a\u0646 \u062d\u062a\u0649 \u0628\u064a\u0627\u0646\u0627\u062a. \u0631\u0648\u062d \u062f\u062e\u0651\u0644 \u0639\u0646\u0648\u0627\u0646 Google Apps Script.",
+    moduleName: { status: "\u0627\u0644\u062d\u0627\u0644\u0629", confirmation: "\u0627\u0644\u062a\u0623\u0643\u064a\u062f" }
+  }
+};
+
+function t() { return I18N[currentLang]; }
+
+// ===================================================================
+// LANGUAGE
+// ===================================================================
+function toggleLangMenu(screen, event) {
+  if (event) event.stopPropagation();
+  var menu = document.getElementById(screen + '-lang-menu');
+  if (!menu) return;
+  var open = !menu.classList.contains('open');
+  document.querySelectorAll('.lang-menu').forEach(function(m) { m.classList.remove('open'); });
+  if (open) menu.classList.add('open');
+}
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.lang-switcher')) {
+    document.querySelectorAll('.lang-menu').forEach(function(m) { m.classList.remove('open'); });
+  }
+});
+
+function setLanguage(lang) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-menu').forEach(function(m) { m.classList.remove('open'); });
+  document.documentElement.lang = lang === 'ar' ? 'ar' : 'fr';
+  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+  renderText();
+}
+
+function renderText() {
+  var c = t();
+
+  // Update lang triggers
+  document.querySelectorAll('.lang-trigger span:first-child').forEach(function(s) { s.textContent = c.langCurrent; });
+  document.querySelectorAll('.lang-option').forEach(function(btn) {
+    btn.classList.remove('active');
+    if (btn.textContent.trim() === c.langMenu.fr && currentLang === 'fr') btn.classList.add('active');
+    if (btn.textContent.trim() === c.langMenu.ar && currentLang === 'ar') btn.classList.add('active');
+  });
+
+  // Banner
+  document.getElementById('login-banner-text').textContent = c.banner;
+  document.getElementById('dash-banner-text').textContent = c.banner;
+
+  // Login
+  document.getElementById('login-title').textContent = c.loginTitle;
+  document.getElementById('login-desc').textContent = c.loginDesc;
+  document.getElementById('login-password').placeholder = c.loginPlaceholder;
+  document.getElementById('btn-login').textContent = c.loginButton;
+
+  // Loading
+  document.getElementById('loading-text').textContent = c.loading;
+
+  // Overview
+  document.getElementById('ov-label-sessions').textContent = c.overview.sessions;
+  document.getElementById('ov-label-agents').textContent = c.overview.agents;
+  document.getElementById('ov-label-avg').textContent = c.overview.avg;
+  document.getElementById('ov-label-pass').textContent = c.overview.pass;
+
+  // Modules
+  document.getElementById('mod-status-title').textContent = c.modules.statusTitle;
+  document.getElementById('mod-conf-title').textContent = c.modules.confTitle;
+  document.getElementById('mod-status-sessions-lbl').textContent = c.modules.sessions;
+  document.getElementById('mod-status-avg-lbl').textContent = c.modules.avg;
+  document.getElementById('mod-status-pass-lbl').textContent = c.modules.pass;
+  document.getElementById('mod-conf-sessions-lbl').textContent = c.modules.sessions;
+  document.getElementById('mod-conf-avg-lbl').textContent = c.modules.avg;
+  document.getElementById('mod-conf-pass-lbl').textContent = c.modules.pass;
+
+  // Filters
+  document.getElementById('filter-module-label').textContent = c.filters.module;
+  document.getElementById('filter-all').textContent = c.filters.all;
+  document.getElementById('filter-status').textContent = c.filters.status;
+  document.getElementById('filter-confirmation').textContent = c.filters.confirmation;
+  document.getElementById('filter-from-label').textContent = c.filters.from;
+  document.getElementById('filter-to-label').textContent = c.filters.to;
+  document.getElementById('filter-result-label').textContent = c.filters.result;
+  document.getElementById('filter-result-all').textContent = c.filters.all;
+  document.getElementById('filter-result-pass').textContent = c.filters.passed;
+  document.getElementById('filter-result-fail').textContent = c.filters.failed;
+  document.getElementById('filter-search-label').textContent = c.filters.search;
+  document.getElementById('filter-search').placeholder = c.filters.searchPlaceholder;
+  document.getElementById('btn-refresh-text').textContent = c.filters.refresh;
+
+  // Table headers
+  document.getElementById('th-agent').innerHTML = c.table.agent + ' <span class="sort-arrow">' + getSortArrow('agentName') + '</span>';
+  document.getElementById('th-date').innerHTML = c.table.date + ' <span class="sort-arrow">' + getSortArrow('timestamp') + '</span>';
+  document.getElementById('th-module').innerHTML = c.table.module + ' <span class="sort-arrow">' + getSortArrow('module') + '</span>';
+  document.getElementById('th-score').innerHTML = c.table.score + ' <span class="sort-arrow">' + getSortArrow('finalScore') + '</span>';
+  document.getElementById('th-result').innerHTML = c.table.result + ' <span class="sort-arrow">' + getSortArrow('passed') + '</span>';
+  document.getElementById('th-duration').innerHTML = c.table.duration + ' <span class="sort-arrow">' + getSortArrow('totalSeconds') + '</span>';
+  document.getElementById('th-actions').textContent = c.table.actions;
+
+  // Empty + distribution
+  document.getElementById('empty-text').textContent = c.table.empty;
+  document.getElementById('dist-title').textContent = c.distribution;
+  document.getElementById('detail-modal-title').textContent = c.detail.title;
+
+  // Re-render table if we have data
+  if (allResults.length > 0) {
+    renderTable();
+  }
+}
+
+function getSortArrow(field) {
+  if (sortField !== field) return '';
+  return sortDir === 'asc' ? '\u25B2' : '\u25BC';
+}
+
+// ===================================================================
+// LOGIN
+// ===================================================================
+function handleLogin() {
+  var password = document.getElementById('login-password').value;
+  var errorEl = document.getElementById('login-error');
+
+  if (!password) {
+    errorEl.textContent = t().loginError;
+    errorEl.classList.add('visible');
+    return;
+  }
+
+  adminPassword = password;
+  errorEl.classList.remove('visible');
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.remove('hidden');
+  fetchData();
+}
+
+document.getElementById('login-password').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') handleLogin();
+});
+
+// ===================================================================
+// DATA FETCHING
+// ===================================================================
+function fetchData() {
+  if (!API_URL) {
+    document.getElementById('loading-state').classList.add('hidden');
+    document.getElementById('dashboard-content').classList.remove('hidden');
+    showDemoData();
+    return;
+  }
+
+  document.getElementById('loading-state').classList.remove('hidden');
+  document.getElementById('dashboard-content').classList.add('hidden');
+
+  fetch(API_URL, {
+    headers: { 'X-Admin-Key': adminPassword }
+  })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.error) {
+        document.getElementById('login-error').textContent = t().loginError;
+        document.getElementById('login-error').classList.add('visible');
+        document.getElementById('dashboard-screen').classList.add('hidden');
+        document.getElementById('login-screen').classList.remove('hidden');
+        return;
+      }
+      allResults = data.results || [];
+      document.getElementById('loading-state').classList.add('hidden');
+      document.getElementById('dashboard-content').classList.remove('hidden');
+      applyFilters();
+      renderOverview();
+      renderModules();
+      renderDistribution();
+    })
+    .catch(function() {
+      document.getElementById('loading-state').classList.add('hidden');
+      document.getElementById('dashboard-content').classList.remove('hidden');
+      allResults = [];
+      applyFilters();
+      renderOverview();
+      renderModules();
+      renderDistribution();
+    });
+}
+
+function showDemoData() {
+  // If no Apps Script URL configured, show empty state with a message
+  allResults = [];
+  applyFilters();
+  renderOverview();
+  renderModules();
+  renderDistribution();
+}
+
+// ===================================================================
+// FILTERS
+// ===================================================================
+function applyFilters() {
+  var module = document.getElementById('filter-module').value;
+  var from = document.getElementById('filter-from').value;
+  var to = document.getElementById('filter-to').value;
+  var result = document.getElementById('filter-result').value;
+  var search = document.getElementById('filter-search').value.toLowerCase().trim();
+
+  filteredResults = allResults.filter(function(r) {
+    if (module !== 'all' && r.module !== module) return false;
+    if (from && r.timestamp < from) return false;
+    if (to && r.timestamp > to + 'T99:99') return false;
+    if (result === 'passed' && !r.passed) return false;
+    if (result === 'failed' && r.passed) return false;
+    if (search && r.agentName.toLowerCase().indexOf(search) === -1) return false;
+    return true;
+  });
+
+  sortResults();
+  currentPage = 1;
+  renderTable();
+  renderDistribution();
+}
+
+// ===================================================================
+// SORTING
+// ===================================================================
+function sortBy(field) {
+  if (sortField === field) {
+    sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+  } else {
+    sortField = field;
+    sortDir = field === 'timestamp' ? 'desc' : 'asc';
+  }
+  sortResults();
+  renderTable();
+  renderText();
+}
+
+function sortResults() {
+  filteredResults.sort(function(a, b) {
+    var va = a[sortField];
+    var vb = b[sortField];
+    if (typeof va === 'string') va = va.toLowerCase();
+    if (typeof vb === 'string') vb = vb.toLowerCase();
+    if (typeof va === 'boolean') { va = va ? 1 : 0; vb = vb ? 1 : 0; }
+    if (va < vb) return sortDir === 'asc' ? -1 : 1;
+    if (va > vb) return sortDir === 'asc' ? 1 : -1;
+    return 0;
+  });
+}
+
+// ===================================================================
+// OVERVIEW
+// ===================================================================
+function renderOverview() {
+  var sessions = allResults.length;
+  var agents = [];
+  var totalScore = 0;
+  var passed = 0;
+  for (var i = 0; i < allResults.length; i++) {
+    if (agents.indexOf(allResults[i].agentName) === -1) agents.push(allResults[i].agentName);
+    totalScore += allResults[i].finalScore;
+    if (allResults[i].passed) passed++;
+  }
+  document.getElementById('ov-sessions').textContent = sessions;
+  document.getElementById('ov-agents').textContent = agents.length;
+  document.getElementById('ov-avg').textContent = sessions ? Math.round(totalScore / sessions) + '%' : '0%';
+  document.getElementById('ov-pass').textContent = sessions ? Math.round((passed / sessions) * 100) + '%' : '0%';
+}
+
+// ===================================================================
+// MODULE COMPARISON
+// ===================================================================
+function renderModules() {
+  renderModuleCard('status', 'mod-status');
+  renderModuleCard('confirmation', 'mod-conf');
+}
+
+function renderModuleCard(module, prefix) {
+  var items = allResults.filter(function(r) { return r.module === module; });
+  var count = items.length;
+  var totalScore = 0;
+  var passed = 0;
+  for (var i = 0; i < items.length; i++) {
+    totalScore += items[i].finalScore;
+    if (items[i].passed) passed++;
+  }
+  document.getElementById(prefix + '-count').textContent = count;
+  document.getElementById(prefix + '-avg').textContent = count ? Math.round(totalScore / count) + '%' : '0%';
+  document.getElementById(prefix + '-pass').textContent = count ? Math.round((passed / count) * 100) + '%' : '0%';
+}
+
+// ===================================================================
+// RESULTS TABLE
+// ===================================================================
+function renderTable() {
+  var c = t();
+  var start = (currentPage - 1) * pageSize;
+  var end = Math.min(start + pageSize, filteredResults.length);
+  var rows = '';
+
+  if (filteredResults.length === 0) {
+    document.getElementById('results-body').innerHTML = '';
+    document.getElementById('empty-results').classList.remove('hidden');
+    document.getElementById('pagination').innerHTML = '';
+    return;
+  }
+
+  document.getElementById('empty-results').classList.add('hidden');
+
+  for (var i = start; i < end; i++) {
+    var r = filteredResults[i];
+    var rowClass = r.passed ? 'passed-row' : 'failed-row';
+    var moduleBadge = r.module === 'status'
+      ? '<span class="badge-module badge-status">' + c.moduleName.status + '</span>'
+      : '<span class="badge-module badge-confirmation">' + c.moduleName.confirmation + '</span>';
+    var resultBadge = r.passed
+      ? '<span class="badge-pass">' + c.table.passed + '</span>'
+      : '<span class="badge-fail">' + c.table.failed + '</span>';
+
+    var mins = Math.floor(r.totalSeconds / 60);
+    var secs = r.totalSeconds % 60;
+    var duration = String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+
+    var dateStr = r.timestamp ? new Date(r.timestamp).toLocaleDateString(currentLang === 'ar' ? 'ar-DZ' : 'fr-FR', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+
+    rows += '<tr class="' + rowClass + '">';
+    rows += '<td style="font-weight:500">' + escapeHtml(r.agentName) + '</td>';
+    rows += '<td style="font-size:12px;color:var(--text-secondary)">' + dateStr + '</td>';
+    rows += '<td>' + moduleBadge + '</td>';
+    rows += '<td style="font-weight:600">' + r.finalScore + '%</td>';
+    rows += '<td>' + resultBadge + '</td>';
+    rows += '<td style="font-variant-numeric:tabular-nums">' + duration + '</td>';
+    rows += '<td><button class="btn-details" onclick="showDetail(' + i + ')">' + c.table.details + '</button></td>';
+    rows += '</tr>';
+  }
+
+  document.getElementById('results-body').innerHTML = rows;
+  renderPagination();
+}
+
+function escapeHtml(str) {
+  var div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+// ===================================================================
+// PAGINATION
+// ===================================================================
+function renderPagination() {
+  var c = t();
+  var totalPages = Math.ceil(filteredResults.length / pageSize);
+  if (totalPages <= 1) {
+    document.getElementById('pagination').innerHTML = '';
+    return;
+  }
+
+  var html = '<button ' + (currentPage <= 1 ? 'disabled' : 'onclick="goPage(' + (currentPage - 1) + ')"') + '>' + c.prev + '</button>';
+  for (var p = 1; p <= totalPages; p++) {
+    html += '<button class="' + (p === currentPage ? 'active' : '') + '" onclick="goPage(' + p + ')">' + p + '</button>';
+  }
+  html += '<button ' + (currentPage >= totalPages ? 'disabled' : 'onclick="goPage(' + (currentPage + 1) + ')"') + '>' + c.next + '</button>';
+  document.getElementById('pagination').innerHTML = html;
+}
+
+function goPage(p) {
+  currentPage = p;
+  renderTable();
+}
+
+// ===================================================================
+// DETAIL MODAL
+// ===================================================================
+function showDetail(idx) {
+  var c = t();
+  var r = filteredResults[idx];
+  if (!r) return;
+
+  var mins = Math.floor(r.totalSeconds / 60);
+  var secs = r.totalSeconds % 60;
+  var duration = String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+  var avgMins = Math.floor(r.avgSeconds / 60);
+  var avgSecs = r.avgSeconds % 60;
+  var avgTime = String(avgMins).padStart(2, '0') + ':' + String(avgSecs).padStart(2, '0');
+
+  var dateStr = r.timestamp ? new Date(r.timestamp).toLocaleDateString(currentLang === 'ar' ? 'ar-DZ' : 'fr-FR', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+
+  var html = '<div class="detail-info">';
+  html += '<div class="di-item"><div class="di-label">' + c.detail.agent + '</div><div class="di-value">' + escapeHtml(r.agentName) + '</div></div>';
+  html += '<div class="di-item"><div class="di-label">' + c.detail.date + '</div><div class="di-value">' + dateStr + '</div></div>';
+  html += '<div class="di-item"><div class="di-label">' + c.detail.module + '</div><div class="di-value">' + c.moduleName[r.module] + '</div></div>';
+  html += '<div class="di-item"><div class="di-label">' + c.detail.score + '</div><div class="di-value" style="font-size:18px;color:' + (r.passed ? 'var(--green)' : 'var(--red)') + '">' + r.finalScore + '%</div></div>';
+  html += '<div class="di-item"><div class="di-label">' + c.detail.result + '</div><div class="di-value">' + (r.passed ? '<span class="badge-pass">' + c.table.passed + '</span>' : '<span class="badge-fail">' + c.table.failed + '</span>') + '</div></div>';
+  html += '<div class="di-item"><div class="di-label">' + c.detail.duration + '</div><div class="di-value">' + duration + '</div></div>';
+  html += '<div class="di-item"><div class="di-label">' + c.detail.avgTime + '</div><div class="di-value">' + avgTime + '</div></div>';
+  html += '<div class="di-item"><div class="di-label">' + c.detail.scenarios + '</div><div class="di-value">' + r.scenarioCount + '</div></div>';
+
+  if (r.module === 'status' && r.trapsTotal > 0) {
+    html += '<div class="di-item"><div class="di-label">' + c.detail.traps + '</div><div class="di-value" style="color:' + (r.trapsFell > 0 ? 'var(--red)' : 'var(--green)') + '">' + r.trapsFell + '/' + r.trapsTotal + '</div></div>';
+  }
+  html += '</div>';
+
+  // Scenario breakdown
+  var details = [];
+  try { details = JSON.parse(r.detailsJson || '[]'); } catch(e) {}
+  if (details.length > 0) {
+    html += '<div class="detail-scenarios"><h4>' + c.detail.scenarioBreakdown + '</h4>';
+    for (var s = 0; s < details.length; s++) {
+      var d = details[s];
+      var pct = d.pct !== undefined ? d.pct : (d.total > 0 ? Math.round((d.score / d.total) * 100) : 100);
+      var scoreClass = pct >= 90 ? 'good' : pct >= 60 ? 'medium' : 'bad';
+      var scenarioTime = d.time || '';
+      html += '<div class="detail-scenario">';
+      html += '<span class="ds-name">' + (d.scenarioIdx !== undefined ? '#' + (d.scenarioIdx + 1) : '#' + (s + 1)) + '</span>';
+      if (scenarioTime) html += '<span class="ds-time">' + scenarioTime + '</span>';
+      html += '<span class="ds-score ' + scoreClass + '">' + pct + '%</span>';
+      html += '</div>';
+    }
+    html += '</div>';
+  }
+
+  document.getElementById('detail-modal-body').innerHTML = html;
+  document.getElementById('detail-modal-title').textContent = c.detail.title;
+  document.getElementById('detail-modal').classList.add('open');
+}
+
+function closeDetail() {
+  document.getElementById('detail-modal').classList.remove('open');
+}
+
+// Close modal on overlay click
+document.getElementById('detail-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeDetail();
+});
+
+// ===================================================================
+// SCORE DISTRIBUTION
+// ===================================================================
+function renderDistribution() {
+  var buckets = [0, 0, 0, 0]; // 0-49, 50-69, 70-89, 90-100
+  var data = filteredResults.length > 0 ? filteredResults : allResults;
+  for (var i = 0; i < data.length; i++) {
+    var s = data[i].finalScore;
+    if (s >= 90) buckets[3]++;
+    else if (s >= 70) buckets[2]++;
+    else if (s >= 50) buckets[1]++;
+    else buckets[0]++;
+  }
+
+  var max = Math.max(buckets[0], buckets[1], buckets[2], buckets[3], 1);
+  document.getElementById('dist-count-1').textContent = buckets[0];
+  document.getElementById('dist-count-2').textContent = buckets[1];
+  document.getElementById('dist-count-3').textContent = buckets[2];
+  document.getElementById('dist-count-4').textContent = buckets[3];
+  document.getElementById('dist-bar-1').style.height = Math.max(4, (buckets[0] / max) * 100) + 'px';
+  document.getElementById('dist-bar-2').style.height = Math.max(4, (buckets[1] / max) * 100) + 'px';
+  document.getElementById('dist-bar-3').style.height = Math.max(4, (buckets[2] / max) * 100) + 'px';
+  document.getElementById('dist-bar-4').style.height = Math.max(4, (buckets[3] / max) * 100) + 'px';
+}
+
+// ===================================================================
+// INIT
+// ===================================================================
+renderText();
+</script>
+</body>
+</html>

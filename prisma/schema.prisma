@@ -1,0 +1,31 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Training Results ─────────────────────────────────────────
+model TrainingResult {
+  id             String   @id @default(cuid())
+  agentName      String
+  module         String                        // "status" or "confirmation"
+  language       String                        // "fr" or "ar"
+  finalScore     Int                           // Percentage 0-100
+  passed         Boolean
+  totalCorrect   Int
+  totalChecks    Int
+  totalSeconds   Int
+  avgSeconds     Int
+  scenarioCount  Int
+  trapsFell      Int      @default(0)
+  trapsTotal     Int      @default(0)
+  detailsJson    String?  @db.Text            // JSON string of per-scenario details
+  createdAt      DateTime @default(now())
+
+  @@index([module])
+  @@index([agentName])
+  @@index([createdAt])
+}

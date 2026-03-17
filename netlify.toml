@@ -1,0 +1,10 @@
+# ─── Confirmi Training — Netlify Config ─────────────────────────
+# Tells Netlify how to build and serve the Next.js training site.
+
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+# Next.js plugin — handles server-side rendering, API routes, etc.
+[[plugins]]
+  package = "@netlify/plugin-nextjs"

@@ -1,0 +1,3292 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orderdz | Mode Formation</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
+
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  :root {
+    --nav-bg: #1e293b;
+    --page-bg: #f1f5f9;
+    --card-bg: #ffffff;
+    --border: #e2e8f0;
+    --text: #1e293b;
+    --text-secondary: #64748b;
+    --blue: #0052FF;
+    --blue-dark: #0041CC;
+    --green: #16a34a;
+    --green-light: #dcfce7;
+    --red: #dc2626;
+    --red-light: #fee2e2;
+    --amber: #f59e0b;
+    --amber-light: #fef3c7;
+    --amber-dark: #b45309;
+    --training-banner: #7c3aed;
+    --navy: #1e293b;
+  }
+
+  body {
+    font-family: 'Source Sans 3', system-ui, -apple-system, sans-serif;
+    background: var(--page-bg);
+    color: var(--text);
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ===== TRAINING BANNER ===== */
+  .training-banner {
+    background: var(--training-banner);
+    color: white;
+    text-align: center;
+    padding: 10px 16px;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .training-banner .pulse-dot {
+    width: 10px; height: 10px;
+    background: #a78bfa;
+    border-radius: 50%;
+    animation: pulse-ring 1.5s infinite;
+  }
+  @keyframes pulse-ring {
+    0% { box-shadow: 0 0 0 0 rgba(167,139,250,0.6); }
+    70% { box-shadow: 0 0 0 8px rgba(167,139,250,0); }
+    100% { box-shadow: 0 0 0 0 rgba(167,139,250,0); }
+  }
+
+  /* ===== NAV BAR ===== */
+  .nav-bar {
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    height: 52px;
+    gap: 28px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .nav-logo { font-weight: 700; font-size: 20px; color: var(--text); font-style: italic; margin-right: 8px; }
+  .nav-logo span { color: var(--blue); }
+  .nav-link { font-size: 14px; color: var(--text-secondary); text-decoration: none; padding: 14px 0; border-bottom: 2px solid transparent; transition: all 0.15s; }
+  .nav-link:hover, .nav-link.active { color: var(--blue); border-bottom-color: var(--blue); }
+  .nav-spacer { flex: 1; }
+  .lang-switcher { position: relative; }
+  .lang-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 7px 12px;
+    font-size: 13px;
+    color: var(--text);
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .lang-trigger:hover { background: #eef2ff; border-color: #c7d2fe; }
+  .lang-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 150px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 16px 40px rgba(15,23,42,0.12);
+    padding: 6px;
+    z-index: 70;
+  }
+  .lang-menu.open { display: block; }
+  .lang-option {
+    width: 100%;
+    border: none;
+    background: transparent;
+    text-align: left;
+    padding: 9px 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    color: var(--text);
+    font-family: inherit;
+  }
+  .lang-option:hover { background: #f8fafc; }
+  .lang-option.active { background: #eff6ff; color: var(--blue); font-weight: 600; }
+
+  /* ===== PROGRESS BAR ===== */
+  .progress-strip { background: var(--card-bg); border-bottom: 1px solid var(--border); padding: 16px 32px; display: flex; align-items: center; gap: 20px; }
+  .progress-label { font-size: 14px; font-weight: 600; color: var(--text); white-space: nowrap; }
+  .progress-track { flex: 1; height: 6px; background: #e2e8f0; border-radius: 999px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--training-banner); border-radius: 999px; transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+  .progress-steps { display: flex; gap: 6px; }
+  .progress-step { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; border: 2px solid var(--border); color: var(--text-secondary); background: var(--card-bg); transition: all 0.3s; }
+  .progress-step.active { border-color: var(--training-banner); background: var(--training-banner); color: white; }
+  .progress-step.done { border-color: var(--green); background: var(--green); color: white; }
+  .timer-box { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+
+  /* ===== SCENARIO BRIEF ===== */
+  .scenario-brief { margin: 20px 32px 0; background: #ede9fe; border: 1px solid #c4b5fd; border-radius: 10px; padding: 16px 20px; display: flex; gap: 14px; align-items: flex-start; }
+  .scenario-brief .icon-box { width: 36px; height: 36px; background: var(--training-banner); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; flex-shrink: 0; }
+  .scenario-brief h3 { font-size: 14px; font-weight: 600; color: #5b21b6; margin-bottom: 2px; }
+  .scenario-brief p { font-size: 13px; color: #6d28d9; line-height: 1.5; }
+
+  /* ===== MAIN LAYOUT ===== */
+  .main-layout { display: grid; grid-template-columns: 1fr 300px; gap: 20px; padding: 20px 32px 40px; max-width: 1300px; }
+
+  /* ===== CARDS ===== */
+  .card { background: var(--card-bg); border: none; border-radius: 4px; margin-bottom: 16px; overflow: hidden; box-shadow: rgba(0,0,0,0.1) 0px 10px 15px -3px, rgba(0,0,0,0.1) 0px 4px 6px -4px; }
+  .card-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--border); background: white; }
+  .card-header h2 { font-size: 15px; font-weight: 600; }
+  .card-body { padding: 20px; }
+
+  .btn-modifier { background: var(--blue); color: white; border: none; padding: 6px 18px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; transition: background 0.15s; }
+  .btn-modifier:hover { background: var(--blue-dark); }
+
+  /* ===== FORM FIELDS ===== */
+  .field-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
+  .field-row:last-child { border-bottom: none; }
+  .field-label { color: var(--text-secondary); font-size: 13px; }
+  .field-value { font-weight: 500; text-align: right; }
+
+  .input-control { width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; font-family: inherit; color: var(--text); background: #f8fafc; transition: border-color 0.15s, box-shadow 0.15s; outline: none; }
+  .input-control:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(0,82,255,0.12); background: white; }
+  .input-control.has-error { border-color: var(--red); background: var(--red-light); box-shadow: 0 0 0 3px rgba(220,38,38,0.08); }
+  .input-control.is-correct { border-color: var(--green); background: var(--green-light); box-shadow: 0 0 0 3px rgba(22,163,74,0.08); }
+
+  select.input-control { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M6 8L1 3h10z' fill='%2364748b'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+
+  .form-group { margin-bottom: 14px; }
+  .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.3px; }
+
+  /* ===== EDIT MODAL ===== */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(2px); z-index: 100; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+  .modal-box { background: white; border-radius: 8px; width: 90%; max-width: 520px; max-height: 85vh; overflow-y: auto; box-shadow: 0 24px 48px rgba(0,0,0,0.15); animation: modal-in 0.25s cubic-bezier(0.22, 1, 0.36, 1); }
+  @keyframes modal-in { from { opacity: 0; transform: translateY(12px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  .modal-header { padding: 18px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .modal-header h3 { font-size: 16px; font-weight: 600; }
+  .modal-close { background: none; border: none; cursor: pointer; font-size: 20px; color: var(--text-secondary); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 6px; transition: background 0.15s; }
+  .modal-close:hover { background: #f1f5f9; }
+  .modal-body { padding: 24px; }
+  .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; }
+  .btn-save { background: var(--blue); color: white; border: none; padding: 8px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.15s; }
+  .btn-save:hover { background: var(--blue-dark); }
+  .btn-cancel { background: #f1f5f9; color: var(--text); border: 1px solid var(--border); padding: 8px 20px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: inherit; transition: background 0.15s; }
+  .btn-cancel:hover { background: #e2e8f0; }
+
+  /* ===== SCORING OVERLAY ===== */
+  .scoring-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(4px); z-index: 200; align-items: center; justify-content: center; }
+  .scoring-overlay.open { display: flex; }
+  .scoring-card { background: white; border-radius: 16px; width: 90%; max-width: 560px; max-height: 90vh; overflow-y: auto; box-shadow: 0 32px 64px rgba(0,0,0,0.2); animation: modal-in 0.35s cubic-bezier(0.22, 1, 0.36, 1); }
+  .scoring-header { padding: 32px 32px 20px; text-align: center; }
+  .scoring-header .score-circle { width: 96px; height: 96px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 700; margin-bottom: 12px; }
+  .score-circle.good { background: var(--green-light); color: var(--green); border: 3px solid var(--green); }
+  .score-circle.medium { background: var(--amber-light); color: var(--amber-dark); border: 3px solid var(--amber); }
+  .score-circle.bad { background: var(--red-light); color: var(--red); border: 3px solid var(--red); }
+  .scoring-header h3 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .scoring-header p { font-size: 14px; color: var(--text-secondary); }
+  .scoring-details { padding: 0 32px 24px; }
+  .score-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
+  .score-item:last-child { border-bottom: none; }
+  .score-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+  .score-icon.correct { background: var(--green-light); color: var(--green); }
+  .score-icon.wrong { background: var(--red-light); color: var(--red); }
+  .score-item .field-name { flex: 1; }
+  .score-item .correction { font-size: 12px; color: var(--red); max-width: 180px; text-align: right; }
+  .scoring-footer { padding: 16px 32px 28px; text-align: center; }
+  .btn-next { background: var(--training-banner); color: white; border: none; padding: 12px 40px; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+  .btn-next:hover { background: #6d28d9; transform: translateY(-1px); }
+
+  /* ===== FINAL SCORECARD ===== */
+  .final-card { text-align: center; padding: 48px 40px; max-width: 620px; }
+  .final-card .big-score { font-size: 72px; font-weight: 700; line-height: 1; margin: 12px 0 4px; }
+  .final-card .big-score.pass { color: var(--green); }
+  .final-card .big-score.fail { color: var(--red); }
+  .final-card .subtitle { font-size: 14px; color: var(--text-secondary); margin-bottom: 28px; }
+  .stats-row { display: flex; gap: 16px; justify-content: center; margin-bottom: 28px; }
+  .stat-box { background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 16px 22px; text-align: center; min-width: 100px; }
+  .stat-box .num { font-size: 24px; font-weight: 700; color: var(--text); }
+  .stat-box .lbl { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+  .order-breakdown { text-align: left; margin: 0 auto 28px; max-width: 400px; }
+  .order-breakdown h4 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary); margin-bottom: 10px; }
+  .breakdown-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
+  .breakdown-row .order-label { font-weight: 500; }
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+  .badge.pass { background: var(--green-light); color: var(--green); }
+  .badge.fail { background: var(--red-light); color: var(--red); }
+  .badge.partial { background: var(--amber-light); color: var(--amber-dark); }
+  .certificate-box { border: 2px dashed var(--border); border-radius: 12px; padding: 24px; margin-top: 8px; }
+  .certificate-box.certified { border-color: var(--green); background: #f0fdf4; }
+  .certificate-box.not-certified { border-color: var(--red); background: #fef2f2; }
+  .certificate-box h3 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .certificate-box p { font-size: 13px; color: var(--text-secondary); }
+  .btn-restart { background: var(--text); color: white; border: none; padding: 12px 36px; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; margin-top: 24px; transition: all 0.15s; }
+  .btn-restart:hover { background: #334155; }
+
+  /* ===== WELCOME SCREEN ===== */
+  .welcome-screen { min-height: 100vh; display: flex; flex-direction: column; }
+  .welcome-body { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px; }
+  .welcome-card { background: white; border-radius: 16px; padding: 48px; max-width: 580px; width: 100%; text-align: center; border: 1px solid var(--border); box-shadow: 0 4px 24px rgba(0,0,0,0.04); }
+  .welcome-card .icon-big { width: 72px; height: 72px; background: #ede9fe; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 32px; margin-bottom: 20px; }
+  .welcome-card h1 { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
+  .welcome-card .desc { font-size: 15px; color: var(--text-secondary); margin-bottom: 28px; line-height: 1.6; }
+  .welcome-info { text-align: left; background: #f8fafc; border-radius: 10px; padding: 20px; margin-bottom: 28px; }
+  .welcome-info li { font-size: 14px; color: var(--text); padding: 5px 0; list-style: none; display: flex; gap: 8px; }
+  .welcome-info li::before { content: ''; display: none; }
+  .btn-start { background: var(--training-banner); color: white; border: none; padding: 14px 48px; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+  .btn-start:hover { background: #6d28d9; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(124,58,237,0.3); }
+
+  /* ===== PRODUCT ===== */
+  .product-thumb { width: 48px; height: 48px; background: #f1f5f9; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+  .product-row { display: flex; gap: 14px; align-items: center; padding: 10px 0; }
+  .product-info { flex: 1; }
+  .product-info .name { font-size: 14px; font-weight: 500; }
+  .product-info .meta { font-size: 12px; color: var(--text-secondary); }
+
+  .hidden { display: none !important; }
+
+  /* ===== INFO BUTTONS ===== */
+  .info-buttons { display: flex; gap: 8px; margin-bottom: 16px; }
+  .info-btn { background: var(--blue); color: white; border: none; padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer; font-family: inherit; opacity: 0.7; }
+
+  /* ===== ORDER HEADER ===== */
+  .order-title { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .order-store { font-size: 14px; color: var(--text-secondary); margin-bottom: 16px; }
+
+  /* ===== TIMELINE ===== */
+  .timeline { padding: 8px 0; }
+  .timeline-item { display: flex; gap: 12px; padding: 8px 0; font-size: 13px; }
+  .timeline-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--blue); margin-top: 5px; flex-shrink: 0; }
+  .timeline-item .time { color: var(--text-secondary); font-size: 11px; }
+  .timeline-item .event { font-weight: 500; }
+
+  /* ===== PRODUCT INFO CARD ===== */
+  .product-info-card { background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 10px; margin-bottom: 16px; overflow: hidden; }
+  .product-info-card .card-header { background: #e0e7ff; border-bottom: 1px solid #c7d2fe; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; }
+  .product-info-card .card-header h2 { font-size: 15px; font-weight: 600; color: #4338ca; }
+  .badge-readonly { font-size: 11px; background: #c7d2fe; color: #4338ca; padding: 2px 10px; border-radius: 999px; font-weight: 600; }
+  .product-info-card .card-body { padding: 20px; }
+  .prodinfo-price-highlight { color: #4338ca; font-weight: 700; font-size: 18px; }
+
+  /* ===== CART MODAL: PRODUCT CARDS + UPSELL ===== */
+  #modal-cart .modal-box { max-width: 700px; }
+  .cart-product-card {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 14px;
+    background: #fafbfc;
+  }
+  .cart-product-card-header {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--training-banner);
+    margin-bottom: 10px;
+  }
+  .cart-fields-row {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .cart-row-name-price-qty { grid-template-columns: 2fr 1fr 0.7fr; }
+  .cart-row-offer-var-opt { grid-template-columns: 1fr 1fr 1fr; }
+  .cart-fields-row .form-group { margin-bottom: 0; }
+  .upsell-simple {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 0 0;
+  }
+  .upsell-simple input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; accent-color: var(--blue); }
+  .upsell-simple label { font-size: 13px; font-weight: 500; cursor: pointer; margin-bottom: 0; text-transform: none; letter-spacing: 0; color: var(--text); }
+  .add-product-card .add-product-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+  .add-product-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 12px;
+    align-items: end;
+  }
+  .add-product-row .form-group { margin-bottom: 0; }
+  .btn-add-blue {
+    background: var(--blue);
+    color: white;
+    border: none;
+    padding: 8px 24px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    margin-top: 10px;
+    transition: background 0.15s;
+  }
+  .btn-add-blue:hover { background: var(--blue-dark); }
+  .btn-save-red { background: #dc2626; }
+  .btn-save-red:hover { background: #b91c1c; }
+  .upsell-badge-inline { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; background: var(--amber-light); color: var(--amber-dark); margin-left: 8px; vertical-align: middle; }
+  @media (max-width: 600px) {
+    .cart-row-name-price-qty, .cart-row-offer-var-opt, .add-product-row { grid-template-columns: 1fr; }
+    #modal-cart .modal-box { max-width: 95%; }
+  }
+
+  /* ===== NEW: DELIVERY SUBMISSION FORM ===== */
+  .btn-delivery-submit {
+    background: var(--navy);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    flex: 1;
+    transition: all 0.2s;
+    letter-spacing: 0.2px;
+  }
+  .btn-delivery-submit:hover { background: #334155; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(30,41,59,0.25); }
+
+  .delivery-submit-section {
+    background: var(--card-bg);
+    border: 2px solid var(--navy);
+    border-radius: 12px;
+    margin: 16px 0;
+    overflow: hidden;
+  }
+  .delivery-submit-section .ds-header {
+    background: var(--navy);
+    color: white;
+    padding: 16px 20px;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .delivery-submit-section .ds-body {
+    padding: 20px;
+  }
+  .ds-readonly-field {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 13px;
+  }
+  .ds-readonly-field:last-child { border-bottom: none; }
+  .ds-readonly-field .ds-label { color: var(--text-secondary); }
+  .ds-readonly-field .ds-value { font-weight: 500; }
+  .ds-section-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary);
+    margin: 16px 0 8px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+  .ds-conditional-fields {
+    background: #fef3c7;
+    border: 1px solid #fbbf24;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 16px;
+  }
+  .ds-conditional-fields .ds-cond-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #92400e;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .toggle-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(251,191,36,0.3);
+  }
+  .toggle-group:last-child { border-bottom: none; }
+  .toggle-group .toggle-label { font-size: 13px; font-weight: 500; color: #78350f; }
+  .toggle-switch {
+    position: relative;
+    width: 44px;
+    height: 24px;
+  }
+  .toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  .toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background: #d1d5db;
+    border-radius: 24px;
+    transition: 0.3s;
+  }
+  .toggle-slider:before {
+    content: "";
+    position: absolute;
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background: white;
+    border-radius: 50%;
+    transition: 0.3s;
+  }
+  .toggle-switch input:checked + .toggle-slider { background: var(--green); }
+  .toggle-switch input:checked + .toggle-slider:before { transform: translateX(20px); }
+
+  .btn-ajouter {
+    background: var(--blue);
+    color: white;
+    border: none;
+    padding: 12px 36px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    width: 100%;
+    margin-top: 20px;
+    transition: all 0.2s;
+  }
+  .btn-ajouter:hover { background: var(--blue-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(59,130,246,0.25); }
+
+  /* ===== NEW: PRICE WARNING BANNER ===== */
+  .price-warning-banner {
+    margin: 12px 0;
+    padding: 12px 16px;
+    background: #fef3c7;
+    border: 2px solid #f59e0b;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #92400e;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* ===== NEW: OFFER/VARIANT INFO IN FICHE PRODUIT ===== */
+  .prodinfo-offer {
+    margin-top: 8px;
+    padding: 10px 14px;
+    background: #dcfce7;
+    border: 1px solid #86efac;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #166534;
+    font-weight: 500;
+  }
+  .prodinfo-offer .offer-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #15803d;
+    margin-bottom: 4px;
+  }
+  .prodinfo-variants-list {
+    margin-top: 8px;
+  }
+  .prodinfo-variant-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    font-size: 13px;
+    border-bottom: 1px solid #e0e7ff;
+  }
+  .prodinfo-variant-item:last-child { border-bottom: none; }
+  .prodinfo-variant-item .vname { color: #4338ca; }
+  .prodinfo-variant-item .vprice { font-weight: 600; color: #4338ca; }
+
+  .prodinfo-seller-products {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 2px dashed #c7d2fe;
+  }
+  .prodinfo-seller-products .sp-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #4338ca;
+    margin-bottom: 8px;
+  }
+
+  /* ===== DELIVERY RATES INFO ===== */
+  .delivery-rates-card {
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+  }
+  .delivery-rates-card .dr-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #15803d;
+    margin-bottom: 6px;
+  }
+  .delivery-rates-card .dr-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    font-size: 13px;
+  }
+
+  /* ===== CLIENT MODAL 2-COL GRID ===== */
+  .client-modal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .client-modal-grid .full-width { grid-column: 1 / -1; }
+
+  /* ===== DELIVERY SUBMIT MODAL ===== */
+  #modal-delivery-submit .modal-box { max-width: 620px; }
+  .ds-modal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .ds-modal-grid .full-width { grid-column: 1 / -1; }
+
+  /* ===== INFO MODALS ===== */
+  .vendor-info-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
+  .vendor-info-row:last-child { border-bottom: none; }
+  .rates-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .rates-table th { background: #f8fafc; padding: 8px 12px; text-align: left; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.3px; color: var(--text-secondary); border-bottom: 2px solid var(--border); }
+  .rates-table td { padding: 8px 12px; border-bottom: 1px solid #f1f5f9; }
+  .rates-table tr:last-child td { border-bottom: none; }
+  .company-info-row { padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
+  .company-info-row:last-child { border-bottom: none; }
+  .company-info-row .ci-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+  .company-info-row .ci-detail { font-size: 13px; color: var(--text-secondary); }
+
+  /* ===== COMMENTS SECTION (VISUAL ONLY) ===== */
+  .comments-textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 4px; font-size: 14px; font-family: inherit; resize: vertical; min-height: 60px; color: var(--text); background: #f8fafc; }
+  .btn-comment { background: var(--blue); color: white; border: none; padding: 8px 20px; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; margin-top: 8px; }
+
+  /* ===== EXPEDITION BUTTONS ROW ===== */
+  .expedition-buttons { display: flex; gap: 10px; margin-top: 12px; }
+  .btn-existing-parcel {
+    background: var(--blue);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    flex: 1;
+    transition: all 0.2s;
+    letter-spacing: 0.2px;
+  }
+  .btn-existing-parcel:hover { background: var(--blue-dark); }
+  .numeric-ltr {
+    direction: ltr;
+    unicode-bidi: isolate;
+    display: inline-block;
+  }
+
+  html[dir="rtl"] body { direction: rtl; }
+  html[dir="rtl"] .nav-logo { margin-right: 0; margin-left: 8px; }
+  html[dir="rtl"] .lang-menu { right: auto; left: 0; }
+  html[dir="rtl"] .lang-option,
+  html[dir="rtl"] .field-label,
+  html[dir="rtl"] .order-breakdown,
+  html[dir="rtl"] .welcome-info,
+  html[dir="rtl"] .rates-table th,
+  html[dir="rtl"] .scoring-details,
+  html[dir="rtl"] .timeline,
+  html[dir="rtl"] .comments-textarea,
+  html[dir="rtl"] .form-group label { text-align: right; }
+  html[dir="rtl"] .field-value,
+  html[dir="rtl"] .score-item .correction { text-align: left; }
+  html[dir="rtl"] select.input-control {
+    background-position: left 12px center;
+    padding-right: 12px;
+    padding-left: 32px;
+  }
+  html[dir="rtl"] .toggle-slider:before {
+    left: auto;
+    right: 3px;
+  }
+  html[dir="rtl"] .toggle-switch input:checked + .toggle-slider:before {
+    transform: translateX(-20px);
+  }
+  html[dir="rtl"] .upsell-badge-inline { margin-left: 0; margin-right: 8px; }
+  html[dir="rtl"] .main-layout,
+  html[dir="rtl"] .scenario-brief,
+  html[dir="rtl"] .field-row,
+  html[dir="rtl"] .product-row,
+  html[dir="rtl"] .card-header,
+  html[dir="rtl"] .modal-header,
+  html[dir="rtl"] .vendor-info-row,
+  html[dir="rtl"] .breakdown-row,
+  html[dir="rtl"] .score-item,
+  html[dir="rtl"] .toggle-group {
+    direction: rtl;
+  }
+
+  /* ===== LOGIN SCREEN ===== */
+  .login-screen { min-height: 100vh; display: flex; flex-direction: column; }
+  .login-body { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px; }
+  .login-card { background: white; border-radius: 16px; padding: 48px; max-width: 440px; width: 100%; text-align: center; border: 1px solid var(--border); box-shadow: 0 4px 24px rgba(0,0,0,0.04); }
+  .login-card .icon-big { width: 72px; height: 72px; background: #ede9fe; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 32px; margin-bottom: 20px; }
+  .login-card h1 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+  .login-card .desc { font-size: 14px; color: var(--text-secondary); margin-bottom: 24px; }
+  .login-field { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 10px; font-size: 14px; font-family: inherit; color: var(--text); background: #f8fafc; outline: none; transition: border-color 0.15s, box-shadow 0.15s; margin-bottom: 12px; }
+  .login-field:focus { border-color: var(--training-banner); box-shadow: 0 0 0 3px rgba(124,58,237,0.12); background: white; }
+  .login-error { color: var(--red); font-size: 13px; font-weight: 500; margin-bottom: 12px; display: none; }
+  .login-error.visible { display: block; }
+  .btn-login { background: var(--training-banner); color: white; border: none; padding: 14px 48px; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s; width: 100%; }
+  .btn-login:hover { background: #6d28d9; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(124,58,237,0.3); }
+  .save-status { text-align: center; padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; margin-top: 16px; display: none; }
+  .save-status.saving { display: block; background: #ede9fe; color: #7c3aed; }
+  .save-status.saved { display: block; background: var(--green-light); color: var(--green); }
+  .save-status.save-error { display: block; background: var(--red-light); color: var(--red); }
+  .agent-name-display { font-size: 16px; font-weight: 600; color: var(--training-banner); margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen" class="login-screen">
+  <div class="training-banner">
+    <span class="pulse-dot"></span>
+    <span id="login-banner-text">Mode Formation &mdash; Environnement de pratique</span>
+    <span class="pulse-dot"></span>
+  </div>
+  <div class="nav-bar" id="login-nav"></div>
+  <div class="login-body">
+    <div class="login-card">
+      <div class="icon-big">&#128100;</div>
+      <h1 id="login-title">Connexion Formation</h1>
+      <p class="desc" id="login-desc">Entrez votre nom et le mot de passe fourni par votre formateur.</p>
+      <input type="text" class="login-field" id="login-name" placeholder="Votre nom complet" autocomplete="off">
+      <input type="password" class="login-field" id="login-password" placeholder="Mot de passe" autocomplete="off">
+      <div class="login-error" id="login-error"></div>
+      <button class="btn-login" id="btn-login" onclick="handleLogin()">Se connecter</button>
+    </div>
+  </div>
+</div>
+
+<!-- WELCOME SCREEN -->
+<div id="welcome-screen" class="welcome-screen hidden">
+  <div class="training-banner">
+    <span class="pulse-dot"></span>
+    <span class="training-banner-text" id="welcome-banner-text">
+    Mode Formation — Environnement de pratique
+    <span class="pulse-dot"></span>
+  </div>
+  <div class="nav-bar">
+    <span class="nav-logo">Order<span>*</span></span>
+    <a class="nav-link" href="#">Statistiques</a>
+    <a class="nav-link active" href="#">Commandes</a>
+    <a class="nav-link" href="#">Colis</a>
+    <a class="nav-link" href="#">Paiements</a>
+    <a class="nav-link" href="#">Transactions</a>
+    <a class="nav-link" href="#">Remarques</a>
+    <a class="nav-link" href="#">Applications</a>
+  </div>
+  <div class="welcome-body">
+    <div class="welcome-card">
+      <div class="icon-big">&#127891;</div>
+      <h1>Bienvenue en Mode Formation</h1>
+      <p class="desc">Vous allez traiter 8 commandes de pratique. Chaque commande contient des informations que vous devez v&eacute;rifier et corriger si n&eacute;cessaire. Apr&egrave;s correction, ajoutez la commande &agrave; la soci&eacute;t&eacute; de livraison.</p>
+      <ul class="welcome-info">
+        <li>&#128203; 8 commandes avec des sc&eacute;narios r&eacute;els</li>
+        <li>&#128270; V&eacute;rifiez chaque champ — certains contiennent des erreurs</li>
+        <li>&#128203; Comparez avec la fiche produit du vendeur</li>
+        <li>&#9989; Corrigez les erreurs via les boutons "Modifier"</li>
+        <li>&#128230; Cliquez "Ajouter &agrave; la soci&eacute;t&eacute; de livraison" pour envoyer</li>
+        <li>&#128200; Score final : il faut 90% pour &ecirc;tre certifi&eacute;</li>
+      </ul>
+      <button class="btn-start" onclick="startTraining()">Commencer la formation</button>
+    </div>
+  </div>
+</div>
+
+<!-- TRAINING SCREEN -->
+<div id="training-screen" class="hidden">
+  <div class="training-banner">
+    <span class="pulse-dot"></span>
+    Mode Formation — Aucune action r&eacute;elle ne sera effectu&eacute;e
+    <span class="pulse-dot"></span>
+  </div>
+  <div class="nav-bar">
+    <span class="nav-logo">Order<span>*</span></span>
+    <a class="nav-link" href="#">Statistiques</a>
+    <a class="nav-link active" href="#">Commandes</a>
+    <a class="nav-link" href="#">Colis</a>
+    <a class="nav-link" href="#">Paiements</a>
+    <a class="nav-link" href="#">Transactions</a>
+    <a class="nav-link" href="#">Remarques</a>
+    <a class="nav-link" href="#">Applications</a>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-strip">
+    <span class="progress-label">Formation</span>
+    <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:12.5%"></div></div>
+    <div class="progress-steps">
+      <div class="progress-step active" id="step-1">1</div>
+      <div class="progress-step" id="step-2">2</div>
+      <div class="progress-step" id="step-3">3</div>
+      <div class="progress-step" id="step-4">4</div>
+      <div class="progress-step" id="step-5">5</div>
+      <div class="progress-step" id="step-6">6</div>
+      <div class="progress-step" id="step-7">7</div>
+      <div class="progress-step" id="step-8">8</div>
+    </div>
+    <div class="timer-box">
+      &#9201; <span id="timer">00:00</span>
+    </div>
+  </div>
+
+  <!-- Scenario Brief -->
+  <div class="scenario-brief">
+    <div class="icon-box">&#128221;</div>
+    <div>
+      <h3 id="scenario-title">Sc&eacute;nario 1</h3>
+      <p id="scenario-desc"></p>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-layout">
+    <div class="main-col">
+      <!-- Order Header -->
+      <div id="order-header">
+        <h1 class="order-title" id="order-number">Commande #130245</h1>
+        <div class="order-store" id="order-store"></div>
+      </div>
+
+      <div class="info-buttons">
+        <button class="info-btn" onclick="openInfoModal('vendor')" style="cursor:pointer;opacity:1">Informations sur le vendeur</button>
+        <button class="info-btn" onclick="openInfoModal('rates')" style="cursor:pointer;opacity:1">Tarifs de livraison</button>
+        <button class="info-btn" onclick="openInfoModal('companies')" style="cursor:pointer;opacity:1">Soci&eacute;t&eacute;s de livraison</button>
+      </div>
+
+      <!-- Fiche produit -->
+      <div class="product-info-card" id="product-info-card">
+        <div class="card-header">
+          <h2>&#128203; Fiche produit</h2>
+          <span class="badge-readonly">R&eacute;f&eacute;rence vendeur</span>
+        </div>
+        <div class="card-body">
+          <div class="product-row">
+            <div class="product-thumb" id="prodinfo-emoji">&#128230;</div>
+            <div class="product-info">
+              <div class="name" id="prodinfo-name"></div>
+              <div class="meta" id="prodinfo-desc"></div>
+            </div>
+          </div>
+          <div class="field-row" style="margin-top:8px">
+            <span class="field-label">Prix vendeur</span>
+            <span class="field-value prodinfo-price-highlight" id="prodinfo-price"></span>
+          </div>
+          <!-- Quantity offer (shown when quantityOffer exists) -->
+          <div id="prodinfo-offer-section" class="hidden">
+            <div class="prodinfo-offer">
+              <div class="offer-label">Offre quantit&eacute;</div>
+              <div id="prodinfo-offer-text"></div>
+            </div>
+          </div>
+          <!-- Variant options list (shown when productVariants exists) -->
+          <div id="prodinfo-variants-section" class="hidden">
+            <div class="prodinfo-variants-list" id="prodinfo-variants-list"></div>
+          </div>
+          <!-- Seller products catalog (shown for cross-sell scenarios) -->
+          <div id="prodinfo-seller-products-section" class="hidden">
+            <div class="prodinfo-seller-products">
+              <div class="sp-label">Catalogue vendeur</div>
+              <div id="prodinfo-seller-products-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Apercu -->
+      <div class="card">
+        <div class="card-header"><h2>Aper&ccedil;u</h2></div>
+        <div class="card-body">
+          <div class="field-row"><span class="field-label">Nom du magasin</span><span class="field-value" id="apercu-store"></span></div>
+          <div class="field-row"><span class="field-label">Plate-forme</span><span class="field-value" id="apercu-platform"></span></div>
+          <div class="field-row"><span class="field-label">ID de commande dans la plateforme</span><span class="field-value" id="apercu-platform-id" style="font-size:12px;color:var(--text-secondary)"></span></div>
+          <div class="field-row"><span class="field-label">Num&eacute;ro de commande dans la plateforme</span><span class="field-value" id="apercu-order-num"></span></div>
+          <div class="field-row hidden" id="apercu-seller-note-row">
+            <span class="field-label">Note vendeur</span>
+            <span class="field-value" id="apercu-seller-note" style="color:#4338ca;font-weight:600"></span>
+          </div>
+          <div class="field-row hidden" id="apercu-delivery-company-row">
+            <span class="field-label">Soci&eacute;t&eacute; de livraison</span>
+            <span class="field-value" id="apercu-delivery-company" style="color:#dc2626;font-weight:600"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panier du client -->
+      <div class="card">
+        <div class="card-header">
+          <h2>Panier du client</h2>
+          <button class="btn-modifier" onclick="openModal('cart')">Modifier</button>
+        </div>
+        <div class="card-body">
+          <div class="product-row" id="product-display-row-1">
+            <div class="product-thumb" id="product-emoji">&#128230;</div>
+            <div class="product-info">
+              <div class="name" id="product-display-name"></div>
+              <div class="meta" id="product-display-meta"></div>
+            </div>
+            <div style="font-weight:600" id="product-display-total"></div>
+          </div>
+          <div class="product-row hidden" id="product-display-row-2">
+            <div class="product-thumb" style="background:#fef3c7">&#128230;</div>
+            <div class="product-info">
+              <div class="name" id="product2-display-name"></div>
+              <div class="meta" id="product2-display-meta"></div>
+            </div>
+            <div style="font-weight:600" id="product2-display-total"></div>
+          </div>
+          <div class="hidden" id="upsell-badge-row" style="padding:4px 0 0">
+            <span class="upsell-badge-inline">Upsell</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Livraison -->
+      <div class="card">
+        <div class="card-header">
+          <h2>Livraison</h2>
+          <button class="btn-modifier" onclick="openModal('delivery')">Modifier</button>
+        </div>
+        <div class="card-body">
+          <div class="field-row"><span class="field-label">Livraison</span><span class="field-value" id="delivery-display-type"></span></div>
+          <div class="field-row"><span class="field-label">Exp&eacute;dition</span><span class="field-value" id="delivery-display-price"></span></div>
+        </div>
+      </div>
+
+      <!-- Resume -->
+      <div class="card">
+        <div class="card-header">
+          <h2>R&eacute;sum&eacute;</h2>
+          <button class="btn-modifier" onclick="openModal('summary')">Modifier</button>
+        </div>
+        <div class="card-body">
+          <div class="field-row"><span class="field-label">Sous-total</span><span class="field-value" id="summary-subtotal"></span></div>
+          <div class="field-row"><span class="field-label">Exp&eacute;dition</span><span class="field-value" id="summary-shipping"></span></div>
+          <div class="field-row" style="font-weight:700;font-size:16px"><span class="field-label" style="font-weight:700">Total</span><span class="field-value" id="summary-total-display"></span></div>
+        </div>
+      </div>
+
+      <!-- Price Warning Banner (hidden by default) -->
+      <div class="price-warning-banner hidden" id="price-warning-banner"></div>
+
+      <!-- Expedition -->
+      <div class="card">
+        <div class="card-header">
+          <h2>Exp&eacute;dition</h2>
+        </div>
+        <div class="card-body">
+          <div class="field-row"><span class="field-label">Soci&eacute;t&eacute; de livraison</span><span class="field-value" id="shipping-display-company"></span></div>
+          <div class="field-row"><span class="field-label">Statut du colis</span><span class="field-value">En attente</span></div>
+          <!-- Expedition buttons -->
+          <div class="expedition-buttons">
+            <button class="btn-delivery-submit" onclick="showDeliverySubmitForm()" style="flex:1">&#128230; Ajouter &agrave; la soci&eacute;t&eacute; de livraison</button>
+            <button class="btn-existing-parcel" onclick="return false;">Ajouter un colis existante</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comments Section (visual only) -->
+      <div class="card">
+        <div class="card-header"><h2>Commentaires</h2></div>
+        <div class="card-body">
+          <textarea class="comments-textarea" placeholder="&Eacute;crire un commentaire..."></textarea>
+          <button class="btn-comment" onclick="return false;">Ajouter un commentaire</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar-col">
+      <div class="card">
+        <div class="card-header">
+          <h2>Client</h2>
+          <button class="btn-modifier" onclick="openModal('client')">Modifier</button>
+        </div>
+        <div class="card-body sidebar-section">
+          <div class="form-group"><label>Nom</label><div id="client-display-name" style="font-size:14px;font-weight:500"></div></div>
+          <div class="form-group"><label>T&eacute;l&eacute;phone</label><div id="client-display-phone" style="font-size:14px;font-weight:500"></div></div>
+          <div class="form-group"><label>T&eacute;l&eacute;phone 2</label><div id="client-display-phone2" style="font-size:14px;font-weight:500;color:var(--text-secondary)">—</div></div>
+          <div class="form-group"><label>Wilaya</label><div id="client-display-wilaya" style="font-size:14px;font-weight:500"></div></div>
+          <div class="form-group"><label>Commune</label><div id="client-display-commune" style="font-size:14px;font-weight:500"></div></div>
+          <div class="form-group"><label>Adresse</label><div id="client-display-address" style="font-size:14px;font-weight:500;word-break:break-word"></div></div>
+          <div class="form-group"><label>Adresse 2</label><div id="client-display-address2" style="font-size:14px;font-weight:500;color:var(--text-secondary)">—</div></div>
+          <div class="form-group"><label>Remarques</label><div id="client-display-remarques" style="font-size:14px;font-weight:500;color:var(--text-secondary)">—</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><h2>Historique</h2></div>
+        <div class="card-body">
+          <div class="timeline" id="order-history">
+            <div class="timeline-item"><div class="timeline-dot"></div><div><div class="event">En cours de confirmation</div><div class="time">Aujourd'hui 09:14</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Cart Modal -->
+<div class="modal-overlay" id="modal-cart">
+  <div class="modal-box">
+    <div class="modal-header"><h3>Modifier les produits de la commande</h3><button class="modal-close" onclick="closeModal('cart')">&#10005;</button></div>
+    <div class="modal-body">
+      <!-- Product 1 Card -->
+      <div class="cart-product-card">
+        <div class="cart-fields-row cart-row-name-price-qty">
+          <div class="form-group"><label>Nom du produit</label><input class="input-control" id="input-product-name"></div>
+          <div class="form-group"><label>Prix (DZD)</label><input class="input-control" id="input-product-price" type="number"></div>
+          <div class="form-group"><label>Quantit&eacute;</label><input class="input-control" id="input-product-quantity" type="number"></div>
+        </div>
+        <div class="cart-fields-row cart-row-offer-var-opt">
+          <div class="form-group"><label>Offre</label><input class="input-control" id="input-product-offer" placeholder="Laisser vide si pas d'offre"></div>
+          <div class="form-group"><label>Variantes</label><input class="input-control" id="input-product-variants" placeholder="Laisser vide si pas de variantes"></div>
+          <div class="form-group"><label>Options</label><input class="input-control" id="input-product-options" placeholder="Laisser vide si pas d'options"></div>
+        </div>
+        <div class="upsell-simple">
+          <input type="checkbox" id="input-upsell-check">
+          <label for="input-upsell-check">Marquer comme upsell</label>
+        </div>
+      </div>
+
+      <!-- Product 2 Card (hidden by default) -->
+      <div class="cart-product-card hidden" id="product2-card">
+        <div class="cart-product-card-header">Produit 2</div>
+        <div class="cart-fields-row cart-row-name-price-qty">
+          <div class="form-group"><label>Nom du produit 2</label><input class="input-control" id="input-product2-name"></div>
+          <div class="form-group"><label>Prix (DZD)</label><input class="input-control" id="input-product2-price" type="number"></div>
+          <div class="form-group"><label>Quantit&eacute;</label><input class="input-control" id="input-product2-quantity" type="number" value="1"></div>
+        </div>
+      </div>
+
+      <!-- Add Product Card -->
+      <div class="cart-product-card add-product-card" id="add-product-card">
+        <div class="add-product-title">Ajouter un Produit</div>
+        <div class="add-product-row">
+          <div class="form-group" id="seller-product-dropdown-group">
+            <label>Produit</label>
+            <select class="input-control" id="input-seller-product-select" onchange="onSellerProductSelect()">
+              <option value="">— Choisir un produit —</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn-add-blue" id="btn-add-product" type="button" onclick="showProduct2()">Ajouter</button>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn-save" onclick="saveModal('cart')">Sauvegarder</button></div>
+  </div>
+</div>
+
+<!-- Delivery Modal -->
+<div class="modal-overlay" id="modal-delivery">
+  <div class="modal-box">
+    <div class="modal-header"><h3>Modifier les d&eacute;tails de livraison</h3><button class="modal-close" onclick="closeModal('delivery')">&#10005;</button></div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Type de livraison</label>
+        <select class="input-control" id="input-delivery-type">
+          <option value="desk">Bureau (Stop Desk)</option>
+          <option value="home">Domicile</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Prix d'exp&eacute;dition</label><input class="input-control" id="input-delivery-price" type="number"></div>
+    </div>
+    <div class="modal-footer"><button class="btn-cancel" onclick="closeModal('delivery')">Annuler</button><button class="btn-save" onclick="saveModal('delivery')">Sauvegarder</button></div>
+  </div>
+</div>
+
+<!-- Summary Modal -->
+<div class="modal-overlay" id="modal-summary">
+  <div class="modal-box">
+    <div class="modal-header"><h3>Modifier le prix total</h3><button class="modal-close" onclick="closeModal('summary')">&#10005;</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>Prix total</label><input class="input-control" id="input-summary-total" type="number"></div>
+    </div>
+    <div class="modal-footer"><button class="btn-cancel" onclick="closeModal('summary')">Annuler</button><button class="btn-save" onclick="saveModal('summary')">Sauvegarder</button></div>
+  </div>
+</div>
+
+<!-- Client Modal -->
+<div class="modal-overlay" id="modal-client">
+  <div class="modal-box">
+    <div class="modal-header"><h3>Modifier la commande</h3><button class="modal-close" onclick="closeModal('client')">&#10005;</button></div>
+    <div class="modal-body">
+      <div class="client-modal-grid">
+        <div class="form-group"><label>Nom du client</label><input class="input-control" id="input-client-name"></div>
+        <div class="form-group"><label>Num&eacute;ro de t&eacute;l&eacute;phone</label><input class="input-control" id="input-client-phone"></div>
+        <div class="form-group"><label>Wilaya</label><input class="input-control" id="input-client-wilaya"></div>
+        <div class="form-group"><label>Num&eacute;ro de t&eacute;l&eacute;phone 2</label><input class="input-control" id="input-client-phone2" placeholder="Optionnel"></div>
+        <div class="form-group full-width"><label>Adresse</label><input class="input-control" id="input-client-address"></div>
+        <div class="form-group"><label>Commune</label><input class="input-control" id="input-client-commune"></div>
+        <div class="form-group"><label>Adresse 2</label><input class="input-control" id="input-client-address2" placeholder="Optionnel"></div>
+        <div class="form-group full-width"><label>Remarques</label><textarea class="input-control" id="input-client-remarques" rows="3" placeholder="Remarques..."></textarea></div>
+        <div class="form-group full-width">
+          <div class="upsell-simple"><input type="checkbox" id="input-panier-abandonne"><label for="input-panier-abandonne">Panier abandonn&eacute; client</label></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn-cancel" onclick="closeModal('client')">Annuler</button><button class="btn-save" onclick="saveModal('client')">Sauvegarder</button></div>
+  </div>
+</div>
+
+<!-- Vendor Info Modal -->
+<div class="modal-overlay" id="modal-vendor">
+  <div class="modal-box" style="max-width:420px">
+    <div class="modal-header"><h3>Informations sur le vendeur</h3><button class="modal-close" onclick="closeInfoModal('vendor')">&#10005;</button></div>
+    <div class="modal-body">
+      <div class="vendor-info-row"><span class="field-label">Nom</span><span class="field-value" id="vendor-info-name"></span></div>
+      <div class="vendor-info-row"><span class="field-label">T&eacute;l&eacute;phone</span><span class="field-value" id="vendor-info-phone"></span></div>
+    </div>
+  </div>
+</div>
+
+<!-- Delivery Rates Modal -->
+<div class="modal-overlay" id="modal-rates">
+  <div class="modal-box" style="max-width:560px">
+    <div class="modal-header"><h3>Tarifs de livraison</h3><button class="modal-close" onclick="closeInfoModal('rates')">&#10005;</button></div>
+    <div class="modal-body" style="padding:0">
+      <table class="rates-table">
+        <thead><tr><th>Wilaya</th><th>Domicile</th><th>Bureau</th></tr></thead>
+        <tbody id="rates-table-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Delivery Companies Modal -->
+<div class="modal-overlay" id="modal-companies">
+  <div class="modal-box" style="max-width:480px">
+    <div class="modal-header"><h3>Soci&eacute;t&eacute;s de livraison</h3><button class="modal-close" onclick="closeInfoModal('companies')">&#10005;</button></div>
+    <div class="modal-body" id="companies-modal-body"></div>
+  </div>
+</div>
+
+<!-- Delivery Submit Modal -->
+<div class="modal-overlay" id="modal-delivery-submit">
+  <div class="modal-box">
+    <div class="modal-header"><h3>Ajouter &agrave; la soci&eacute;t&eacute; de livraison</h3><button class="modal-close" onclick="closeDeliverySubmitModal()">&#10005;</button></div>
+    <div class="modal-body">
+      <!-- Company dropdown at top -->
+      <div class="form-group" style="margin-bottom:18px">
+        <label>Soci&eacute;t&eacute; de livraison</label>
+        <select class="input-control" id="ds-company" onchange="onDsCompanyChange()">
+          <option value="">— Choisir —</option>
+          <option value="Guepex">Guepex</option>
+          <option value="Yalidine">Yalidine</option>
+          <option value="ZR Express">ZR Express</option>
+          <option value="DHD Livraison">DHD Livraison</option>
+          <option value="Maystro">Maystro</option>
+          <option value="Zimou">Zimou</option>
+        </select>
+      </div>
+
+      <div class="ds-modal-grid">
+        <div class="form-group"><label>Type de livraison</label>
+          <select class="input-control" id="ds-delivery-type">
+            <option value="home">Domicile</option>
+            <option value="desk">Bureau (Stop Desk)</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Type de commande</label>
+          <select class="input-control" id="ds-order-type">
+            <option value="Livraison">Livraison</option>
+            <option value="Echange">Echange</option>
+            <option value="PICKUP">PICKUP</option>
+          </select>
+        </div>
+        <div class="form-group full-width"><label>Nom du client</label><input class="input-control" id="ds-client-name"></div>
+        <div class="form-group"><label>Num&eacute;ro de t&eacute;l&eacute;phone</label><input class="input-control" id="ds-client-phone"></div>
+        <div class="form-group"><label>Num&eacute;ro de t&eacute;l&eacute;phone 2</label><input class="input-control" id="ds-client-phone2" placeholder="Optionnel"></div>
+        <div class="form-group"><label>Wilaya</label>
+          <select class="input-control" id="ds-client-wilaya">
+            <option value="">— Choisir —</option>
+            <option value="1 - Adrar">1 - Adrar</option>
+            <option value="2 - Chlef">2 - Chlef</option>
+            <option value="9 - Blida">9 - Blida</option>
+            <option value="15 - Tizi Ouzou">15 - Tizi Ouzou</option>
+            <option value="16 - Alger">16 - Alger</option>
+            <option value="19 - S&eacute;tif">19 - S&eacute;tif</option>
+            <option value="23 - Annaba">23 - Annaba</option>
+            <option value="25 - Constantine">25 - Constantine</option>
+            <option value="31 - Oran">31 - Oran</option>
+            <option value="34 - Bordj Bou Arr&eacute;ridj">34 - Bordj Bou Arr&eacute;ridj</option>
+            <option value="35 - Boumerd&egrave;s">35 - Boumerd&egrave;s</option>
+            <option value="42 - Tipaza">42 - Tipaza</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Commune</label><input class="input-control" id="ds-client-commune"></div>
+        <div class="form-group full-width"><label>Adresse</label><input class="input-control" id="ds-client-address"></div>
+        <div class="form-group"><label>Nom du produit</label><input class="input-control" id="ds-product-name"></div>
+        <div class="form-group"><label>Quantit&eacute;</label><input class="input-control" id="ds-product-qty" type="number"></div>
+        <div class="form-group full-width"><label>Prix</label><input class="input-control" id="ds-product-price" type="number"></div>
+        <div class="form-group full-width"><label>Poids</label><input class="input-control" id="ds-weight" type="number" value="0"></div>
+        <div class="form-group full-width">
+          <div class="upsell-simple"><input type="checkbox" id="ds-ouvrable"><label for="ds-ouvrable">Ouvrable</label></div>
+        </div>
+      </div>
+
+      <!-- Conditional fields for Guepex/Yalidine/Zimou -->
+      <div class="ds-conditional-fields hidden" id="ds-conditional-fields">
+        <div class="ds-cond-title">Champs sp&eacute;cifiques (Guepex / Yalidine / Zimou)</div>
+        <div class="form-group">
+          <label>Wilaya d'exp&eacute;dition</label>
+          <select class="input-control" id="ds-expedition-wilaya">
+            <option value="">— Choisir —</option>
+            <option value="1 - Adrar">1 - Adrar</option>
+            <option value="2 - Chlef">2 - Chlef</option>
+            <option value="9 - Blida">9 - Blida</option>
+            <option value="15 - Tizi Ouzou">15 - Tizi Ouzou</option>
+            <option value="16 - Alger">16 - Alger</option>
+            <option value="19 - S&eacute;tif">19 - S&eacute;tif</option>
+            <option value="23 - Annaba">23 - Annaba</option>
+            <option value="25 - Constantine">25 - Constantine</option>
+            <option value="31 - Oran">31 - Oran</option>
+            <option value="34 - Bordj Bou Arr&eacute;ridj">34 - Bordj Bou Arr&eacute;ridj</option>
+            <option value="35 - Boumerd&egrave;s">35 - Boumerd&egrave;s</option>
+            <option value="42 - Tipaza">42 - Tipaza</option>
+          </select>
+        </div>
+        <div class="toggle-group">
+          <span class="toggle-label">Livraison gratuite</span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="ds-free-shipping">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="toggle-group">
+          <span class="toggle-label">Assurance</span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="ds-insurance">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <button class="btn-ajouter" onclick="submitOrder()">Ajouter</button>
+    </div>
+  </div>
+</div>
+
+<!-- Scoring Overlay -->
+<div class="scoring-overlay" id="scoring-overlay">
+  <div class="scoring-card">
+    <div class="scoring-header">
+      <div class="score-circle" id="score-circle"></div>
+      <h3 id="score-title"></h3>
+      <p id="score-subtitle"></p>
+    </div>
+    <div class="scoring-details" id="scoring-details"></div>
+    <div class="scoring-footer">
+      <button class="btn-next" onclick="nextOrder()">Continuer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Final Score Overlay -->
+<div class="scoring-overlay" id="final-overlay">
+  <div class="scoring-card">
+    <div class="final-card" id="final-card"></div>
+  </div>
+</div>
+
+<script>
+// ORDERS DATA - 8 scenarios
+const ORDERS = [
+  // Scenario 1: Offre quantité
+  {
+    id: "#140201", store: "Bien-être DZ", platform: "Youcan", platformOrderNum: "#3021",
+    scenario: "Scénario 1 : Offre quantité",
+    scenarioDesc: "Le client veut 2 pièces. Le vendeur a une offre : 1 pièce = 2400 DA, 2 pièces = 4000 DA.",
+    emoji: "&#9881;",
+    product: { name: "Ceinture amincissante", displayName: "Ceinture amincissante", price: 2400, quantity: 1 },
+    delivery: { type: "home", price: 450 },
+    total: 2850,
+    shipping: { company: "Guepex" },
+    client: { name: "محمد بن يوسف", phone: "0555123456", wilaya: "16 - Alger", commune: "باب الزوار", address: "حي 500 مسكن عمارة 3" },
+    productInfo: { originalPrice: 2400, description: "Ceinture amincissante ajustable", image: "&#9881;" },
+    quantityOffer: "1 pièce = 2400 DA, 2 pièces = 4000 DA",
+    productVariants: null, sellerProducts: null, sellerNote: null, sellerDeliveryCompany: null,
+    showPriceWarning: false,
+    deliveryRates: { desk: 250, home: 450 },
+    expeditionSubmit: { company: "Guepex", expeditionWilaya: "16 - Alger", freeShipping: true, insurance: true },
+    correctValues: {
+      productPrice: 2000, productQuantity: 2, deliveryType: "home", deliveryPrice: 450,
+      total: 4450, dsCompany: "Guepex",
+      productOffer: "", productVariantsField: "", productOptions: ""
+    },
+    checks: [
+      { field: "Prix produit", key: "productPrice", type: "number", critical: true },
+      { field: "Quantité", key: "productQuantity", type: "number", critical: true },
+      { field: "Prix total", key: "total", type: "number", critical: true },
+      { field: "Champ Offre", key: "productOffer", type: "field_empty" },
+      { field: "Champ Variantes", key: "productVariantsField", type: "field_empty" },
+      { field: "Champ Options", key: "productOptions", type: "field_empty" },
+      { field: "Société livraison (envoi)", key: "dsCompany", type: "select_match" }
+    ]
+  },
+  // Scenario 2: Changement type de livraison
+  {
+    id: "#140302", store: "TechPlus DZ", platform: "Shopify", platformOrderNum: "#4502",
+    scenario: "Scénario 2 : Changement type de livraison",
+    scenarioDesc: "Le client a commandé en livraison au bureau, mais lors de l'appel il demande une livraison à domicile.",
+    emoji: "&#9201;",
+    product: { name: "Montre connectée", displayName: "Montre connectée", price: 3500, quantity: 1 },
+    delivery: { type: "desk", price: 200 },
+    total: 3700,
+    shipping: { company: "Yalidine" },
+    client: { name: "سارة بلقاسم", phone: "0771234567", wilaya: "31 - Oran", commune: "وهران المدينة", address: "حي النصر شارع 8" },
+    productInfo: { originalPrice: 3500, description: "Montre connectée multifonction", image: "&#9201;" },
+    quantityOffer: null, productVariants: null, sellerProducts: null, sellerNote: null, sellerDeliveryCompany: null,
+    showPriceWarning: false,
+    deliveryRates: { desk: 200, home: 400 },
+    expeditionSubmit: { company: "Yalidine", expeditionWilaya: "16 - Alger", freeShipping: true, insurance: true },
+    correctValues: {
+      productPrice: 3500, productQuantity: 1, deliveryType: "home", deliveryPrice: 400,
+      total: 3900, dsCompany: "Yalidine"
+    },
+    checks: [
+      { field: "Type livraison", key: "deliveryType", type: "exact", critical: true },
+      { field: "Prix expédition", key: "deliveryPrice", type: "number", critical: true },
+      { field: "Prix total", key: "total", type: "number", critical: true },
+      { field: "Société livraison (envoi)", key: "dsCompany", type: "select_match" }
+    ]
+  },
+  // Scenario 3: Upsell sans toggle
+  {
+    id: "#140403", store: "Sport DZ", platform: "WooCommerce", platformOrderNum: "#1189",
+    scenario: "Scénario 3 : Upsell sans toggle",
+    scenarioDesc: "Le client veut acheter 2 pièces du même produit. C'est un upsell — n'oubliez pas de le marquer.",
+    emoji: "&#129488;",
+    product: { name: "Tapis de yoga", displayName: "Tapis de yoga", price: 1800, quantity: 1 },
+    delivery: { type: "home", price: 500 },
+    total: 2300,
+    shipping: { company: "ZR Express" },
+    client: { name: "أمين بوزيد", phone: "0551234890", wilaya: "25 - Constantine", commune: "قسنطينة المدينة", address: "حي زواغي عمارة 7" },
+    productInfo: { originalPrice: 1800, description: "Tapis de yoga antidérapant", image: "&#129488;" },
+    quantityOffer: null, productVariants: null, sellerProducts: null, sellerNote: null, sellerDeliveryCompany: null,
+    showPriceWarning: false,
+    deliveryRates: { desk: 250, home: 500 },
+    expeditionSubmit: { company: "ZR Express", expeditionWilaya: null, freeShipping: false, insurance: false },
+    correctValues: {
+      productPrice: 1800, productQuantity: 2, deliveryType: "home", deliveryPrice: 500,
+      total: 4100, upsellMarked: true, dsCompany: "ZR Express"
+    },
+    checks: [
+      { field: "Quantité", key: "productQuantity", type: "number", critical: true },
+      { field: "Prix total", key: "total", type: "number", critical: true },
+      { field: "Upsell coché", key: "upsellMarked", type: "checkbox_checked", critical: true },
+      { field: "Société livraison (envoi)", key: "dsCompany", type: "select_match" }
+    ]
+  },
+  // Scenario 4: Cross-sell
+  {
+    id: "#140504", store: "Maison DZ", platform: "Youcan", platformOrderNum: "#2067",
+    scenario: "Scénario 4 : Cross-sell (Ajouter un produit)",
+    scenarioDesc: "Le client veut aussi commander un autre produit du même vendeur. Ajoutez-le à la commande.",
+    emoji: "&#127860;",
+    product: { name: "Mixeur électrique", displayName: "Mixeur électrique", price: 4500, quantity: 1 },
+    delivery: { type: "home", price: 600 },
+    total: 5100,
+    shipping: { company: "DHD Livraison" },
+    client: { name: "فاطمة بن عمر", phone: "0662345678", wilaya: "9 - Blida", commune: "بليدة المدينة", address: "شارع محمد بوضياف حي الزيتون" },
+    productInfo: { originalPrice: 4500, description: "Mixeur électrique multifonction 500W", image: "&#127860;" },
+    quantityOffer: null, productVariants: null,
+    sellerProducts: [
+      { name: "Mixeur électrique", price: 4500 },
+      { name: "Set de couteaux", price: 2500 },
+      { name: "Bouilloire", price: 1800 }
+    ],
+    sellerNote: null, sellerDeliveryCompany: null,
+    showPriceWarning: false,
+    deliveryRates: { desk: 300, home: 600 },
+    expeditionSubmit: { company: "DHD Livraison", expeditionWilaya: null, freeShipping: false, insurance: false },
+    correctValues: {
+      productPrice: 4500, productQuantity: 1, deliveryType: "home", deliveryPrice: 600,
+      total: 7600, product2Name: "Set de couteaux", product2Price: 2500, product2Quantity: 1,
+      dsCompany: "DHD Livraison"
+    },
+    checks: [
+      { field: "Produit 2 ajouté", key: "product2Added", type: "product2_added", critical: true },
+      { field: "Nom produit 2", key: "product2Name", type: "name_contains", expected: "couteaux", critical: true },
+      { field: "Prix produit 2", key: "product2Price", type: "number" },
+      { field: "Prix total", key: "total", type: "number", critical: true },
+      { field: "Société livraison (envoi)", key: "dsCompany", type: "select_match" }
+    ]
+  },
+  // Scenario 5: Variantes produit (MOST COMPLEX)
+  {
+    id: "#140605", store: "Beauté Algérie", platform: "Youcan", platformOrderNum: "#3205",
+    scenario: "Scénario 5 : Variantes produit",
+    scenarioDesc: "Le produit a plusieurs options. Le prix affiché (1250) est le prix de base. Vérifiez le total pour identifier l'option commandée.",
+    emoji: "&#129526;",
+    product: { name: "Huile de coco", displayName: "Huile de coco", price: 1250, quantity: 1 },
+    delivery: { type: "home", price: 450 },
+    total: 2300,
+    shipping: { company: "Guepex" },
+    client: { name: "نور الدين بوعكاز", phone: "0661789456", wilaya: "23 - Annaba", commune: "عنابة المدينة", address: "حي سيدي براهيم شارع 5" },
+    productInfo: { originalPrice: 1250, description: "Huile de coco naturelle pressée à froid", image: "&#129526;" },
+    quantityOffer: null,
+    productVariants: [
+      { name: "120ml", price: 1250 },
+      { name: "250ml", price: 1850 },
+      { name: "500ml", price: 2650 }
+    ],
+    sellerProducts: null, sellerNote: null, sellerDeliveryCompany: null,
+    showPriceWarning: true,
+    deliveryRates: { desk: 250, home: 450 },
+    expeditionSubmit: { company: "Guepex", expeditionWilaya: "16 - Alger", freeShipping: true, insurance: true },
+    correctValues: {
+      productPrice: 1850, productName: "Huile de coco 250ml", productQuantity: 1,
+      deliveryType: "home", deliveryPrice: 450, total: 2300,
+      dsCompany: "Guepex",
+      productVariantsField: "", productOptions: ""
+    },
+    checks: [
+      { field: "Prix produit", key: "productPrice", type: "number", critical: true },
+      { field: "Nom produit (250ml)", key: "productName", type: "name_contains", expected: "250ml", critical: true },
+      { field: "Prix total", key: "total", type: "field_unchanged", critical: true },
+      { field: "Champ Variantes", key: "productVariantsField", type: "field_empty" },
+      { field: "Champ Options", key: "productOptions", type: "field_empty" },
+      { field: "Société livraison (envoi)", key: "dsCompany", type: "select_match" }
+    ]
+  },
+  // Scenario 6: Mauvaise société de livraison
+  {
+    id: "#140706", store: "Digital Store DZ", platform: "Shopify", platformOrderNum: "#5601",
+    scenario: "Scénario 6 : Mauvaise société de livraison",
+    scenarioDesc: "Le vendeur a changé de société de livraison. Vérifiez quelle société est affichée dans l'aperçu et sélectionnez-la lors de l'envoi.",
+    emoji: "&#127911;",
+    product: { name: "Casque Bluetooth", displayName: "Casque Bluetooth", price: 2800, quantity: 1 },
+    delivery: { type: "home", price: 400 },
+    total: 3200,
+    shipping: { company: "Guepex" },
+    client: { name: "خالد مسعودي", phone: "0670140226", wilaya: "19 - Sétif", commune: "سطيف المدينة", address: "حي 1000 مسكن عمارة 12" },
+    productInfo: { originalPrice: 2800, description: "Casque Bluetooth sans fil, autonomie 20h", image: "&#127911;" },
+    quantityOffer: null, productVariants: null, sellerProducts: null, sellerNote: null,
+    sellerDeliveryCompany: "Yalidine",
+    showPriceWarning: false,
+    deliveryRates: { desk: 200, home: 400 },
+    expeditionSubmit: { company: "Guepex", expeditionWilaya: "16 - Alger", freeShipping: true, insurance: true },
+    correctValues: {
+      productPrice: 2800, productQuantity: 1, deliveryType: "home", deliveryPrice: 400,
+      total: 3200, dsCompany: "Yalidine"
+    },
+    checks: [
+      { field: "Société livraison (envoi)", key: "dsCompany", type: "select_match", critical: true }
+    ]
+  },
+  // Scenario 7: Wilaya d'expédition
+  {
+    id: "#140807", store: "Beauty Plus", platform: "Youcan", platformOrderNum: "#7891",
+    scenario: "Scénario 7 : Wilaya d'expédition",
+    scenarioDesc: "Lors de l'ajout à la société de livraison, la wilaya d'expédition est celle du vendeur, pas du client. Ne la modifiez pas.",
+    emoji: "&#129526;",
+    product: { name: "Crème visage", displayName: "Crème visage", price: 1500, quantity: 1 },
+    delivery: { type: "home", price: 400 },
+    total: 1900,
+    shipping: { company: "Guepex" },
+    client: { name: "سارة بلقاسم", phone: "0771234567", wilaya: "31 - Oran", commune: "وهران المدينة", address: "حي النصر شارع 8" },
+    productInfo: { originalPrice: 1500, description: "Crème visage hydratante naturelle", image: "&#129526;" },
+    quantityOffer: null, productVariants: null, sellerProducts: null, sellerNote: null, sellerDeliveryCompany: null,
+    showPriceWarning: false,
+    deliveryRates: { desk: 200, home: 400 },
+    expeditionSubmit: { company: "Guepex", expeditionWilaya: "16 - Alger", freeShipping: true, insurance: true },
+    correctValues: {
+      productPrice: 1500, productQuantity: 1, deliveryType: "home", deliveryPrice: 400,
+      total: 1900, dsCompany: "Guepex", dsExpeditionWilaya: "16 - Alger"
+    },
+    checks: [
+      { field: "Wilaya d'expédition", key: "dsExpeditionWilaya", type: "field_unchanged", critical: true },
+      { field: "Société livraison (envoi)", key: "dsCompany", type: "select_match" }
+    ]
+  },
+  // Scenario 8: Livraison gratuite cochée
+  {
+    id: "#140908", store: "Beauté Algérie", platform: "Youcan", platformOrderNum: "#4408",
+    scenario: "Scénario 8 : Livraison gratuite cochée",
+    scenarioDesc: "Pour Guepex, Yalidine et Zimou, le vendeur inclut la livraison dans le prix et coche 'Livraison gratuite'. Ne décochez jamais cette case.",
+    emoji: "&#129526;",
+    product: { name: "Sérum cheveux", displayName: "Sérum cheveux", price: 2500, quantity: 1 },
+    delivery: { type: "home", price: 0 },
+    total: 2500,
+    shipping: { company: "Yalidine" },
+    client: { name: "فاطمة بن عمر", phone: "0662345678", wilaya: "9 - Blida", commune: "بليدة المدينة", address: "شارع محمد بوضياف حي الزيتون" },
+    productInfo: { originalPrice: 2500, description: "Sérum cheveux réparateur à l'huile d'argan", image: "&#129526;" },
+    quantityOffer: null, productVariants: null, sellerProducts: null, sellerNote: null, sellerDeliveryCompany: null,
+    showPriceWarning: false,
+    deliveryRates: { desk: 0, home: 0 },
+    expeditionSubmit: { company: "Yalidine", expeditionWilaya: "16 - Alger", freeShipping: true, insurance: true },
+    correctValues: {
+      productPrice: 2500, productQuantity: 1, deliveryType: "home", deliveryPrice: 0,
+      total: 2500, dsCompany: "Yalidine",
+      dsFreeShipping: true, dsInsurance: true
+    },
+    checks: [
+      { field: "Livraison gratuite", key: "dsFreeShipping", type: "checkbox_checked", critical: true },
+      { field: "Assurance", key: "dsInsurance", type: "checkbox_checked" },
+      { field: "Société livraison (envoi)", key: "dsCompany", type: "select_match" }
+    ]
+  }
+];
+
+// State
+let currentOrder = 0;
+let timerInterval = null;
+let seconds = 0;
+let orderResults = [];
+let currentValues = {};
+let initialValues = {};
+
+// START TRAINING
+function startTraining() {
+  document.getElementById('welcome-screen').classList.add('hidden');
+  document.getElementById('training-screen').classList.remove('hidden');
+  loadOrder(0);
+  startTimer();
+}
+
+// TIMER
+function startTimer() {
+  timerInterval = setInterval(() => {
+    seconds++;
+    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+    const s = (seconds % 60).toString().padStart(2, '0');
+    document.getElementById('timer').textContent = m + ':' + s;
+  }, 1000);
+}
+
+// INFO MODALS
+function openInfoModal(type) {
+  const order = ORDERS[currentOrder];
+  if (type === 'vendor') {
+    document.getElementById('vendor-info-name').textContent = order.store;
+    document.getElementById('vendor-info-phone').textContent = '0555 000 000';
+    document.getElementById('modal-vendor').classList.add('open');
+  }
+  if (type === 'rates') {
+    const wilayaName = order.client.wilaya.split(' - ')[1] || order.client.wilaya;
+    let html = '<tr><td>' + order.client.wilaya + '</td><td>' + order.deliveryRates.home + ' DA</td><td>' + order.deliveryRates.desk + ' DA</td></tr>';
+    document.getElementById('rates-table-body').innerHTML = html;
+    document.getElementById('modal-rates').classList.add('open');
+  }
+  if (type === 'companies') {
+    let html = '<div class="company-info-row"><div class="ci-name">' + order.shipping.company + '</div><div class="ci-detail">URL: shipping-company.dz</div><div class="ci-detail">Email: contact@shipping.dz</div></div>';
+    document.getElementById('companies-modal-body').innerHTML = html;
+    document.getElementById('modal-companies').classList.add('open');
+  }
+}
+function closeInfoModal(type) {
+  document.getElementById('modal-' + type).classList.remove('open');
+}
+function closeDeliverySubmitModal() {
+  document.getElementById('modal-delivery-submit').classList.remove('open');
+}
+
+// LOAD ORDER
+function loadOrder(idx) {
+  currentOrder = idx;
+  const order = ORDERS[idx];
+
+  // Hide delivery submit modal at start
+  document.getElementById('modal-delivery-submit').classList.remove('open');
+
+  // Update progress
+  const progressPercent = ((idx + 1) / ORDERS.length) * 100;
+  document.getElementById('progress-fill').style.width = progressPercent + '%';
+  for (let i = 1; i <= 8; i++) {
+    const step = document.getElementById('step-' + i);
+    step.classList.remove('active', 'done');
+    if (i < idx + 1) step.classList.add('done');
+    if (i === idx + 1) step.classList.add('active');
+  }
+
+  // Scenario
+  document.getElementById('scenario-title').textContent = order.scenario;
+  document.getElementById('scenario-desc').textContent = order.scenarioDesc;
+
+  // Order header
+  document.getElementById('order-number').textContent = 'Commande ' + order.id;
+  document.getElementById('order-store').textContent = order.store;
+
+  // Product info
+  document.getElementById('prodinfo-emoji').innerHTML = order.emoji;
+  document.getElementById('prodinfo-name').textContent = order.product.displayName;
+  document.getElementById('prodinfo-desc').textContent = order.productInfo.description;
+  document.getElementById('prodinfo-price').textContent = order.productInfo.originalPrice + ' DA';
+
+  // Quantity offer
+  if (order.quantityOffer) {
+    document.getElementById('prodinfo-offer-section').classList.remove('hidden');
+    document.getElementById('prodinfo-offer-text').textContent = order.quantityOffer;
+  } else {
+    document.getElementById('prodinfo-offer-section').classList.add('hidden');
+  }
+
+  // Product variants
+  if (order.productVariants) {
+    document.getElementById('prodinfo-variants-section').classList.remove('hidden');
+    let html = '';
+    order.productVariants.forEach(v => {
+      html += '<div class="prodinfo-variant-item"><span class="vname">' + v.name + '</span><span class="vprice">' + v.price + ' DA</span></div>';
+    });
+    document.getElementById('prodinfo-variants-list').innerHTML = html;
+  } else {
+    document.getElementById('prodinfo-variants-section').classList.add('hidden');
+  }
+
+  // Seller products
+  if (order.sellerProducts) {
+    document.getElementById('prodinfo-seller-products-section').classList.remove('hidden');
+    let html = '';
+    order.sellerProducts.forEach(p => {
+      html += '<div class="prodinfo-variant-item"><span class="vname">' + p.name + '</span><span class="vprice">' + p.price + ' DA</span></div>';
+    });
+    document.getElementById('prodinfo-seller-products-list').innerHTML = html;
+  } else {
+    document.getElementById('prodinfo-seller-products-section').classList.add('hidden');
+  }
+
+  // Aperçu
+  document.getElementById('apercu-store').textContent = order.store;
+  document.getElementById('apercu-platform').textContent = order.platform;
+  // Generate a fake platform ID (UUID-like) per scenario
+  const fakeId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = (Math.random() * 16) | 0, v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+  document.getElementById('apercu-platform-id').textContent = fakeId;
+  document.getElementById('apercu-order-num').textContent = order.platformOrderNum;
+
+  // Seller note
+  if (order.sellerNote) {
+    document.getElementById('apercu-seller-note-row').classList.remove('hidden');
+    document.getElementById('apercu-seller-note').textContent = order.sellerNote;
+  } else {
+    document.getElementById('apercu-seller-note-row').classList.add('hidden');
+  }
+
+  // Seller delivery company
+  if (order.sellerDeliveryCompany) {
+    document.getElementById('apercu-delivery-company-row').classList.remove('hidden');
+    document.getElementById('apercu-delivery-company').textContent = order.sellerDeliveryCompany;
+  } else {
+    document.getElementById('apercu-delivery-company-row').classList.add('hidden');
+  }
+
+  // Cart
+  document.getElementById('product-emoji').innerHTML = order.emoji;
+  document.getElementById('product-display-name').textContent = order.product.displayName;
+  document.getElementById('product-display-meta').textContent = 'Prix : ' + order.product.price + ' DA × ' + order.product.quantity;
+  document.getElementById('product-display-total').textContent = (order.product.price * order.product.quantity) + ' DA';
+  document.getElementById('product-display-row-2').classList.add('hidden');
+  document.getElementById('upsell-badge-row').classList.add('hidden');
+
+  // Delivery
+  const deliveryType = order.delivery.type === 'home' ? 'Domicile' : 'Bureau (Stop Desk)';
+  document.getElementById('delivery-display-type').textContent = deliveryType;
+  document.getElementById('delivery-display-price').textContent = order.delivery.price + ' DA';
+
+  // Summary
+  const subtotal = order.product.price * order.product.quantity;
+  document.getElementById('summary-subtotal').textContent = subtotal + ' DA';
+  document.getElementById('summary-shipping').textContent = order.delivery.price + ' DA';
+  document.getElementById('summary-total-display').textContent = order.total + ' DA';
+
+  // Shipping
+  document.getElementById('shipping-display-company').textContent = order.shipping.company;
+
+  // Client
+  document.getElementById('client-display-name').textContent = order.client.name;
+  document.getElementById('client-display-phone').textContent = order.client.phone;
+  document.getElementById('client-display-wilaya').textContent = order.client.wilaya;
+  document.getElementById('client-display-commune').textContent = order.client.commune;
+  document.getElementById('client-display-address').textContent = order.client.address;
+
+  // CURRENT VALUES (what agent sees)
+  currentValues = {
+    productName: order.product.displayName,
+    productPrice: order.product.price,
+    productQuantity: order.product.quantity,
+    productOffer: "",
+    productVariantsField: "",
+    productOptions: "",
+    product2Name: "",
+    product2Price: 0,
+    product2Quantity: 1,
+    upsellMarked: false,
+    deliveryType: order.delivery.type,
+    deliveryPrice: order.delivery.price,
+    total: order.total,
+    clientName: order.client.name,
+    clientPhone: order.client.phone,
+    clientWilaya: order.client.wilaya,
+    clientCommune: order.client.commune,
+    clientAddress: order.client.address,
+    clientPhone2: '',
+    clientAddress2: '',
+    clientRemarques: '',
+    shippingCompany: order.shipping.company,
+    dsCompany: order.expeditionSubmit.company,
+    dsExpeditionWilaya: order.expeditionSubmit.expeditionWilaya || "",
+    dsFreeShipping: order.expeditionSubmit.freeShipping || false,
+    dsInsurance: order.expeditionSubmit.insurance || false
+  };
+
+  // INITIAL VALUES (snapshot for field_unchanged checks)
+  initialValues = JSON.parse(JSON.stringify(currentValues));
+
+  // Price warning (must be after currentValues is set)
+  updatePriceWarning();
+}
+
+// SHOW DELIVERY SUBMIT FORM (as modal)
+function showDeliverySubmitForm() {
+  // Populate pre-filled editable fields
+  document.getElementById('ds-delivery-type').value = currentValues.deliveryType;
+  document.getElementById('ds-order-type').value = 'Livraison';
+  document.getElementById('ds-client-name').value = currentValues.clientName;
+  document.getElementById('ds-client-phone').value = currentValues.clientPhone;
+  document.getElementById('ds-client-phone2').value = '';
+  document.getElementById('ds-client-wilaya').value = currentValues.clientWilaya;
+  document.getElementById('ds-client-commune').value = currentValues.clientCommune;
+  document.getElementById('ds-client-address').value = currentValues.clientAddress;
+  document.getElementById('ds-product-name').value = currentValues.productName;
+  document.getElementById('ds-product-qty').value = currentValues.productQuantity;
+  document.getElementById('ds-product-price').value = currentValues.total;
+  document.getElementById('ds-weight').value = 0;
+  document.getElementById('ds-ouvrable').checked = false;
+
+  // Set company dropdown
+  document.getElementById('ds-company').value = currentValues.dsCompany;
+
+  // Set conditional fields
+  document.getElementById('ds-expedition-wilaya').value = currentValues.dsExpeditionWilaya;
+  document.getElementById('ds-free-shipping').checked = currentValues.dsFreeShipping;
+  document.getElementById('ds-insurance').checked = currentValues.dsInsurance;
+
+  // Show/hide conditional fields based on company
+  onDsCompanyChange();
+
+  // Open modal
+  document.getElementById('modal-delivery-submit').classList.add('open');
+}
+
+// ON DELIVERY COMPANY CHANGE
+function onDsCompanyChange() {
+  const company = document.getElementById('ds-company').value;
+  const conditionalFields = document.getElementById('ds-conditional-fields');
+
+  if (company === 'Guepex' || company === 'Yalidine' || company === 'Zimou') {
+    conditionalFields.classList.remove('hidden');
+  } else {
+    conditionalFields.classList.add('hidden');
+  }
+}
+
+// SHOW PRODUCT 2
+function showProduct2() {
+  document.getElementById('product2-card').classList.remove('hidden');
+  document.getElementById('add-product-card').classList.add('hidden');
+}
+
+// OPEN MODAL
+function openModal(type) {
+  const order = ORDERS[currentOrder];
+
+  if (type === 'cart') {
+    document.getElementById('input-product-name').value = currentValues.productName;
+    document.getElementById('input-product-price').value = currentValues.productPrice;
+    document.getElementById('input-product-quantity').value = currentValues.productQuantity;
+    document.getElementById('input-product-offer').value = currentValues.productOffer;
+    document.getElementById('input-product-variants').value = currentValues.productVariantsField;
+    document.getElementById('input-product-options').value = currentValues.productOptions;
+    document.getElementById('input-upsell-check').checked = currentValues.upsellMarked;
+
+    // Seller product dropdown inside add-product card
+    if (order.sellerProducts) {
+      document.getElementById('seller-product-dropdown-group').classList.remove('hidden');
+      let options = '<option value="">— Choisir un produit —</option>';
+      order.sellerProducts.forEach((p, i) => {
+        options += '<option value="' + i + '">' + p.name + ' (' + p.price + ' DA)</option>';
+      });
+      document.getElementById('input-seller-product-select').innerHTML = options;
+    } else {
+      document.getElementById('seller-product-dropdown-group').classList.add('hidden');
+    }
+
+    // Product 2
+    if (currentValues.product2Name) {
+      document.getElementById('product2-card').classList.remove('hidden');
+      document.getElementById('add-product-card').classList.add('hidden');
+      document.getElementById('input-product2-name').value = currentValues.product2Name;
+      document.getElementById('input-product2-price').value = currentValues.product2Price;
+      document.getElementById('input-product2-quantity').value = currentValues.product2Quantity;
+    } else {
+      document.getElementById('product2-card').classList.add('hidden');
+      document.getElementById('add-product-card').classList.remove('hidden');
+    }
+  }
+
+  if (type === 'delivery') {
+    document.getElementById('input-delivery-type').value = currentValues.deliveryType;
+    document.getElementById('input-delivery-price').value = currentValues.deliveryPrice;
+  }
+
+  if (type === 'summary') {
+    document.getElementById('input-summary-total').value = currentValues.total;
+  }
+
+  if (type === 'client') {
+    document.getElementById('input-client-name').value = currentValues.clientName;
+    document.getElementById('input-client-phone').value = currentValues.clientPhone;
+    document.getElementById('input-client-phone2').value = currentValues.clientPhone2 || '';
+    document.getElementById('input-client-wilaya').value = currentValues.clientWilaya;
+    document.getElementById('input-client-commune').value = currentValues.clientCommune;
+    document.getElementById('input-client-address').value = currentValues.clientAddress;
+    document.getElementById('input-client-address2').value = currentValues.clientAddress2 || '';
+    document.getElementById('input-client-remarques').value = currentValues.clientRemarques || '';
+    document.getElementById('input-panier-abandonne').checked = false;
+  }
+
+  document.getElementById('modal-' + type).classList.add('open');
+}
+
+// CLOSE MODAL
+function closeModal(type) {
+  document.getElementById('modal-' + type).classList.remove('open');
+}
+
+// SAVE MODAL
+function saveModal(type) {
+  if (type === 'cart') {
+    currentValues.productName = document.getElementById('input-product-name').value;
+    currentValues.productPrice = Number(document.getElementById('input-product-price').value);
+    currentValues.productQuantity = Number(document.getElementById('input-product-quantity').value);
+    currentValues.productOffer = document.getElementById('input-product-offer').value;
+    currentValues.productVariantsField = document.getElementById('input-product-variants').value;
+    currentValues.productOptions = document.getElementById('input-product-options').value;
+    currentValues.upsellMarked = document.getElementById('input-upsell-check').checked;
+
+    // Product 2
+    const p2name = document.getElementById('input-product2-name').value;
+    if (p2name && p2name.trim() !== '') {
+      currentValues.product2Name = p2name;
+      currentValues.product2Price = Number(document.getElementById('input-product2-price').value);
+      currentValues.product2Quantity = Number(document.getElementById('input-product2-quantity').value);
+    } else {
+      currentValues.product2Name = "";
+      currentValues.product2Price = 0;
+      currentValues.product2Quantity = 1;
+    }
+
+    // Update display
+    document.getElementById('product-display-name').textContent = currentValues.productName;
+    document.getElementById('product-display-meta').textContent = 'Prix : ' + currentValues.productPrice + ' DA × ' + currentValues.productQuantity;
+    document.getElementById('product-display-total').textContent = (currentValues.productPrice * currentValues.productQuantity) + ' DA';
+
+    if (currentValues.product2Name) {
+      document.getElementById('product-display-row-2').classList.remove('hidden');
+      document.getElementById('product2-display-name').textContent = currentValues.product2Name;
+      document.getElementById('product2-display-meta').textContent = 'Prix : ' + currentValues.product2Price + ' DA × ' + currentValues.product2Quantity;
+      document.getElementById('product2-display-total').textContent = (currentValues.product2Price * currentValues.product2Quantity) + ' DA';
+    } else {
+      document.getElementById('product-display-row-2').classList.add('hidden');
+    }
+
+    if (currentValues.upsellMarked) {
+      document.getElementById('upsell-badge-row').classList.remove('hidden');
+    } else {
+      document.getElementById('upsell-badge-row').classList.add('hidden');
+    }
+
+    // Update subtotal display only (total is edited separately via Résumé modal)
+    const subtotal = currentValues.productPrice * currentValues.productQuantity + (currentValues.product2Price * currentValues.product2Quantity);
+    document.getElementById('summary-subtotal').textContent = subtotal + ' DA';
+
+    updatePriceWarning();
+  }
+
+  if (type === 'delivery') {
+    currentValues.deliveryType = document.getElementById('input-delivery-type').value;
+    currentValues.deliveryPrice = Number(document.getElementById('input-delivery-price').value);
+
+    const deliveryType = currentValues.deliveryType === 'home' ? 'Domicile' : 'Bureau (Stop Desk)';
+    document.getElementById('delivery-display-type').textContent = deliveryType;
+    document.getElementById('delivery-display-price').textContent = currentValues.deliveryPrice + ' DA';
+
+    // Update shipping display only (total is edited separately via Résumé modal)
+    document.getElementById('summary-shipping').textContent = currentValues.deliveryPrice + ' DA';
+
+    updatePriceWarning();
+  }
+
+  if (type === 'summary') {
+    currentValues.total = Number(document.getElementById('input-summary-total').value);
+    document.getElementById('summary-total-display').textContent = currentValues.total + ' DA';
+    updatePriceWarning();
+  }
+
+  if (type === 'client') {
+    currentValues.clientName = document.getElementById('input-client-name').value;
+    currentValues.clientPhone = document.getElementById('input-client-phone').value;
+    currentValues.clientPhone2 = document.getElementById('input-client-phone2').value;
+    currentValues.clientWilaya = document.getElementById('input-client-wilaya').value;
+    currentValues.clientCommune = document.getElementById('input-client-commune').value;
+    currentValues.clientAddress = document.getElementById('input-client-address').value;
+    currentValues.clientAddress2 = document.getElementById('input-client-address2').value;
+    currentValues.clientRemarques = document.getElementById('input-client-remarques').value;
+
+    document.getElementById('client-display-name').textContent = currentValues.clientName;
+    document.getElementById('client-display-phone').textContent = currentValues.clientPhone;
+    document.getElementById('client-display-phone2').textContent = currentValues.clientPhone2 || '\u2014';
+    document.getElementById('client-display-wilaya').textContent = currentValues.clientWilaya;
+    document.getElementById('client-display-commune').textContent = currentValues.clientCommune;
+    document.getElementById('client-display-address').textContent = currentValues.clientAddress;
+    document.getElementById('client-display-address2').textContent = currentValues.clientAddress2 || '\u2014';
+    document.getElementById('client-display-remarques').textContent = currentValues.clientRemarques || '\u2014';
+  }
+
+  closeModal(type);
+}
+
+// UPDATE PRICE WARNING
+function updatePriceWarning() {
+  const order = ORDERS[currentOrder];
+  if (!order.showPriceWarning) {
+    document.getElementById('price-warning-banner').classList.add('hidden');
+    return;
+  }
+
+  const subtotal = currentValues.productPrice * currentValues.productQuantity + (currentValues.product2Price * currentValues.product2Quantity);
+  const expectedTotal = subtotal + currentValues.deliveryPrice;
+
+  if (expectedTotal !== currentValues.total) {
+    document.getElementById('price-warning-banner').classList.remove('hidden');
+    document.getElementById('price-warning-banner').innerHTML = '\u26a0\ufe0f Attention : Le prix du produit (' + currentValues.productPrice + ') + livraison (' + currentValues.deliveryPrice + ') = ' + expectedTotal + ' \u2260 Total (' + currentValues.total + '). V\u00e9rifiez les variantes du produit.';
+  } else {
+    document.getElementById('price-warning-banner').classList.add('hidden');
+  }
+}
+
+// ON SELLER PRODUCT SELECT
+function onSellerProductSelect() {
+  const order = ORDERS[currentOrder];
+  const idx = document.getElementById('input-seller-product-select').value;
+  if (idx === '') return;
+
+  const product = order.sellerProducts[Number(idx)];
+  document.getElementById('input-product2-name').value = product.name;
+  document.getElementById('input-product2-price').value = product.price;
+  document.getElementById('input-product2-quantity').value = 1;
+  showProduct2();
+}
+
+// EVALUATE CHECK
+function evaluateCheck(check, values) {
+  const order = ORDERS[currentOrder];
+  const correctVal = order.correctValues[check.key];
+
+  if (check.type === 'number') {
+    return Number(values[check.key]) === Number(correctVal);
+  }
+
+  if (check.type === 'exact') {
+    return String(values[check.key]).trim() === String(correctVal).trim();
+  }
+
+  if (check.type === 'checkbox_checked') {
+    return values[check.key] === true;
+  }
+
+  if (check.type === 'select_match') {
+    return String(values[check.key]).trim() === String(correctVal).trim();
+  }
+
+  if (check.type === 'name_contains') {
+    return String(values[check.key]).toLowerCase().includes(check.expected.toLowerCase());
+  }
+
+  if (check.type === 'field_empty') {
+    return String(values[check.key] || "").trim() === "";
+  }
+
+  if (check.type === 'field_unchanged') {
+    if (check.key === 'total') {
+      return Number(values[check.key]) === Number(initialValues[check.key]);
+    }
+    return String(values[check.key]).trim() === String(initialValues[check.key]).trim();
+  }
+
+  if (check.type === 'product2_added') {
+    return values.product2Name && values.product2Name.trim() !== '' && values.product2Price > 0;
+  }
+
+  return false;
+}
+
+// GET CORRECTION MESSAGE
+function getCorrectionMessage(check) {
+  const order = ORDERS[currentOrder];
+  const correctVal = order.correctValues[check.key];
+
+  if (check.type === 'number') {
+    return 'Devrait être : ' + correctVal;
+  }
+
+  if (check.type === 'exact' || check.type === 'select_match') {
+    return 'Devrait être : ' + correctVal;
+  }
+
+  if (check.type === 'checkbox_checked') {
+    return 'Devrait être coché';
+  }
+
+  if (check.type === 'name_contains') {
+    return 'Devrait contenir : ' + check.expected;
+  }
+
+  if (check.type === 'field_empty') {
+    return 'Ce champ doit rester vide';
+  }
+
+  if (check.type === 'field_unchanged') {
+    return 'Ne pas modifier ce champ';
+  }
+
+  if (check.type === 'product2_added') {
+    return 'Produit 2 manquant';
+  }
+
+  return '';
+}
+
+// SUBMIT ORDER — Error-only scoring
+function submitOrder() {
+  clearInterval(timerInterval);
+
+  // Close the delivery submit modal
+  document.getElementById('modal-delivery-submit').classList.remove('open');
+
+  // Read values from delivery submission form
+  currentValues.dsCompany = document.getElementById('ds-company').value;
+  currentValues.dsExpeditionWilaya = document.getElementById('ds-expedition-wilaya').value;
+  currentValues.dsFreeShipping = document.getElementById('ds-free-shipping').checked;
+  currentValues.dsInsurance = document.getElementById('ds-insurance').checked;
+
+  const order = ORDERS[currentOrder];
+  const errorChecks = [];   // Fields that HAD errors (agent should fix)
+  const brokenChecks = [];  // Fields agent BROKE (were correct, now wrong)
+  let errorsFixed = 0;
+  let totalErrors = 0;
+
+  for (const check of order.checks) {
+    const wasCorrectInitially = evaluateCheck(check, initialValues);
+    const isCorrectNow = evaluateCheck(check, currentValues);
+
+    if (!wasCorrectInitially) {
+      // This field had an error — agent should have fixed it
+      totalErrors++;
+      if (isCorrectNow) errorsFixed++;
+      errorChecks.push({
+        field: check.field,
+        fixed: isCorrectNow,
+        correction: isCorrectNow ? '' : getCorrectionMessage(check),
+        critical: check.critical || false,
+      });
+    } else if (!isCorrectNow) {
+      // Agent broke a field that was already correct
+      totalErrors++;
+      brokenChecks.push({
+        field: check.field,
+        critical: check.critical || false,
+      });
+    }
+  }
+
+  const pct = totalErrors === 0 ? 100 : Math.round((errorsFixed / totalErrors) * 100);
+  const time = document.getElementById('timer').textContent;
+
+  orderResults.push({
+    orderIdx: currentOrder,
+    score: errorsFixed,
+    total: totalErrors,
+    pct,
+    time,
+    errorChecks,
+    brokenChecks,
+    seconds,
+  });
+
+  showScoring(errorChecks, brokenChecks, pct, errorsFixed, totalErrors, time);
+}
+
+// SHOW SCORING — Error-only display
+function showScoring(errorChecks, brokenChecks, pct, errorsFixed, totalErrors, time) {
+  const isLast = currentOrder === ORDERS.length - 1;
+  let cls = pct >= 90 ? 'good' : pct >= 60 ? 'medium' : 'bad';
+  let label = pct >= 90 ? 'Excellent !' : pct >= 60 ? 'Peut mieux faire' : 'Insuffisant';
+
+  if (totalErrors === 0) {
+    cls = 'good';
+    label = 'Aucune erreur \u00e0 corriger';
+  }
+
+  let html = '<div class="scoring-header">';
+  html += '<div class="score-circle ' + cls + '">' + pct + '%</div>';
+  html += '<h3>' + label + '</h3>';
+  html += '<p>' + errorsFixed + '/' + totalErrors + ' erreurs corrig\u00e9es \u2014 Temps : ' + time + '</p>';
+  html += '</div><div class="scoring-details">';
+
+  for (const r of errorChecks) {
+    const icon = r.fixed
+      ? '<div class="score-icon correct">&#10003;</div>'
+      : '<div class="score-icon wrong">&#10007;</div>';
+    const fieldLabel = r.field + (r.critical ? ' <span style="color:var(--red);font-size:11px;font-weight:600">CRITIQUE</span>' : '');
+    html += '<div class="score-item">' + icon + '<span class="field-name">' + fieldLabel + '</span>';
+    if (r.correction) html += '<span class="correction">' + r.correction + '</span>';
+    html += '</div>';
+  }
+
+  if (brokenChecks.length > 0) {
+    html += '<div style="margin-top:12px;padding:10px 14px;background:#fef3c7;border:1px solid #fbbf24;border-radius:8px">';
+    html += '<div style="font-size:13px;font-weight:600;color:#92400e;margin-bottom:6px">&#9888; Vous avez modifi\u00e9 un champ qui \u00e9tait correct</div>';
+    for (const b of brokenChecks) {
+      html += '<div class="score-item" style="border-bottom-color:#fde68a">';
+      html += '<div class="score-icon wrong">&#10007;</div>';
+      html += '<span class="field-name">' + b.field + (b.critical ? ' <span style="color:var(--red);font-size:11px;font-weight:600">CRITIQUE</span>' : '') + '</span>';
+      html += '</div>';
+    }
+    html += '</div>';
+  }
+
+  if (errorChecks.length === 0 && brokenChecks.length === 0) {
+    html += '<div style="text-align:center;padding:16px;color:var(--green);font-weight:500">Tous les champs \u00e9taient corrects et vous n\u2019avez rien cass\u00e9 !</div>';
+  }
+
+  html += '</div>';
+  html += '<div class="scoring-footer">';
+  html += '<button class="btn-next" onclick="' + (isLast ? 'showFinalScore()' : 'nextOrder()') + '">';
+  html += isLast ? 'Voir le r\u00e9sultat final' : 'Commande suivante &#8594;';
+  html += '</button></div>';
+
+  document.getElementById('scoring-overlay').querySelector('.scoring-card').innerHTML = html;
+  document.getElementById('scoring-overlay').classList.add('open');
+}
+
+// NEXT ORDER
+function nextOrder() {
+  document.getElementById('scoring-overlay').classList.remove('open');
+  loadOrder(currentOrder + 1);
+}
+
+// SHOW FINAL SCORE — Error-only aggregation
+function showFinalScore() {
+  document.getElementById('scoring-overlay').classList.remove('open');
+
+  let totalFixed = 0;
+  let totalErrors = 0;
+  let totalSeconds = 0;
+
+  for (const r of orderResults) {
+    totalFixed += r.score;
+    totalErrors += r.total;
+    totalSeconds += r.seconds;
+  }
+
+  const finalPct = totalErrors === 0 ? 100 : Math.round((totalFixed / totalErrors) * 100);
+  const passed = finalPct >= 90;
+  const avgTime = Math.round(totalSeconds / orderResults.length);
+  const avgMin = String(Math.floor(avgTime / 60)).padStart(2, '0');
+  const avgSec = String(avgTime % 60).padStart(2, '0');
+
+  let breakdownHtml = '';
+  for (let i = 0; i < orderResults.length; i++) {
+    const r = orderResults[i];
+    const bCls = r.pct >= 90 ? 'pass' : r.pct >= 60 ? 'partial' : 'fail';
+    breakdownHtml += '<div class="breakdown-row">';
+    breakdownHtml += '<span class="order-label">Commande ' + ORDERS[i].id + '</span>';
+    breakdownHtml += '<span>' + r.time + '</span>';
+    breakdownHtml += '<span class="badge ' + bCls + '">' + r.pct + '%</span>';
+    breakdownHtml += '</div>';
+  }
+
+  let html = '<div class="icon-big" style="margin-bottom:8px">' + (passed ? '&#127942;' : '&#128218;') + '</div>';
+  html += '<h1 style="font-size:20px;font-weight:700;margin-bottom:4px">R\u00e9sultat Final</h1>';
+  html += '<div class="big-score ' + (passed ? 'pass' : 'fail') + '">' + finalPct + '%</div>';
+  html += '<p class="subtitle">' + totalFixed + ' erreurs corrig\u00e9es sur ' + totalErrors + '</p>';
+  html += '<div class="stats-row">';
+  html += '<div class="stat-box"><div class="num">' + orderResults.length + '</div><div class="lbl">Commandes</div></div>';
+  html += '<div class="stat-box"><div class="num">' + avgMin + ':' + avgSec + '</div><div class="lbl">Temps moyen</div></div>';
+  html += '<div class="stat-box"><div class="num">' + totalFixed + '</div><div class="lbl">Corrig\u00e9es</div></div>';
+  html += '<div class="stat-box"><div class="num">' + (totalErrors - totalFixed) + '</div><div class="lbl">Manqu\u00e9es</div></div>';
+  html += '</div>';
+  html += '<div class="order-breakdown"><h4>D\u00e9tails par commande</h4>' + breakdownHtml + '</div>';
+  html += '<div class="certificate-box ' + (passed ? 'certified' : 'not-certified') + '">';
+  html += '<h3>' + (passed ? '&#10003; Certification r\u00e9ussie' : '&#10007; Certification non r\u00e9ussie') + '</h3>';
+  html += '<p>' + (passed
+    ? 'Cet agent a d\u00e9montr\u00e9 une ma\u00eetrise suffisante pour traiter des commandes r\u00e9elles.'
+    : 'Cet agent doit refaire la formation. Score minimum requis : 90%.') + '</p>';
+  html += '</div>';
+  html += '<button class="btn-restart" onclick="restart()">Recommencer la formation</button>';
+
+  document.getElementById('final-card').innerHTML = html;
+  document.getElementById('final-overlay').classList.add('open');
+
+  document.getElementById('progress-fill').style.width = '100%';
+  for (let i = 1; i <= ORDERS.length; i++) {
+    document.getElementById('step-' + i).className = 'progress-step done';
+  }
+}
+
+// RESTART
+function restart() {
+  orderResults = [];
+  currentOrder = 0;
+  document.getElementById('final-overlay').classList.remove('open');
+  document.getElementById('scoring-overlay').classList.remove('open');
+  loadOrder(0);
+}
+</script>
+<script>
+const SANDBOX_SCENARIO_COPY = {
+  fr: [
+    { title: "Scénario 1 : Offre quantité", description: "Le client veut 2 pièces. Le vendeur a une offre : 1 pièce = 2400 DA, 2 pièces = 4000 DA." },
+    { title: "Scénario 2 : Changement type de livraison", description: "Le client a commandé en livraison au bureau, mais lors de l'appel il demande une livraison à domicile." },
+    { title: "Scénario 3 : Upsell sans toggle", description: "Le client veut acheter 2 pièces du même produit. C'est un upsell — n'oubliez pas de le marquer." },
+    { title: "Scénario 4 : Cross-sell (Ajouter un produit)", description: "Le client veut aussi commander un autre produit du même vendeur. Ajoutez-le à la commande." },
+    { title: "Scénario 5 : Variantes produit", description: "Le produit a plusieurs options. Le prix affiché (1250) est le prix de base. Vérifiez le total pour identifier l'option commandée." },
+    { title: "Scénario 6 : Mauvaise société de livraison", description: "Le vendeur a changé de société de livraison. Vérifiez quelle société est affichée dans l'aperçu et sélectionnez-la lors de l'envoi." },
+    { title: "Scénario 7 : Wilaya d'expédition", description: "Lors de l'ajout à la société de livraison, la wilaya d'expédition est celle du vendeur, pas du client. Ne la modifiez pas." },
+    { title: "Scénario 8 : Livraison gratuite cochée", description: "Pour Guepex, Yalidine et Zimou, le vendeur inclut la livraison dans le prix et coche 'Livraison gratuite'. Ne décochez jamais cette case." }
+  ],
+  ar: [
+    { title: "الحالة 1: عرض على الكمية", description: "الزبون حب يدي زوج قطع. البائع عندو عرض: قطعة وحدة = 2400 دج، زوج قطع = 4000 دج." },
+    { title: "الحالة 2: تبديل نوع التوصيل", description: "الزبون كان طالب التوصيل للمكتب، بصح في المكالمة قال بلي يحب التوصيل للدار." },
+    { title: "الحالة 3: بيع إضافي بلا علامة", description: "الزبون حب يزيد نفس المنتج لزوج قطع. هذي بيع إضافي، ما تنساش تعلّم عليها." },
+    { title: "الحالة 4: إضافة منتج آخر", description: "الزبون حب يزيد منتج آخر من نفس البائع. زيدو للطلبية." },
+    { title: "الحالة 5: متغيّرات المنتج", description: "المنتج عندو عدة خيارات. السعر اللي باين (1250) هو السعر الأساسي. شوف المجموع باش تعرف واش هي النسخة اللي طلبها الزبون." },
+    { title: "الحالة 6: شركة شحن غالطة", description: "البائع بدل شركة الشحن. شوف مليح شكون الشركة اللي راهي باينة في النظرة العامة واختارها كي تبعث الطلبية." },
+    { title: "الحالة 7: ولاية الانطلاق", description: "كي تزيد الطلبية لشركة الشحن، ولاية الانطلاق هي ولاية البائع ماشي تاع الزبون. ما تبدلهاش." },
+    { title: "الحالة 8: التوصيل المجاني معلّم", description: "مع Guepex و Yalidine و Zimou، البائع يدخل التوصيل داخل السعر ويعلّم على \"التوصيل المجاني\". ما تنحيش هاذ العلامة أبدًا." }
+  ]
+};
+
+const SANDBOX_FIELD_LABELS = {
+  fr: {
+    "Prix produit": "Prix produit",
+    "Quantité": "Quantité",
+    "Prix total": "Prix total",
+    "Champ Offre": "Champ Offre",
+    "Champ Variantes": "Champ Variantes",
+    "Champ Options": "Champ Options",
+    "Société livraison (envoi)": "Société livraison (envoi)",
+    "Type livraison": "Type livraison",
+    "Prix expédition": "Prix expédition",
+    "Upsell coché": "Upsell coché",
+    "Produit 2 ajouté": "Produit 2 ajouté",
+    "Nom produit 2": "Nom produit 2",
+    "Nom produit (250ml)": "Nom produit (250ml)",
+    "Wilaya d'expédition": "Wilaya d'expédition",
+    "Livraison gratuite": "Livraison gratuite",
+    "Assurance": "Assurance"
+  },
+  ar: {
+    "Prix produit": "سعر المنتج",
+    "Quantité": "الكمية",
+    "Prix total": "السعر الإجمالي",
+    "Champ Offre": "خانة العرض",
+    "Champ Variantes": "خانة المتغيّرات",
+    "Champ Options": "خانة الخيارات",
+    "Société livraison (envoi)": "شركة الشحن",
+    "Type livraison": "نوع التسليم",
+    "Prix expédition": "سعر الشحن",
+    "Upsell coché": "البيع الإضافي معلّم عليه",
+    "Produit 2 ajouté": "المنتج الثاني مزاد",
+    "Nom produit 2": "اسم المنتج الثاني",
+    "Nom produit (250ml)": "اسم المنتج (250ml)",
+    "Wilaya d'expédition": "ولاية الانطلاق",
+    "Livraison gratuite": "التوصيل المجاني",
+    "Assurance": "التأمين"
+  }
+};
+
+const SANDBOX_I18N = {
+  fr: {
+    title: "Orderdz | Mode Formation",
+    langCurrent: "Français",
+    langMenu: { fr: "Français", ar: "Arabe" },
+    nav: ["Statistiques", "Commandes", "Colis", "Paiements", "Transactions", "Notes", "Applications"],
+    welcomeBanner: "Mode Formation — Environnement de pratique",
+    trainingBanner: "Mode Formation — Aucune action réelle ne sera effectuée",
+    welcomeTitle: "Bienvenue en Mode Formation",
+    welcomeDescription: "Vous allez traiter 8 commandes de pratique. Chaque commande contient des informations que vous devez vérifier et corriger si nécessaire. Après correction, ajoutez la commande à la société de livraison.",
+    welcomeBullets: ["8 commandes avec des scénarios réels", "Vérifiez chaque champ — certains contiennent des erreurs", "Comparez avec la fiche produit du vendeur", "Corrigez les erreurs via les boutons \"Modifier\"", "Cliquez \"Ajouter à la société de livraison\" pour envoyer", "Score final : il faut 90% pour être certifié"],
+    startTraining: "Commencer la formation",
+    progress: "Formation",
+    productSheet: "📋 Fiche produit",
+    sellerReference: "Référence vendeur",
+    sellerPrice: "Prix vendeur",
+    quantityOffer: "Offre quantité",
+    sellerCatalog: "Catalogue vendeur",
+    overview: "Aperçu",
+    overviewLabels: ["Nom du magasin", "Plate-forme", "ID de commande dans la plateforme", "Numéro de commande dans la plateforme", "Note vendeur", "Société de livraison"],
+    sections: { cart: "Panier du client", delivery: "Livraison", summary: "Résumé", shipping: "Expédition", comments: "Commentaires", client: "Client", history: "Historique" },
+    deliveryLabels: ["Livraison", "Expédition"],
+    summaryLabels: ["Sous-total", "Expédition", "Total"],
+    shippingLabels: ["Société de livraison", "Statut du colis"],
+    shippingPending: "En attente",
+    shippingSubmit: "📦 Ajouter à la société de livraison",
+    shippingExisting: "Ajouter un colis existant",
+    commentsPlaceholder: "Écrire un commentaire...",
+    addComment: "Ajouter un commentaire",
+    clientLabels: ["Nom", "Téléphone", "Téléphone 2", "Wilaya", "Commune", "Adresse", "Adresse 2", "Notes"],
+    edit: "Modifier",
+    save: "Sauvegarder",
+    cancel: "Annuler",
+    add: "Ajouter",
+    continue: "Continuer",
+    restart: "Recommencer la formation",
+    infoButtons: ["Informations sur le vendeur", "Tarifs de livraison", "Sociétés de livraison"],
+    cartModalTitle: "Modifier les produits de la commande",
+    cartLabels: ["Nom du produit", "Prix (DZD)", "Quantité", "Offre", "Variantes", "Options"],
+    cartPlaceholders: { offer: "Laisser vide si pas d'offre", variants: "Laisser vide si pas de variantes", options: "Laisser vide si pas d'options", chooseProduct: "— Choisir un produit —" },
+    markUpsell: "Marquer comme upsell",
+    product2Title: "Produit 2",
+    product2Name: "Nom du produit 2",
+    addProductTitle: "Ajouter un produit",
+    productLabel: "Produit",
+    deliveryModalTitle: "Modifier les détails de livraison",
+    deliveryModalLabels: ["Type de livraison", "Prix d'expédition"],
+    deliveryTypes: { home: "Domicile", desk: "Bureau (Stop Desk)" },
+    summaryModalTitle: "Modifier le prix total",
+    summaryModalLabel: "Prix total",
+    clientModalTitle: "Modifier la commande",
+    clientModalLabels: ["Nom du client", "Numéro de téléphone", "Wilaya", "Numéro de téléphone 2", "Adresse", "Commune", "Adresse 2", "Notes"],
+    optional: "Optionnel",
+    notesPlaceholder: "Notes...",
+    abandonedCart: "Panier abandonné client",
+    vendorModalTitle: "Informations sur le vendeur",
+    vendorLabels: ["Nom", "Téléphone"],
+    ratesModalTitle: "Tarifs de livraison",
+    ratesHeaders: ["Wilaya", "Domicile", "Bureau"],
+    companiesModalTitle: "Sociétés de livraison",
+    companiesDetails: { url: "URL", email: "Email" },
+    deliverySubmitTitle: "Ajouter à la société de livraison",
+    deliverySubmitLabels: ["Société de livraison", "Type de livraison", "Type de commande", "Nom du client", "Numéro de téléphone", "Numéro de téléphone 2", "Wilaya", "Commune", "Adresse", "Nom du produit", "Quantité", "Prix", "Poids", "Wilaya d'expédition"],
+    deliverySubmitChoose: "— Choisir —",
+    deliverySubmitConditionalTitle: "Champs spécifiques (Guepex / Yalidine / Zimou)",
+    deliverySubmitToggles: ["Livraison gratuite", "Assurance"],
+    ouvrable: "Ouvrable",
+    orderLabel: id => `Commande ${id}`,
+    productMeta: (price, qty) => `Prix : ${price} DA × ${qty}`,
+    todayTime: "Aujourd'hui 09:14",
+    historyEvent: "En cours de confirmation",
+    variantWarning: (productPrice, deliveryPrice, expectedTotal, total) => `⚠️ Attention : Le prix du produit (${productPrice}) + livraison (${deliveryPrice}) = ${expectedTotal} ≠ Total (${total}). Vérifiez les variantes du produit.`,
+    score: { excellent: "Excellent !", medium: "Peut mieux faire", bad: "Insuffisant", none: "Aucune erreur à corriger", summary: (fixed, total, time) => `${fixed}/${total} erreurs corrigées — Temps : ${time}`, changedCorrect: "⚠ Vous avez modifié un champ qui était correct", nothingBroken: "Tous les champs étaient corrects et vous n’avez rien cassé !", next: "Commande suivante →", final: "Voir le résultat final", critical: "CRITIQUE", finalTitle: "Résultat final", stats: ["Commandes", "Temps moyen", "Corrigées", "Manquées"], details: "Détails par commande", pass: "✓ Certification réussie", fail: "✗ Certification non réussie", passDescription: "Cet agent a démontré une maîtrise suffisante pour traiter des commandes réelles.", failDescription: "Cet agent doit refaire la formation. Score minimum requis : 90%." },
+    corrections: { shouldBe: value => `Devrait être : ${value}`, checked: "Devrait être coché", contains: value => `Devrait contenir : ${value}`, empty: "Ce champ doit rester vide", unchanged: "Ne pas modifier ce champ", product2Missing: "Produit 2 manquant" },
+    login: { banner: "Mode Formation — Environnement de pratique", title: "Connexion Formation", desc: "Entrez votre nom et le mot de passe fourni par votre formateur.", namePlaceholder: "Votre nom complet", passwordPlaceholder: "Mot de passe", button: "Se connecter", errorEmpty: "Veuillez entrer votre nom", errorPassword: "Mot de passe incorrect" },
+    save: { saving: "Enregistrement des résultats...", saved: "Résultats enregistrés avec succès !", error: "Impossible d'enregistrer. Prenez une capture d'écran de vos résultats." },
+    empty: "—"
+  },
+  ar: {
+    title: "Orderdz | وضع التدريب",
+    langCurrent: "العربية",
+    langMenu: { fr: "الفرنسية", ar: "العربية" },
+    nav: ["الإحصائيات", "الطلبات", "الطرود", "المدفوعات", "المعاملات", "ملاحظات", "التطبيقات"],
+    welcomeBanner: "وضع التدريب — فضاء تجريبي",
+    trainingBanner: "وضع التدريب — ما راح يصرا حتى إجراء حقيقي",
+    welcomeTitle: "مرحبًا بك في وضع التدريب",
+    welcomeDescription: "راح تعالج 8 طلبيات تدريبية. كل طلبية فيها معلومات لازم تراجعها وتصحّحها إذا لزم. من بعد، زيد الطلبية لشركة الشحن.",
+    welcomeBullets: ["8 طلبيات فيها حالات حقيقية", "راجع كل خانة — كاين خانات فيهم أخطاء", "قارن مع بطاقة المنتج تاع البائع", "صحّح الأخطاء باستعمال زر «تحرير»", "اضغط «إضافة لشركة الشحن» باش تبعث الطلبية", "النتيجة النهائية: لازم 90% باش تنجح"],
+    startTraining: "ابدأ التدريب",
+    progress: "التدريب",
+    productSheet: "📋 بطاقة المنتج",
+    sellerReference: "مرجع البائع",
+    sellerPrice: "سعر البائع",
+    quantityOffer: "عرض الكمية",
+    sellerCatalog: "كتالوج البائع",
+    overview: "نظرة عامة",
+    overviewLabels: ["اسم المتجر", "المنصة", "معرّف الطلب في المنصة", "رقم الطلب في المنصة", "ملاحظة البائع", "شركة الشحن"],
+    sections: { cart: "سلة العميل", delivery: "التوصيل", summary: "الملخص", shipping: "الشحن", comments: "التعليقات", client: "العميل", history: "السجل" },
+    deliveryLabels: ["التوصيل", "الشحن"],
+    summaryLabels: ["المجموع الفرعي", "الشحن", "المجموع"],
+    shippingLabels: ["شركة الشحن", "حالة الطرد"],
+    shippingPending: "قيد الانتظار",
+    shippingSubmit: "📦 إضافة لشركة الشحن",
+    shippingExisting: "إضافة طرد موجود",
+    commentsPlaceholder: "اكتب تعليقًا...",
+    addComment: "أضف تعليق",
+    clientLabels: ["الاسم", "الهاتف", "الهاتف 2", "الولاية", "المدينة", "العنوان", "العنوان 2", "ملاحظات"],
+    edit: "تحرير",
+    save: "حفظ",
+    cancel: "إلغاء",
+    add: "إضافة",
+    continue: "واصل",
+    restart: "عاود التدريب",
+    infoButtons: ["معلومات البائع", "أسعار التوصيل", "شركات الشحن"],
+    cartModalTitle: "تحرير منتجات الطلب",
+    cartLabels: ["اسم المنتج", "السعر (DZD)", "الكمية", "العرض", "المتغيرات", "خيارات"],
+    cartPlaceholders: { offer: "خليها فارغة إذا ماكانش عرض", variants: "خليها فارغة إذا ماكانوش متغيرات", options: "خليها فارغة إذا ماكانوش خيارات", chooseProduct: "— اختَر منتجًا —" },
+    markUpsell: "وضع علامة كبيع إضافي",
+    product2Title: "المنتج 2",
+    product2Name: "اسم المنتج 2",
+    addProductTitle: "إضافة منتج",
+    productLabel: "المنتج",
+    deliveryModalTitle: "تحرير تفاصيل التوصيل",
+    deliveryModalLabels: ["نوع التسليم", "سعر الشحن"],
+    deliveryTypes: { home: "المنزل", desk: "المكتب (Stop Desk)" },
+    summaryModalTitle: "تحرير السعر الإجمالي",
+    summaryModalLabel: "السعر الإجمالي",
+    clientModalTitle: "تحرير الطلب",
+    clientModalLabels: ["اسم العميل", "رقم الهاتف", "الولاية", "رقم الهاتف 2", "العنوان", "المدينة", "العنوان 2", "ملاحظات"],
+    optional: "اختياري",
+    notesPlaceholder: "ملاحظات...",
+    abandonedCart: "سلة مهجورة من العميل",
+    vendorModalTitle: "معلومات البائع",
+    vendorLabels: ["الاسم", "الهاتف"],
+    ratesModalTitle: "أسعار التوصيل",
+    ratesHeaders: ["الولاية", "المنزل", "المكتب"],
+    companiesModalTitle: "شركات الشحن",
+    companiesDetails: { url: "URL", email: "البريد الإلكتروني" },
+    deliverySubmitTitle: "إضافة لشركة الشحن",
+    deliverySubmitLabels: ["شركة الشحن", "نوع التسليم", "نوع الطلب", "اسم العميل", "رقم الهاتف", "رقم الهاتف 2", "الولاية", "المدينة", "العنوان", "اسم المنتج", "الكمية", "السعر", "الوزن", "ولاية الانطلاق"],
+    deliverySubmitChoose: "— اختَر —",
+    deliverySubmitConditionalTitle: "خانات خاصة (Guepex / Yalidine / Zimou)",
+    deliverySubmitToggles: ["التوصيل المجاني", "التأمين"],
+    ouvrable: "قابل للفتح",
+    orderLabel: id => `الطلب ${id}`,
+    productMeta: (price, qty) => `السعر: ${price} DA × ${qty}`,
+    todayTime: "اليوم 09:14",
+    historyEvent: "قيد التأكيد",
+    variantWarning: (productPrice, deliveryPrice, expectedTotal, total) => `⚠️ تنبيه: سعر المنتج (${productPrice}) + الشحن (${deliveryPrice}) = ${expectedTotal} ≠ المجموع (${total}). راجع متغيرات المنتج.`,
+    score: { excellent: "هايل!", medium: "مليح بصح تقدر تدير خير", bad: "مازال خاصك تراجع", none: "ماكان حتى خطأ تصلّحو", summary: (fixed, total, time) => `${fixed}/${total} أخطاء تصلحو — الوقت: ${time}`, changedCorrect: "⚠ بدلت خانة كانت صحيحة", nothingBroken: "كل الخانات كانوا صح وما خربت حتى حاجة!", next: "← الطلبية التالية", final: "شوف النتيجة النهائية", critical: "خطير", finalTitle: "النتيجة النهائية", stats: ["الطلبيات", "المتوسط", "تصلحو", "تفلتو"], details: "التفاصيل حسب كل طلبية", pass: "✓ نجحت في الاعتماد", fail: "✗ ما نجحتش في الاعتماد", passDescription: "هذا العون ورّى بلي يقدر يخدم على طلبيات حقيقية.", failDescription: "هذا العون لازم يعاود التدريب. أقل نتيجة مطلوبة هي 90%." },
+    corrections: { shouldBe: value => `خاصو يكون: ${value}`, checked: "خاصها تكون معلّمة", contains: value => `خاصو يحتوي على: ${value}`, empty: "خلي هاذ الخانة فارغة", unchanged: "ما تبدلش هاذ الخانة", product2Missing: "المنتج الثاني ناقص" },
+    login: { banner: "وضع التدريب — فضاء تجريبي", title: "تسجيل الدخول للتدريب", desc: "دخّل اسمك وكلمة المرور اللي عطاهالك المدرب.", namePlaceholder: "اسمك الكامل", passwordPlaceholder: "كلمة المرور", button: "دخول", errorEmpty: "دخّل اسمك", errorPassword: "كلمة المرور غالطة" },
+    save: { saving: "...جاري حفظ النتائج", saved: "!تم حفظ النتائج بنجاح", error: "ما قدرناش نحفظو النتائج. دير capture d'écran." },
+    empty: "—"
+  }
+};
+
+let sandboxLang = "fr";
+const TRAINING_PASSWORD = 'training2026';
+const API_URL = '/api/training/results';
+let agentName = '';
+let sandboxPlatformId = "";
+let sandboxOrderSeconds = 0;
+</script>
+<script>
+function sandboxCopy() {
+  return SANDBOX_I18N[sandboxLang];
+}
+
+function sandboxScenario() {
+  return SANDBOX_SCENARIO_COPY[sandboxLang][currentOrder];
+}
+
+function sandboxFormatDa(value) {
+  return `${value} DA`;
+}
+
+function sandboxDeliveryType(value) {
+  return value === "home" ? sandboxCopy().deliveryTypes.home : sandboxCopy().deliveryTypes.desk;
+}
+
+function sandboxTranslateField(field) {
+  return SANDBOX_FIELD_LABELS[sandboxLang][field] || field;
+}
+
+function sandboxGeneratePlatformId() {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
+    const r = (Math.random() * 16) | 0;
+    const v = c === "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
+function sandboxSetGroupLabel(id, text) {
+  const field = document.getElementById(id);
+  const group = field ? field.closest(".form-group") : null;
+  const label = group ? group.querySelector("label") : null;
+  if (label) label.textContent = text;
+}
+
+function sandboxSetPlaceholder(id, text) {
+  const field = document.getElementById(id);
+  if (field) field.placeholder = text;
+}
+
+function sandboxCloseLanguageMenus() {
+  document.querySelectorAll(".lang-menu").forEach(menu => menu.classList.remove("open"));
+}
+
+function toggleLanguageMenu(screen, event) {
+  if (event) event.stopPropagation();
+  const menu = document.getElementById(`${screen}-lang-menu`);
+  if (!menu) return;
+  const shouldOpen = !menu.classList.contains("open");
+  sandboxCloseLanguageMenus();
+  if (shouldOpen) menu.classList.add("open");
+}
+
+function sandboxNavMarkup(screen) {
+  const copy = sandboxCopy();
+  const navLinks = copy.nav.map((label, index) => `<a class="nav-link ${index === 1 ? "active" : ""}" href="#">${label}</a>`).join("");
+  return `
+    <span class="nav-logo">Order<span>*</span></span>
+    ${navLinks}
+    <div class="nav-spacer"></div>
+    <div class="lang-switcher">
+      <button class="lang-trigger" type="button" onclick="toggleLanguageMenu('${screen}', event)">
+        <span>${copy.langCurrent}</span>
+        <span aria-hidden="true">▾</span>
+      </button>
+      <div class="lang-menu" id="${screen}-lang-menu">
+        <button class="lang-option ${sandboxLang === "fr" ? "active" : ""}" type="button" onclick="setLanguage('fr')">${copy.langMenu.fr}</button>
+        <button class="lang-option ${sandboxLang === "ar" ? "active" : ""}" type="button" onclick="setLanguage('ar')">${copy.langMenu.ar}</button>
+      </div>
+    </div>
+  `;
+}
+
+function sandboxRenderChrome() {
+  const copy = sandboxCopy();
+
+  // Login screen
+  const loginBanner = document.getElementById('login-banner-text');
+  if (loginBanner) loginBanner.textContent = copy.login.banner;
+  const loginNav = document.getElementById('login-nav');
+  if (loginNav) loginNav.innerHTML = sandboxNavMarkup('login');
+  const loginTitle = document.getElementById('login-title');
+  if (loginTitle) loginTitle.textContent = copy.login.title;
+  const loginDesc = document.getElementById('login-desc');
+  if (loginDesc) loginDesc.textContent = copy.login.desc;
+  const loginNameField = document.getElementById('login-name');
+  if (loginNameField) loginNameField.placeholder = copy.login.namePlaceholder;
+  const loginPwd = document.getElementById('login-password');
+  if (loginPwd) loginPwd.placeholder = copy.login.passwordPlaceholder;
+  const loginBtn = document.getElementById('btn-login');
+  if (loginBtn) loginBtn.textContent = copy.login.button;
+
+  const banners = document.querySelectorAll(".training-banner");
+  if (banners[0]) {
+    banners[0].innerHTML = `<span class="pulse-dot"></span><span id="login-banner-text" class="training-banner-text">${copy.login.banner}</span><span class="pulse-dot"></span>`;
+  }
+  if (banners[1]) {
+    banners[1].innerHTML = `<span class="pulse-dot"></span><span class="training-banner-text">${copy.welcomeBanner}</span><span class="pulse-dot"></span>`;
+  }
+  if (banners[2]) {
+    banners[2].innerHTML = `<span class="pulse-dot"></span><span class="training-banner-text">${copy.trainingBanner}</span><span class="pulse-dot"></span>`;
+  }
+
+  const navBars = document.querySelectorAll(".nav-bar");
+  if (navBars[0]) navBars[0].innerHTML = sandboxNavMarkup("login");
+  if (navBars[1]) navBars[1].innerHTML = sandboxNavMarkup("welcome");
+  if (navBars[2]) navBars[2].innerHTML = sandboxNavMarkup("training");
+}
+
+function sandboxRenderHistory() {
+  const copy = sandboxCopy();
+  const history = document.getElementById("order-history");
+  history.innerHTML = `<div class="timeline-item"><div class="timeline-dot"></div><div><div class="event">${copy.historyEvent}</div><div class="time">${copy.todayTime}</div></div></div>`;
+}
+
+function sandboxRenderStaticText() {
+  const copy = sandboxCopy();
+  document.title = copy.title;
+  document.documentElement.lang = sandboxLang;
+  document.documentElement.dir = sandboxLang === "ar" ? "rtl" : "ltr";
+  sandboxRenderChrome();
+
+  document.querySelector("#welcome-screen h1").textContent = copy.welcomeTitle;
+  document.querySelector("#welcome-screen .desc").textContent = copy.welcomeDescription;
+  const welcomeIcons = ["&#128203;", "&#128270;", "&#128203;", "&#9989;", "&#128230;", "&#128200;"];
+  document.querySelectorAll("#welcome-screen .welcome-info li").forEach((item, index) => {
+    item.innerHTML = `${welcomeIcons[index]} ${copy.welcomeBullets[index]}`;
+  });
+  document.querySelector("#welcome-screen .btn-start").textContent = copy.startTraining;
+  document.querySelector(".progress-label").textContent = copy.progress;
+
+  document.querySelectorAll(".info-btn").forEach((button, index) => {
+    button.textContent = copy.infoButtons[index];
+  });
+
+  document.querySelector(".product-info-card .card-header h2").textContent = copy.productSheet;
+  document.querySelector(".badge-readonly").textContent = copy.sellerReference;
+  document.querySelector(".product-info-card .field-label").textContent = copy.sellerPrice;
+  document.querySelector(".offer-label").textContent = copy.quantityOffer;
+  document.querySelector(".sp-label").textContent = copy.sellerCatalog;
+
+  const mainCards = document.querySelectorAll(".main-col > .card");
+  const sidebarCards = document.querySelectorAll(".sidebar-col > .card");
+
+  if (mainCards[0]) {
+    mainCards[0].querySelector(".card-header h2").textContent = copy.overview;
+    mainCards[0].querySelectorAll(".field-label").forEach((label, index) => {
+      label.textContent = copy.overviewLabels[index];
+    });
+  }
+  if (mainCards[1]) mainCards[1].querySelector(".card-header h2").textContent = copy.sections.cart;
+  if (mainCards[2]) {
+    mainCards[2].querySelector(".card-header h2").textContent = copy.sections.delivery;
+    mainCards[2].querySelectorAll(".field-label").forEach((label, index) => label.textContent = copy.deliveryLabels[index]);
+  }
+  if (mainCards[3]) {
+    mainCards[3].querySelector(".card-header h2").textContent = copy.sections.summary;
+    mainCards[3].querySelectorAll(".field-label").forEach((label, index) => label.textContent = copy.summaryLabels[index]);
+  }
+  if (mainCards[4]) {
+    mainCards[4].querySelector(".card-header h2").textContent = copy.sections.shipping;
+    mainCards[4].querySelectorAll(".field-label").forEach((label, index) => label.textContent = copy.shippingLabels[index]);
+  }
+  if (mainCards[5]) mainCards[5].querySelector(".card-header h2").textContent = copy.sections.comments;
+
+  document.querySelectorAll(".btn-modifier").forEach(button => button.textContent = copy.edit);
+  document.querySelectorAll(".btn-save").forEach(button => button.textContent = copy.save);
+  document.querySelectorAll(".btn-cancel").forEach(button => button.textContent = copy.cancel);
+  document.querySelector(".btn-existing-parcel").textContent = copy.shippingExisting;
+  document.querySelector(".btn-delivery-submit").textContent = copy.shippingSubmit;
+  document.querySelector(".comments-textarea").placeholder = copy.commentsPlaceholder;
+  document.querySelector(".btn-comment").textContent = copy.addComment;
+  document.querySelector(".btn-ajouter").textContent = copy.add;
+
+  if (sidebarCards[0]) {
+    sidebarCards[0].querySelector(".card-header h2").textContent = copy.sections.client;
+    sidebarCards[0].querySelectorAll(".form-group label").forEach((label, index) => {
+      label.textContent = copy.clientLabels[index];
+    });
+  }
+  if (sidebarCards[1]) sidebarCards[1].querySelector(".card-header h2").textContent = copy.sections.history;
+
+  document.querySelector("#modal-cart .modal-header h3").textContent = copy.cartModalTitle;
+  ["input-product-name", "input-product-price", "input-product-quantity", "input-product-offer", "input-product-variants", "input-product-options"].forEach((id, index) => {
+    sandboxSetGroupLabel(id, copy.cartLabels[index]);
+  });
+  sandboxSetPlaceholder("input-product-offer", copy.cartPlaceholders.offer);
+  sandboxSetPlaceholder("input-product-variants", copy.cartPlaceholders.variants);
+  sandboxSetPlaceholder("input-product-options", copy.cartPlaceholders.options);
+  document.querySelector('label[for="input-upsell-check"]').textContent = copy.markUpsell;
+  document.querySelector("#product2-card .cart-product-card-header").textContent = copy.product2Title;
+  sandboxSetGroupLabel("input-product2-name", copy.product2Name);
+  sandboxSetGroupLabel("input-product2-price", copy.cartLabels[1]);
+  sandboxSetGroupLabel("input-product2-quantity", copy.cartLabels[2]);
+  document.querySelector("#add-product-card .add-product-title").textContent = copy.addProductTitle;
+  sandboxSetGroupLabel("input-seller-product-select", copy.productLabel);
+  document.getElementById("btn-add-product").textContent = copy.add;
+
+  document.querySelector("#modal-delivery .modal-header h3").textContent = copy.deliveryModalTitle;
+  sandboxSetGroupLabel("input-delivery-type", copy.deliveryModalLabels[0]);
+  sandboxSetGroupLabel("input-delivery-price", copy.deliveryModalLabels[1]);
+  const deliveryOptions = document.querySelectorAll("#input-delivery-type option");
+  if (deliveryOptions[0]) deliveryOptions[0].textContent = copy.deliveryTypes.desk;
+  if (deliveryOptions[1]) deliveryOptions[1].textContent = copy.deliveryTypes.home;
+
+  document.querySelector("#modal-summary .modal-header h3").textContent = copy.summaryModalTitle;
+  sandboxSetGroupLabel("input-summary-total", copy.summaryModalLabel);
+
+  document.querySelector("#modal-client .modal-header h3").textContent = copy.clientModalTitle;
+  ["input-client-name", "input-client-phone", "input-client-wilaya", "input-client-phone2", "input-client-address", "input-client-commune", "input-client-address2", "input-client-remarques"].forEach((id, index) => {
+    sandboxSetGroupLabel(id, copy.clientModalLabels[index]);
+  });
+  sandboxSetPlaceholder("input-client-phone2", copy.optional);
+  sandboxSetPlaceholder("input-client-address2", copy.optional);
+  sandboxSetPlaceholder("input-client-remarques", copy.notesPlaceholder);
+  document.querySelector('label[for="input-panier-abandonne"]').textContent = copy.abandonedCart;
+
+  document.querySelector("#modal-vendor .modal-header h3").textContent = copy.vendorModalTitle;
+  document.querySelectorAll("#modal-vendor .vendor-info-row .field-label").forEach((label, index) => {
+    label.textContent = copy.vendorLabels[index];
+  });
+  document.querySelector("#modal-rates .modal-header h3").textContent = copy.ratesModalTitle;
+  document.querySelectorAll("#modal-rates th").forEach((header, index) => {
+    header.textContent = copy.ratesHeaders[index];
+  });
+  document.querySelector("#modal-companies .modal-header h3").textContent = copy.companiesModalTitle;
+
+  document.querySelector("#modal-delivery-submit .modal-header h3").textContent = copy.deliverySubmitTitle;
+  ["ds-company", "ds-delivery-type", "ds-order-type", "ds-client-name", "ds-client-phone", "ds-client-phone2", "ds-client-wilaya", "ds-client-commune", "ds-client-address", "ds-product-name", "ds-product-qty", "ds-product-price", "ds-weight", "ds-expedition-wilaya"].forEach((id, index) => {
+    sandboxSetGroupLabel(id, copy.deliverySubmitLabels[index]);
+  });
+  sandboxSetPlaceholder("ds-client-phone2", copy.optional);
+  const dsCompanyOptions = document.querySelectorAll("#ds-company option");
+  if (dsCompanyOptions[0]) dsCompanyOptions[0].textContent = copy.deliverySubmitChoose;
+  const dsWilayaOptions = document.querySelectorAll("#ds-client-wilaya option");
+  if (dsWilayaOptions[0]) dsWilayaOptions[0].textContent = copy.deliverySubmitChoose;
+  const dsExpeditionOptions = document.querySelectorAll("#ds-expedition-wilaya option");
+  if (dsExpeditionOptions[0]) dsExpeditionOptions[0].textContent = copy.deliverySubmitChoose;
+  const dsDeliveryOptions = document.querySelectorAll("#ds-delivery-type option");
+  if (dsDeliveryOptions[0]) dsDeliveryOptions[0].textContent = copy.deliveryTypes.home;
+  if (dsDeliveryOptions[1]) dsDeliveryOptions[1].textContent = copy.deliveryTypes.desk;
+  document.querySelector('label[for="ds-ouvrable"]').textContent = copy.ouvrable;
+  document.querySelector("#ds-conditional-fields .ds-cond-title").textContent = copy.deliverySubmitConditionalTitle;
+  document.querySelectorAll("#ds-conditional-fields .toggle-label").forEach((label, index) => {
+    label.textContent = copy.deliverySubmitToggles[index];
+  });
+
+  if (document.getElementById("modal-vendor").classList.contains("open")) openInfoModal("vendor");
+  if (document.getElementById("modal-rates").classList.contains("open")) openInfoModal("rates");
+  if (document.getElementById("modal-companies").classList.contains("open")) openInfoModal("companies");
+}
+</script>
+<script>
+function sandboxRenderProgress() {
+  const progressPercent = ((currentOrder + 1) / ORDERS.length) * 100;
+  document.getElementById("progress-fill").style.width = `${progressPercent}%`;
+  for (let i = 1; i <= ORDERS.length; i++) {
+    const step = document.getElementById(`step-${i}`);
+    step.classList.remove("active", "done");
+    if (i < currentOrder + 1) step.classList.add("done");
+    if (i === currentOrder + 1) step.classList.add("active");
+  }
+}
+
+function sandboxRenderOrder() {
+  const order = ORDERS[currentOrder];
+  const copy = sandboxCopy();
+  const scenarioCopy = sandboxScenario();
+
+  document.getElementById("scenario-title").textContent = scenarioCopy.title;
+  document.getElementById("scenario-desc").textContent = scenarioCopy.description;
+  document.getElementById("order-number").textContent = copy.orderLabel(order.id);
+  document.getElementById("order-store").textContent = order.store;
+
+  document.getElementById("prodinfo-emoji").innerHTML = order.emoji;
+  document.getElementById("prodinfo-name").textContent = order.product.displayName;
+  document.getElementById("prodinfo-desc").textContent = order.productInfo.description;
+  document.getElementById("prodinfo-price").textContent = sandboxFormatDa(order.productInfo.originalPrice);
+
+  document.getElementById("prodinfo-offer-section").classList.toggle("hidden", !order.quantityOffer);
+  if (order.quantityOffer) {
+    document.getElementById("prodinfo-offer-text").textContent = order.quantityOffer;
+  }
+
+  document.getElementById("prodinfo-variants-section").classList.toggle("hidden", !order.productVariants);
+  if (order.productVariants) {
+    document.getElementById("prodinfo-variants-list").innerHTML = order.productVariants
+      .map(variant => `<div class="prodinfo-variant-item"><span class="vname">${variant.name}</span><span class="vprice">${sandboxFormatDa(variant.price)}</span></div>`)
+      .join("");
+  }
+
+  document.getElementById("prodinfo-seller-products-section").classList.toggle("hidden", !order.sellerProducts);
+  if (order.sellerProducts) {
+    document.getElementById("prodinfo-seller-products-list").innerHTML = order.sellerProducts
+      .map(product => `<div class="prodinfo-variant-item"><span class="vname">${product.name}</span><span class="vprice">${sandboxFormatDa(product.price)}</span></div>`)
+      .join("");
+  }
+
+  document.getElementById("apercu-store").textContent = order.store;
+  document.getElementById("apercu-platform").textContent = order.platform;
+  document.getElementById("apercu-platform-id").textContent = sandboxPlatformId;
+  document.getElementById("apercu-order-num").textContent = order.platformOrderNum;
+  document.getElementById("apercu-seller-note-row").classList.toggle("hidden", !order.sellerNote);
+  if (order.sellerNote) document.getElementById("apercu-seller-note").textContent = order.sellerNote;
+  document.getElementById("apercu-delivery-company-row").classList.toggle("hidden", !order.sellerDeliveryCompany);
+  if (order.sellerDeliveryCompany) document.getElementById("apercu-delivery-company").textContent = order.sellerDeliveryCompany;
+
+  document.getElementById("product-emoji").innerHTML = order.emoji;
+  document.getElementById("product-display-name").textContent = currentValues.productName;
+  document.getElementById("product-display-meta").textContent = copy.productMeta(currentValues.productPrice, currentValues.productQuantity);
+  document.getElementById("product-display-total").textContent = sandboxFormatDa(currentValues.productPrice * currentValues.productQuantity);
+
+  const hasProduct2 = !!currentValues.product2Name;
+  document.getElementById("product-display-row-2").classList.toggle("hidden", !hasProduct2);
+  if (hasProduct2) {
+    document.getElementById("product2-display-name").textContent = currentValues.product2Name;
+    document.getElementById("product2-display-meta").textContent = copy.productMeta(currentValues.product2Price, currentValues.product2Quantity);
+    document.getElementById("product2-display-total").textContent = sandboxFormatDa(currentValues.product2Price * currentValues.product2Quantity);
+  }
+
+  const upsellRow = document.getElementById("upsell-badge-row");
+  upsellRow.classList.toggle("hidden", !currentValues.upsellMarked);
+  if (currentValues.upsellMarked) {
+    document.querySelector(".upsell-badge-inline").textContent = sandboxLang === "ar" ? "بيع إضافي" : "Upsell";
+  }
+
+  document.getElementById("delivery-display-type").textContent = sandboxDeliveryType(currentValues.deliveryType);
+  document.getElementById("delivery-display-price").textContent = sandboxFormatDa(currentValues.deliveryPrice);
+
+  const subtotal = currentValues.productPrice * currentValues.productQuantity + currentValues.product2Price * currentValues.product2Quantity;
+  document.getElementById("summary-subtotal").textContent = sandboxFormatDa(subtotal);
+  document.getElementById("summary-shipping").textContent = sandboxFormatDa(currentValues.deliveryPrice);
+  document.getElementById("summary-total-display").textContent = sandboxFormatDa(currentValues.total);
+
+  document.getElementById("shipping-display-company").textContent = currentValues.dsCompany || order.shipping.company;
+  document.querySelectorAll(".main-col > .card")[4].querySelectorAll(".field-value")[1].textContent = copy.shippingPending;
+
+  document.getElementById("client-display-name").textContent = currentValues.clientName;
+  document.getElementById("client-display-phone").textContent = currentValues.clientPhone;
+  document.getElementById("client-display-phone2").textContent = currentValues.clientPhone2 || copy.empty;
+  document.getElementById("client-display-wilaya").textContent = currentValues.clientWilaya;
+  document.getElementById("client-display-commune").textContent = currentValues.clientCommune;
+  document.getElementById("client-display-address").textContent = currentValues.clientAddress;
+  document.getElementById("client-display-address2").textContent = currentValues.clientAddress2 || copy.empty;
+  document.getElementById("client-display-remarques").textContent = currentValues.clientRemarques || copy.empty;
+
+  sandboxRenderHistory();
+  updatePriceWarning();
+}
+
+function sandboxSetTimerDisplay() {
+  const minutes = Math.floor(sandboxOrderSeconds / 60).toString().padStart(2, "0");
+  const secondsText = (sandboxOrderSeconds % 60).toString().padStart(2, "0");
+  document.getElementById("timer").textContent = `${minutes}:${secondsText}`;
+}
+
+function sandboxResetTimer() {
+  clearInterval(timerInterval);
+  sandboxOrderSeconds = 0;
+  sandboxSetTimerDisplay();
+}
+
+function sandboxStartTimer() {
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    sandboxOrderSeconds += 1;
+    sandboxSetTimerDisplay();
+  }, 1000);
+}
+
+function setLanguage(lang) {
+  sandboxLang = lang;
+  sandboxCloseLanguageMenus();
+  sandboxRenderStaticText();
+  if (!document.getElementById("training-screen").classList.contains("hidden")) {
+    sandboxRenderOrder();
+  } else {
+    sandboxRenderHistory();
+  }
+}
+
+// LOGIN
+function handleLogin() {
+  const name = document.getElementById('login-name').value.trim();
+  const password = document.getElementById('login-password').value;
+  const copy = sandboxCopy();
+  const errorEl = document.getElementById('login-error');
+
+  if (!name) {
+    errorEl.textContent = copy.login.errorEmpty;
+    errorEl.classList.add('visible');
+    return;
+  }
+  if (password !== TRAINING_PASSWORD) {
+    errorEl.textContent = copy.login.errorPassword;
+    errorEl.classList.add('visible');
+    return;
+  }
+
+  agentName = name;
+  errorEl.classList.remove('visible');
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('welcome-screen').classList.remove('hidden');
+}
+
+function startTraining() {
+  document.getElementById("welcome-screen").classList.add("hidden");
+  document.getElementById("training-screen").classList.remove("hidden");
+  loadOrder(0);
+}
+
+function openInfoModal(type) {
+  const copy = sandboxCopy();
+  const order = ORDERS[currentOrder];
+  if (type === "vendor") {
+    document.getElementById("vendor-info-name").textContent = order.store;
+    document.getElementById("vendor-info-phone").textContent = "0555 000 000";
+    document.getElementById("modal-vendor").classList.add("open");
+  }
+  if (type === "rates") {
+    document.getElementById("rates-table-body").innerHTML = `<tr><td>${order.client.wilaya}</td><td>${sandboxFormatDa(order.deliveryRates.home)}</td><td>${sandboxFormatDa(order.deliveryRates.desk)}</td></tr>`;
+    document.getElementById("modal-rates").classList.add("open");
+  }
+  if (type === "companies") {
+    document.getElementById("companies-modal-body").innerHTML = `<div class="company-info-row"><div class="ci-name">${order.shipping.company}</div><div class="ci-detail">${copy.companiesDetails.url}: shipping-company.dz</div><div class="ci-detail">${copy.companiesDetails.email}: contact@shipping.dz</div></div>`;
+    document.getElementById("modal-companies").classList.add("open");
+  }
+}
+
+function closeInfoModal(type) {
+  document.getElementById(`modal-${type}`).classList.remove("open");
+}
+
+function closeDeliverySubmitModal() {
+  document.getElementById("modal-delivery-submit").classList.remove("open");
+}
+
+function loadOrder(idx) {
+  currentOrder = idx;
+  sandboxPlatformId = sandboxGeneratePlatformId();
+  const order = ORDERS[idx];
+
+  document.getElementById("modal-delivery-submit").classList.remove("open");
+  currentValues = {
+    productName: order.product.displayName,
+    productPrice: order.product.price,
+    productQuantity: order.product.quantity,
+    productOffer: "",
+    productVariantsField: "",
+    productOptions: "",
+    product2Name: "",
+    product2Price: 0,
+    product2Quantity: 1,
+    upsellMarked: false,
+    deliveryType: order.delivery.type,
+    deliveryPrice: order.delivery.price,
+    total: order.total,
+    clientName: order.client.name,
+    clientPhone: order.client.phone,
+    clientWilaya: order.client.wilaya,
+    clientCommune: order.client.commune,
+    clientAddress: order.client.address,
+    clientPhone2: "",
+    clientAddress2: "",
+    clientRemarques: "",
+    shippingCompany: order.shipping.company,
+    dsCompany: order.expeditionSubmit.company,
+    dsExpeditionWilaya: order.expeditionSubmit.expeditionWilaya || "",
+    dsFreeShipping: order.expeditionSubmit.freeShipping || false,
+    dsInsurance: order.expeditionSubmit.insurance || false
+  };
+  initialValues = JSON.parse(JSON.stringify(currentValues));
+  sandboxRenderProgress();
+  sandboxRenderOrder();
+  sandboxResetTimer();
+  sandboxStartTimer();
+}
+
+function showDeliverySubmitForm() {
+  document.getElementById("ds-delivery-type").value = currentValues.deliveryType;
+  document.getElementById("ds-order-type").value = "Livraison";
+  document.getElementById("ds-client-name").value = currentValues.clientName;
+  document.getElementById("ds-client-phone").value = currentValues.clientPhone;
+  document.getElementById("ds-client-phone2").value = "";
+  document.getElementById("ds-client-wilaya").value = currentValues.clientWilaya;
+  document.getElementById("ds-client-commune").value = currentValues.clientCommune;
+  document.getElementById("ds-client-address").value = currentValues.clientAddress;
+  document.getElementById("ds-product-name").value = currentValues.productName;
+  document.getElementById("ds-product-qty").value = currentValues.productQuantity;
+  document.getElementById("ds-product-price").value = currentValues.total;
+  document.getElementById("ds-weight").value = 0;
+  document.getElementById("ds-ouvrable").checked = false;
+  document.getElementById("ds-company").value = currentValues.dsCompany;
+  document.getElementById("ds-expedition-wilaya").value = currentValues.dsExpeditionWilaya;
+  document.getElementById("ds-free-shipping").checked = currentValues.dsFreeShipping;
+  document.getElementById("ds-insurance").checked = currentValues.dsInsurance;
+  onDsCompanyChange();
+  document.getElementById("modal-delivery-submit").classList.add("open");
+}
+
+function onDsCompanyChange() {
+  const company = document.getElementById("ds-company").value;
+  document.getElementById("ds-conditional-fields").classList.toggle("hidden", !(company === "Guepex" || company === "Yalidine" || company === "Zimou"));
+}
+
+function showProduct2() {
+  document.getElementById("product2-card").classList.remove("hidden");
+  document.getElementById("add-product-card").classList.add("hidden");
+}
+
+function openModal(type) {
+  const order = ORDERS[currentOrder];
+  if (type === "cart") {
+    document.getElementById("input-product-name").value = currentValues.productName;
+    document.getElementById("input-product-price").value = currentValues.productPrice;
+    document.getElementById("input-product-quantity").value = currentValues.productQuantity;
+    document.getElementById("input-product-offer").value = currentValues.productOffer;
+    document.getElementById("input-product-variants").value = currentValues.productVariantsField;
+    document.getElementById("input-product-options").value = currentValues.productOptions;
+    document.getElementById("input-upsell-check").checked = currentValues.upsellMarked;
+    if (order.sellerProducts) {
+      document.getElementById("seller-product-dropdown-group").classList.remove("hidden");
+      let options = `<option value="">${sandboxCopy().cartPlaceholders.chooseProduct}</option>`;
+      order.sellerProducts.forEach((product, index) => {
+        options += `<option value="${index}">${product.name} (${sandboxFormatDa(product.price)})</option>`;
+      });
+      document.getElementById("input-seller-product-select").innerHTML = options;
+    } else {
+      document.getElementById("seller-product-dropdown-group").classList.add("hidden");
+    }
+    if (currentValues.product2Name) {
+      document.getElementById("product2-card").classList.remove("hidden");
+      document.getElementById("add-product-card").classList.add("hidden");
+      document.getElementById("input-product2-name").value = currentValues.product2Name;
+      document.getElementById("input-product2-price").value = currentValues.product2Price;
+      document.getElementById("input-product2-quantity").value = currentValues.product2Quantity;
+    } else {
+      document.getElementById("product2-card").classList.add("hidden");
+      document.getElementById("add-product-card").classList.remove("hidden");
+    }
+  }
+  if (type === "delivery") {
+    document.getElementById("input-delivery-type").value = currentValues.deliveryType;
+    document.getElementById("input-delivery-price").value = currentValues.deliveryPrice;
+  }
+  if (type === "summary") {
+    document.getElementById("input-summary-total").value = currentValues.total;
+  }
+  if (type === "client") {
+    document.getElementById("input-client-name").value = currentValues.clientName;
+    document.getElementById("input-client-phone").value = currentValues.clientPhone;
+    document.getElementById("input-client-phone2").value = currentValues.clientPhone2 || "";
+    document.getElementById("input-client-wilaya").value = currentValues.clientWilaya;
+    document.getElementById("input-client-commune").value = currentValues.clientCommune;
+    document.getElementById("input-client-address").value = currentValues.clientAddress;
+    document.getElementById("input-client-address2").value = currentValues.clientAddress2 || "";
+    document.getElementById("input-client-remarques").value = currentValues.clientRemarques || "";
+    document.getElementById("input-panier-abandonne").checked = false;
+  }
+  document.getElementById(`modal-${type}`).classList.add("open");
+}
+
+function closeModal(type) {
+  document.getElementById(`modal-${type}`).classList.remove("open");
+}
+
+function saveModal(type) {
+  if (type === "cart") {
+    currentValues.productName = document.getElementById("input-product-name").value;
+    currentValues.productPrice = Number(document.getElementById("input-product-price").value);
+    currentValues.productQuantity = Number(document.getElementById("input-product-quantity").value);
+    currentValues.productOffer = document.getElementById("input-product-offer").value;
+    currentValues.productVariantsField = document.getElementById("input-product-variants").value;
+    currentValues.productOptions = document.getElementById("input-product-options").value;
+    currentValues.upsellMarked = document.getElementById("input-upsell-check").checked;
+    const product2Name = document.getElementById("input-product2-name").value;
+    if (product2Name && product2Name.trim() !== "") {
+      currentValues.product2Name = product2Name;
+      currentValues.product2Price = Number(document.getElementById("input-product2-price").value);
+      currentValues.product2Quantity = Number(document.getElementById("input-product2-quantity").value);
+    } else {
+      currentValues.product2Name = "";
+      currentValues.product2Price = 0;
+      currentValues.product2Quantity = 1;
+    }
+  }
+  if (type === "delivery") {
+    currentValues.deliveryType = document.getElementById("input-delivery-type").value;
+    currentValues.deliveryPrice = Number(document.getElementById("input-delivery-price").value);
+  }
+  if (type === "summary") {
+    currentValues.total = Number(document.getElementById("input-summary-total").value);
+  }
+  if (type === "client") {
+    currentValues.clientName = document.getElementById("input-client-name").value;
+    currentValues.clientPhone = document.getElementById("input-client-phone").value;
+    currentValues.clientPhone2 = document.getElementById("input-client-phone2").value;
+    currentValues.clientWilaya = document.getElementById("input-client-wilaya").value;
+    currentValues.clientCommune = document.getElementById("input-client-commune").value;
+    currentValues.clientAddress = document.getElementById("input-client-address").value;
+    currentValues.clientAddress2 = document.getElementById("input-client-address2").value;
+    currentValues.clientRemarques = document.getElementById("input-client-remarques").value;
+  }
+  sandboxRenderOrder();
+  closeModal(type);
+}
+
+function updatePriceWarning() {
+  const order = ORDERS[currentOrder];
+  const banner = document.getElementById("price-warning-banner");
+  if (!order.showPriceWarning) {
+    banner.classList.add("hidden");
+    return;
+  }
+  const expectedTotal = currentValues.productPrice * currentValues.productQuantity + currentValues.product2Price * currentValues.product2Quantity + currentValues.deliveryPrice;
+  if (expectedTotal !== currentValues.total) {
+    banner.classList.remove("hidden");
+    banner.textContent = sandboxCopy().variantWarning(currentValues.productPrice, currentValues.deliveryPrice, expectedTotal, currentValues.total);
+  } else {
+    banner.classList.add("hidden");
+  }
+}
+
+function onSellerProductSelect() {
+  const index = document.getElementById("input-seller-product-select").value;
+  if (index === "") return;
+  const product = ORDERS[currentOrder].sellerProducts[Number(index)];
+  document.getElementById("input-product2-name").value = product.name;
+  document.getElementById("input-product2-price").value = product.price;
+  document.getElementById("input-product2-quantity").value = 1;
+  showProduct2();
+}
+</script>
+<script>
+function evaluateCheck(check, values) {
+  const correctValue = ORDERS[currentOrder].correctValues[check.key];
+  if (check.type === "number") return Number(values[check.key]) === Number(correctValue);
+  if (check.type === "exact") return String(values[check.key]).trim() === String(correctValue).trim();
+  if (check.type === "checkbox_checked") return values[check.key] === true;
+  if (check.type === "select_match") return String(values[check.key]).trim() === String(correctValue).trim();
+  if (check.type === "name_contains") return String(values[check.key]).toLowerCase().includes(check.expected.toLowerCase());
+  if (check.type === "field_empty") return String(values[check.key] || "").trim() === "";
+  if (check.type === "field_unchanged") {
+    if (check.key === "total") return Number(values[check.key]) === Number(initialValues[check.key]);
+    return String(values[check.key]).trim() === String(initialValues[check.key]).trim();
+  }
+  if (check.type === "product2_added") {
+    return values.product2Name && values.product2Name.trim() !== "" && values.product2Price > 0;
+  }
+  return false;
+}
+
+function getCorrectionMessage(check) {
+  const copy = sandboxCopy();
+  const correctValue = ORDERS[currentOrder].correctValues[check.key];
+  if (check.type === "number" || check.type === "exact" || check.type === "select_match") return copy.corrections.shouldBe(correctValue);
+  if (check.type === "checkbox_checked") return copy.corrections.checked;
+  if (check.type === "name_contains") return copy.corrections.contains(check.expected);
+  if (check.type === "field_empty") return copy.corrections.empty;
+  if (check.type === "field_unchanged") return copy.corrections.unchanged;
+  if (check.type === "product2_added") return copy.corrections.product2Missing;
+  return "";
+}
+
+function submitOrder() {
+  clearInterval(timerInterval);
+  document.getElementById("modal-delivery-submit").classList.remove("open");
+  currentValues.dsCompany = document.getElementById("ds-company").value;
+  currentValues.dsExpeditionWilaya = document.getElementById("ds-expedition-wilaya").value;
+  currentValues.dsFreeShipping = document.getElementById("ds-free-shipping").checked;
+  currentValues.dsInsurance = document.getElementById("ds-insurance").checked;
+
+  const errorChecks = [];
+  const brokenChecks = [];
+  let errorsFixed = 0;
+  let totalErrors = 0;
+
+  ORDERS[currentOrder].checks.forEach(check => {
+    const wasCorrectInitially = evaluateCheck(check, initialValues);
+    const isCorrectNow = evaluateCheck(check, currentValues);
+    if (!wasCorrectInitially) {
+      totalErrors += 1;
+      if (isCorrectNow) errorsFixed += 1;
+      errorChecks.push({
+        field: check.field,
+        fixed: isCorrectNow,
+        correction: isCorrectNow ? "" : getCorrectionMessage(check),
+        critical: check.critical || false
+      });
+    } else if (!isCorrectNow) {
+      totalErrors += 1;
+      brokenChecks.push({
+        field: check.field,
+        critical: check.critical || false
+      });
+    }
+  });
+
+  const pct = totalErrors === 0 ? 100 : Math.round((errorsFixed / totalErrors) * 100);
+  const time = document.getElementById("timer").textContent;
+  orderResults.push({
+    orderIdx: currentOrder,
+    score: errorsFixed,
+    total: totalErrors,
+    pct,
+    time,
+    errorChecks,
+    brokenChecks,
+    seconds: sandboxOrderSeconds
+  });
+  showScoring(errorChecks, brokenChecks, pct, errorsFixed, totalErrors, time);
+}
+
+function showScoring(errorChecks, brokenChecks, pct, errorsFixed, totalErrors, time) {
+  const copy = sandboxCopy();
+  const isLast = currentOrder === ORDERS.length - 1;
+  let circleClass = pct >= 90 ? "good" : pct >= 60 ? "medium" : "bad";
+  let label = pct >= 90 ? copy.score.excellent : pct >= 60 ? copy.score.medium : copy.score.bad;
+  if (totalErrors === 0) {
+    circleClass = "good";
+    label = copy.score.none;
+  }
+
+  const criticalTag = isCritical => isCritical ? ` <span style="color:var(--red);font-size:11px;font-weight:600">${copy.score.critical}</span>` : "";
+  let html = `<div class="scoring-header"><div class="score-circle ${circleClass}">${pct}%</div><h3>${label}</h3><p>${copy.score.summary(errorsFixed, totalErrors, time)}</p></div><div class="scoring-details">`;
+
+  errorChecks.forEach(check => {
+    const icon = check.fixed ? `<div class="score-icon correct">&#10003;</div>` : `<div class="score-icon wrong">&#10007;</div>`;
+    html += `<div class="score-item">${icon}<span class="field-name">${sandboxTranslateField(check.field)}${criticalTag(check.critical)}</span>${check.correction ? `<span class="correction">${check.correction}</span>` : ""}</div>`;
+  });
+
+  if (brokenChecks.length > 0) {
+    html += `<div style="margin-top:12px;padding:10px 14px;background:#fef3c7;border:1px solid #fbbf24;border-radius:8px"><div style="font-size:13px;font-weight:600;color:#92400e;margin-bottom:6px">${copy.score.changedCorrect}</div>`;
+    brokenChecks.forEach(check => {
+      html += `<div class="score-item" style="border-bottom-color:#fde68a"><div class="score-icon wrong">&#10007;</div><span class="field-name">${sandboxTranslateField(check.field)}${criticalTag(check.critical)}</span></div>`;
+    });
+    html += `</div>`;
+  }
+
+  if (errorChecks.length === 0 && brokenChecks.length === 0) {
+    html += `<div style="text-align:center;padding:16px;color:var(--green);font-weight:500">${copy.score.nothingBroken}</div>`;
+  }
+
+  html += `</div><div class="scoring-footer"><button class="btn-next" onclick="${isLast ? "showFinalScore()" : "nextOrder()"}">${isLast ? copy.score.final : copy.score.next}</button></div>`;
+  document.getElementById("scoring-overlay").querySelector(".scoring-card").innerHTML = html;
+  document.getElementById("scoring-overlay").classList.add("open");
+}
+
+function nextOrder() {
+  document.getElementById("scoring-overlay").classList.remove("open");
+  loadOrder(currentOrder + 1);
+}
+
+function showFinalScore() {
+  const copy = sandboxCopy();
+  document.getElementById("scoring-overlay").classList.remove("open");
+  let totalFixed = 0;
+  let totalErrors = 0;
+  let totalSeconds = 0;
+  orderResults.forEach(result => {
+    totalFixed += result.score;
+    totalErrors += result.total;
+    totalSeconds += result.seconds;
+  });
+  const finalPct = totalErrors === 0 ? 100 : Math.round((totalFixed / totalErrors) * 100);
+  const passed = finalPct >= 90;
+  const averageSeconds = Math.round(totalSeconds / orderResults.length);
+  const averageMinutes = String(Math.floor(averageSeconds / 60)).padStart(2, "0");
+  const averageRemainder = String(averageSeconds % 60).padStart(2, "0");
+
+  let breakdown = "";
+  orderResults.forEach((result, index) => {
+    const badgeClass = result.pct >= 90 ? "pass" : result.pct >= 60 ? "partial" : "fail";
+    breakdown += `<div class="breakdown-row"><span class="order-label">${copy.orderLabel(ORDERS[index].id)}</span><span class="numeric-ltr">${result.time}</span><span class="badge ${badgeClass}">${result.pct}%</span></div>`;
+  });
+
+  let html = `<div class="icon-big" style="margin-bottom:8px">${passed ? "&#127942;" : "&#128218;"}</div>`;
+  html += `<div class="agent-name-display">${agentName}</div>`;
+  html += `<h1 style="font-size:20px;font-weight:700;margin-bottom:4px">${copy.score.finalTitle}</h1>`;
+  html += `<div class="big-score ${passed ? "pass" : "fail"}">${finalPct}%</div>`;
+  html += `<p class="subtitle">${copy.score.summary(totalFixed, totalErrors, `${averageMinutes}:${averageRemainder}`)}</p>`;
+  html += `<div class="stats-row">`;
+  html += `<div class="stat-box"><div class="num">${orderResults.length}</div><div class="lbl">${copy.score.stats[0]}</div></div>`;
+  html += `<div class="stat-box"><div class="num numeric-ltr">${averageMinutes}:${averageRemainder}</div><div class="lbl">${copy.score.stats[1]}</div></div>`;
+  html += `<div class="stat-box"><div class="num">${totalFixed}</div><div class="lbl">${copy.score.stats[2]}</div></div>`;
+  html += `<div class="stat-box"><div class="num">${totalErrors - totalFixed}</div><div class="lbl">${copy.score.stats[3]}</div></div>`;
+  html += `</div>`;
+  html += `<div class="order-breakdown"><h4>${copy.score.details}</h4>${breakdown}</div>`;
+  html += `<div class="certificate-box ${passed ? "certified" : "not-certified"}"><h3>${passed ? copy.score.pass : copy.score.fail}</h3><p>${passed ? copy.score.passDescription : copy.score.failDescription}</p></div>`;
+  html += `<div class="save-status" id="save-status"></div>`;
+  html += `<button class="btn-restart" onclick="restart()">${copy.restart}</button>`;
+  document.getElementById("final-card").innerHTML = html;
+  document.getElementById("final-overlay").classList.add("open");
+
+  // Submit results to Google Sheets
+  submitResultsToSheet({
+    agentName: agentName,
+    module: 'confirmation',
+    language: sandboxLang,
+    finalScore: finalPct,
+    passed: passed,
+    totalCorrect: totalFixed,
+    totalChecks: totalErrors,
+    totalSeconds: totalSeconds,
+    avgSeconds: Math.round(totalSeconds / orderResults.length),
+    scenarioCount: orderResults.length,
+    trapsFell: 0,
+    trapsTotal: 0,
+    detailsJson: JSON.stringify(orderResults)
+  });
+
+  document.getElementById("progress-fill").style.width = "100%";
+  for (let i = 1; i <= ORDERS.length; i++) {
+    document.getElementById(`step-${i}`).className = "progress-step done";
+  }
+}
+
+// SUBMIT RESULTS TO API
+function submitResultsToSheet(data) {
+  if (!API_URL) {
+    console.log('No API URL configured. Results:', data);
+    return;
+  }
+
+  const saveEl = document.getElementById('save-status');
+  const copy = sandboxCopy();
+  saveEl.className = 'save-status saving';
+  saveEl.textContent = copy.save.saving;
+
+  fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  })
+  .then(r => r.json())
+  .then(result => {
+    if (result.success) {
+      saveEl.className = 'save-status saved';
+      saveEl.textContent = copy.save.saved;
+    } else {
+      saveEl.className = 'save-status error';
+      saveEl.textContent = copy.save.error;
+    }
+  })
+  .catch(() => {
+    saveEl.className = 'save-status error';
+    saveEl.textContent = copy.save.error;
+  });
+}
+
+function restart() {
+  orderResults = [];
+  currentOrder = 0;
+  document.getElementById("final-overlay").classList.remove("open");
+  document.getElementById("scoring-overlay").classList.remove("open");
+  loadOrder(0);
+}
+
+document.addEventListener("click", event => {
+  if (!event.target.closest(".lang-switcher")) {
+    sandboxCloseLanguageMenus();
+  }
+});
+
+document.getElementById("timer").classList.add("numeric-ltr");
+sandboxRenderHistory();
+document.getElementById('login-password').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') handleLogin();
+});
+setLanguage("fr");
+</script>
+
+</body>
+</html>

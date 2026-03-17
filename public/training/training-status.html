@@ -1,0 +1,1813 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orderdz | Formation Statut</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
+
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  :root {
+    --nav-bg: #1e293b;
+    --page-bg: #f1f5f9;
+    --card-bg: #ffffff;
+    --border: #e2e8f0;
+    --text: #1e293b;
+    --text-secondary: #64748b;
+    --blue: #0052FF;
+    --blue-dark: #0041CC;
+    --green: #16a34a;
+    --green-light: #dcfce7;
+    --red: #dc2626;
+    --red-light: #fee2e2;
+    --amber: #f59e0b;
+    --amber-light: #fef3c7;
+    --amber-dark: #b45309;
+    --training-banner: #7c3aed;
+    --navy: #1e293b;
+  }
+
+  body {
+    font-family: 'Source Sans 3', system-ui, -apple-system, sans-serif;
+    background: var(--page-bg);
+    color: var(--text);
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ===== TRAINING BANNER ===== */
+  .training-banner {
+    background: var(--training-banner);
+    color: white;
+    text-align: center;
+    padding: 10px 16px;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .training-banner .pulse-dot {
+    width: 10px; height: 10px;
+    background: #a78bfa;
+    border-radius: 50%;
+    animation: pulse-ring 1.5s infinite;
+  }
+  @keyframes pulse-ring {
+    0% { box-shadow: 0 0 0 0 rgba(167,139,250,0.6); }
+    70% { box-shadow: 0 0 0 8px rgba(167,139,250,0); }
+    100% { box-shadow: 0 0 0 0 rgba(167,139,250,0); }
+  }
+
+  /* ===== NAV BAR ===== */
+  .nav-bar {
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    height: 52px;
+    gap: 28px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .nav-logo { font-weight: 700; font-size: 20px; color: var(--text); font-style: italic; margin-right: 8px; }
+  .nav-logo span { color: var(--blue); }
+  .nav-link { font-size: 14px; color: var(--text-secondary); text-decoration: none; padding: 14px 0; border-bottom: 2px solid transparent; transition: all 0.15s; white-space: nowrap; }
+  .nav-link:hover, .nav-link.active { color: var(--blue); border-bottom-color: var(--blue); }
+  .nav-spacer { flex: 1; }
+
+  /* ===== PROGRESS BAR ===== */
+  .progress-strip { background: var(--card-bg); border-bottom: 1px solid var(--border); padding: 16px 32px; display: flex; align-items: center; gap: 20px; }
+  .progress-label { font-size: 14px; font-weight: 600; color: var(--text); white-space: nowrap; }
+  .progress-track { flex: 1; height: 6px; background: #e2e8f0; border-radius: 999px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--training-banner); border-radius: 999px; transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+  .progress-count { font-size: 14px; font-weight: 600; color: var(--training-banner); white-space: nowrap; }
+  .timer-box { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+
+  /* ===== MAIN CONTENT ===== */
+  .main-content { padding: 20px 32px 60px; }
+
+  /* ===== PAGE HEADER ===== */
+  .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .page-header h2 { font-size: 22px; font-weight: 700; }
+  .btn-filter {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px;
+    padding: 8px 14px; font-size: 13px; color: var(--text-secondary);
+    cursor: default; font-family: inherit;
+  }
+
+  /* ===== STATUS FILTER TABS ===== */
+  .status-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; padding: 8px 0; }
+  .status-tab {
+    font-size: 12px; padding: 5px 12px; border-radius: 6px;
+    background: #f8fafc; border: 1px solid var(--border); color: var(--text-secondary);
+    cursor: default; font-family: inherit; display: inline-flex; align-items: center; gap: 4px;
+  }
+  .status-tab.active-tab { background: var(--blue); color: white; border-color: var(--blue); }
+  .status-tab .tab-count { font-size: 10px; background: rgba(0,0,0,0.1); padding: 1px 5px; border-radius: 4px; }
+  .status-tab.active-tab .tab-count { background: rgba(255,255,255,0.25); }
+
+  /* ===== SEARCH BAR ===== */
+  .search-bar {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px;
+    padding: 10px 14px; margin-bottom: 16px;
+  }
+  .search-bar svg { width: 16px; height: 16px; color: var(--text-secondary); flex-shrink: 0; }
+  .search-bar input {
+    border: none; outline: none; background: transparent; font-size: 14px;
+    font-family: inherit; color: var(--text); flex: 1;
+  }
+
+  /* ===== CALL CONTEXT ===== */
+  .call-context {
+    background: #ede9fe; border: 1px solid #c4b5fd; border-radius: 10px;
+    padding: 20px 24px; display: none; gap: 14px; align-items: flex-start;
+    margin-bottom: 16px;
+  }
+  .call-context.visible { display: flex; }
+  .call-context .icon-box {
+    width: 42px; height: 42px; background: var(--training-banner); border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 20px; flex-shrink: 0;
+  }
+  .call-context h3 { font-size: 14px; font-weight: 600; color: #5b21b6; margin-bottom: 4px; }
+  .call-context .call-text {
+    font-size: 15px; color: #4c1d95; line-height: 1.6; font-weight: 500;
+    background: white; border: 1px solid #ddd6fe; border-radius: 8px;
+    padding: 12px 16px; margin-top: 8px; font-style: italic;
+  }
+  .call-context .call-hint { font-size: 12px; color: #7c3aed; margin-top: 8px; font-weight: 500; }
+  .btn-validate {
+    background: var(--green); color: white; border: none;
+    padding: 5px 10px; border-radius: 6px;
+    font-size: 12px; font-weight: 600; cursor: pointer;
+    font-family: inherit; transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .btn-validate:hover { background: #15803d; transform: translateY(-1px); box-shadow: 0 2px 8px rgba(22,163,74,0.3); }
+
+  /* ===== ORDERS TABLE ===== */
+  .orders-table {
+    width: 100%; background: var(--card-bg); border-radius: 8px; overflow: hidden;
+    box-shadow: rgba(0,0,0,0.06) 0px 2px 8px; border: 1px solid var(--border);
+    border-collapse: separate; border-spacing: 0;
+  }
+  .orders-table thead th {
+    padding: 12px 14px; background: #f8fafc; border-bottom: 2px solid var(--border);
+    font-size: 12px; font-weight: 600; color: var(--text-secondary);
+    text-transform: uppercase; letter-spacing: 0.3px; text-align: left; white-space: nowrap;
+  }
+  html[dir="rtl"] .orders-table thead th { text-align: right; }
+  .orders-table tbody tr {
+    border-bottom: 1px solid #f1f5f9; cursor: pointer; transition: background 0.15s;
+  }
+  .orders-table tbody tr:hover { background: #f8fafc; }
+  .orders-table tbody tr.active-row { background: #ede9fe; }
+  .orders-table tbody tr.done-row { background: #f0fdf4; }
+  .orders-table tbody tr.done-row:hover { background: #dcfce7; }
+  .orders-table tbody td {
+    padding: 12px 14px; font-size: 13px; vertical-align: middle;
+  }
+
+  .order-id-cell { font-weight: 600; color: var(--blue); }
+  .order-date-cell { font-size: 11px; color: var(--text-secondary); font-weight: 400; display: block; }
+  .seller-cell .seller-name { font-weight: 500; font-size: 12px; }
+  .seller-cell .store-name { font-size: 11px; color: var(--text-secondary); display: block; }
+  .client-cell .client-name { font-weight: 500; }
+  .client-cell .client-phone { font-size: 12px; color: var(--text-secondary); display: block; }
+  .product-cell { font-size: 12px; }
+  .shipping-cell { font-size: 12px; color: var(--text-secondary); }
+  .total-cell { font-weight: 600; }
+
+  /* ===== STATUS DROPDOWN ===== */
+  .status-dropdown {
+    width: 100%; min-width: 140px;
+    padding: 6px 28px 6px 10px; border: 1px solid transparent; border-radius: 6px;
+    font-size: 12px; font-weight: 600; color: white; cursor: pointer; font-family: inherit;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M5 7L1 3h8z' fill='white'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 8px center;
+    transition: all 0.2s;
+  }
+  .status-dropdown:disabled { opacity: 0.7; cursor: not-allowed; }
+  .status-dropdown option { color: white; font-weight: 600; padding: 6px 10px; }
+
+  /* ===== ACTION BUTTONS ===== */
+  .actions-cell { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+  .action-btn {
+    width: 30px; height: 30px; border: none; border-radius: 6px;
+    color: white; font-size: 14px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; transition: opacity 0.15s;
+  }
+  .action-btn:hover { opacity: 0.85; }
+  .action-btn.yellow { background: #ca8a04; }
+  .action-btn.blue-btn { background: #2563eb; }
+  .done-icon { color: var(--green); font-size: 18px; font-weight: 700; margin-left: 4px; }
+
+  /* ===== PREVIOUS ORDERS BADGE ===== */
+  .previous-orders-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: #2563eb;
+    cursor: pointer;
+    margin-top: 3px;
+    font-weight: 500;
+  }
+  .previous-orders-link:hover {
+    text-decoration: underline;
+    color: #1d4ed8;
+  }
+  .previous-orders-link .badge-icon { font-size: 13px; }
+
+  /* ===== PREVIOUS ORDERS TABLE (inside modal) ===== */
+  .prev-orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .prev-orders-table th {
+    background: #f8fafc;
+    border-bottom: 2px solid var(--border);
+    padding: 10px 14px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    text-align: left;
+  }
+  html[dir="rtl"] .prev-orders-table th { text-align: right; }
+  .prev-orders-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  .prev-status-badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: white;
+  }
+
+  /* ===== MODAL (Comment / Report / Motif / PrevOrders) ===== */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(2px);
+    z-index: 200; align-items: flex-start; justify-content: center; padding-top: 80px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: white; border-radius: 12px; width: 90%; max-width: 520px;
+    box-shadow: 0 24px 48px rgba(0,0,0,0.15);
+    animation: modal-in 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  @keyframes modal-in { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: translateY(0); } }
+  .modal-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px 24px; border-bottom: 1px solid var(--border);
+  }
+  .modal-header h3 { font-size: 16px; font-weight: 700; }
+  .modal-close {
+    width: 28px; height: 28px; border: none; background: transparent;
+    font-size: 20px; cursor: pointer; color: var(--text-secondary); border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .modal-close:hover { background: #f1f5f9; }
+  .modal-body { padding: 20px 24px; }
+  .modal-body textarea, .modal-body input, .modal-body select {
+    width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px;
+    font-size: 14px; font-family: inherit; color: var(--text); background: #f8fafc;
+    transition: border-color 0.2s;
+  }
+  .modal-body textarea:focus, .modal-body input:focus, .modal-body select:focus {
+    border-color: var(--blue); background: white; outline: none;
+    box-shadow: 0 0 0 3px rgba(0,82,255,0.1);
+  }
+  .modal-body textarea { min-height: 80px; resize: vertical; }
+  .modal-body label { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .modal-body .form-group { margin-bottom: 14px; }
+  .modal-body .form-group:last-child { margin-bottom: 0; }
+  .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); text-align: right; }
+  html[dir="rtl"] .modal-footer { text-align: left; }
+  .btn-modal-submit {
+    background: var(--blue); color: white; border: none; padding: 10px 24px;
+    border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit;
+  }
+  .btn-modal-submit:hover { background: var(--blue-dark); }
+  .btn-modal-cancel {
+    background: transparent; color: var(--text-secondary); border: 1px solid var(--border);
+    padding: 10px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;
+    font-family: inherit; margin-right: 8px;
+  }
+  html[dir="rtl"] .btn-modal-cancel { margin-right: 0; margin-left: 8px; }
+
+  /* ===== SCORING OVERLAY ===== */
+  .scoring-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(4px); z-index: 300; align-items: center; justify-content: center; }
+  .scoring-overlay.open { display: flex; }
+  .scoring-card { background: white; border-radius: 16px; width: 90%; max-width: 560px; max-height: 90vh; overflow-y: auto; box-shadow: 0 32px 64px rgba(0,0,0,0.2); animation: modal-in 0.35s cubic-bezier(0.22, 1, 0.36, 1); }
+  .scoring-header { padding: 32px 32px 20px; text-align: center; }
+  .scoring-header .score-circle { width: 96px; height: 96px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 700; margin-bottom: 12px; }
+  .score-circle.good { background: var(--green-light); color: var(--green); border: 3px solid var(--green); }
+  .score-circle.medium { background: var(--amber-light); color: var(--amber-dark); border: 3px solid var(--amber); }
+  .score-circle.bad { background: var(--red-light); color: var(--red); border: 3px solid var(--red); }
+  .scoring-header h3 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .scoring-header p { font-size: 14px; color: var(--text-secondary); }
+  .scoring-details { padding: 0 32px 24px; }
+  .score-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
+  .score-item:last-child { border-bottom: none; }
+  .score-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+  .score-icon.correct { background: var(--green-light); color: var(--green); }
+  .score-icon.wrong { background: var(--red-light); color: var(--red); }
+  .score-item .field-name { flex: 1; }
+  .score-item .correction { font-size: 12px; color: var(--red); max-width: 200px; text-align: right; }
+  html[dir="rtl"] .score-item .correction { text-align: left; }
+  .scoring-footer { padding: 16px 32px 28px; text-align: center; }
+  .btn-next { background: var(--training-banner); color: white; border: none; padding: 12px 40px; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+  .btn-next:hover { background: #6d28d9; transform: translateY(-1px); }
+
+  /* ===== EXPLANATION BOX ===== */
+  .explanation-box {
+    margin: 0 0 8px; padding: 14px 16px;
+    background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px;
+    font-size: 13px; color: #1e40af; line-height: 1.6;
+  }
+  .explanation-box strong { color: #1e3a8a; }
+
+  /* ===== FINAL SCORECARD ===== */
+  .final-card { text-align: center; padding: 48px 40px; max-width: 620px; }
+  .final-card .big-score { font-size: 72px; font-weight: 700; line-height: 1; margin: 12px 0 4px; }
+  .final-card .big-score.pass { color: var(--green); }
+  .final-card .big-score.fail { color: var(--red); }
+  .final-card .subtitle { font-size: 14px; color: var(--text-secondary); margin-bottom: 28px; }
+  .stats-row { display: flex; gap: 16px; justify-content: center; margin-bottom: 28px; flex-wrap: wrap; }
+  .stat-box { background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 16px 22px; text-align: center; min-width: 100px; }
+  .stat-box .num { font-size: 24px; font-weight: 700; color: var(--text); }
+  .stat-box .lbl { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+  .order-breakdown { text-align: left; margin: 0 auto 28px; max-width: 440px; }
+  .order-breakdown h4 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary); margin-bottom: 10px; }
+  .breakdown-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
+  .breakdown-row .order-label { font-weight: 500; flex: 1; }
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+  .badge.pass { background: var(--green-light); color: var(--green); }
+  .badge.fail { background: var(--red-light); color: var(--red); }
+  .badge.partial { background: var(--amber-light); color: var(--amber-dark); }
+  .certificate-box { border: 2px dashed var(--border); border-radius: 12px; padding: 24px; margin-top: 8px; }
+  .certificate-box.certified { border-color: var(--green); background: #f0fdf4; }
+  .certificate-box.not-certified { border-color: var(--red); background: #fef2f2; }
+  .certificate-box h3 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .certificate-box p { font-size: 13px; color: var(--text-secondary); }
+  .btn-restart { background: var(--text); color: white; border: none; padding: 12px 36px; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; margin-top: 24px; transition: all 0.15s; }
+  .btn-restart:hover { background: #334155; }
+
+  /* ===== WELCOME SCREEN ===== */
+  .welcome-screen { min-height: 100vh; display: flex; flex-direction: column; }
+  .welcome-body { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px; }
+  .welcome-card { background: white; border-radius: 16px; padding: 48px; max-width: 620px; width: 100%; text-align: center; border: 1px solid var(--border); box-shadow: 0 4px 24px rgba(0,0,0,0.04); }
+  .welcome-card .icon-big { width: 72px; height: 72px; background: #ede9fe; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 32px; margin-bottom: 20px; }
+  .welcome-card h1 { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
+  .welcome-card .desc { font-size: 15px; color: var(--text-secondary); margin-bottom: 28px; line-height: 1.6; }
+  .welcome-info { text-align: left; background: #f8fafc; border-radius: 10px; padding: 20px; margin-bottom: 28px; }
+  .welcome-info li { font-size: 14px; color: var(--text); padding: 5px 0; list-style: none; display: flex; gap: 8px; }
+  .btn-start { background: var(--training-banner); color: white; border: none; padding: 14px 48px; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+  .btn-start:hover { background: #6d28d9; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(124,58,237,0.3); }
+
+  /* ===== LANGUAGE SWITCHER ===== */
+  .lang-switcher { position: relative; }
+  .lang-trigger {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: #f8fafc; border: 1px solid var(--border); border-radius: 999px;
+    padding: 7px 12px; font-size: 13px; color: var(--text); cursor: pointer; font-family: inherit;
+  }
+  .lang-trigger:hover { background: #eef2ff; border-color: #c7d2fe; }
+  .lang-menu {
+    display: none; position: absolute; top: calc(100% + 8px); right: 0; min-width: 150px;
+    background: white; border: 1px solid var(--border); border-radius: 12px;
+    box-shadow: 0 16px 40px rgba(15,23,42,0.12); padding: 6px; z-index: 70;
+  }
+  .lang-menu.open { display: block; }
+  .lang-option {
+    width: 100%; border: none; background: transparent; text-align: left;
+    padding: 9px 10px; border-radius: 8px; font-size: 13px; cursor: pointer;
+    color: var(--text); font-family: inherit;
+  }
+  .lang-option:hover { background: #f8fafc; }
+  .lang-option.active { background: #eff6ff; color: var(--blue); font-weight: 600; }
+
+  /* ===== ALL-DONE BANNER ===== */
+  .all-done-banner {
+    display: none; background: var(--green-light); border: 1px solid #86efac; border-radius: 10px;
+    padding: 16px 24px; margin-bottom: 16px; text-align: center;
+  }
+  .all-done-banner.visible { display: block; }
+  .all-done-banner h3 { color: var(--green); font-size: 16px; margin-bottom: 8px; }
+  .btn-final {
+    background: var(--green); color: white; border: none; padding: 12px 36px;
+    border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit;
+  }
+  .btn-final:hover { background: #15803d; }
+
+  /* ===== RTL SUPPORT ===== */
+  html[dir="rtl"] body { direction: rtl; }
+  html[dir="rtl"] .nav-logo { margin-right: 0; margin-left: 8px; }
+  html[dir="rtl"] .lang-menu { right: auto; left: 0; }
+  html[dir="rtl"] .lang-option,
+  html[dir="rtl"] .welcome-info,
+  html[dir="rtl"] .scoring-details,
+  html[dir="rtl"] .order-breakdown,
+  html[dir="rtl"] .modal-body textarea,
+  html[dir="rtl"] .modal-body input,
+  html[dir="rtl"] .modal-body select,
+  html[dir="rtl"] .modal-body label { text-align: right; }
+  html[dir="rtl"] .status-dropdown {
+    background-position: left 8px center;
+    padding: 6px 10px 6px 28px;
+  }
+  html[dir="rtl"] .modal-body select {
+    background-position: left 12px center;
+    padding-right: 12px; padding-left: 32px;
+  }
+  html[dir="rtl"] .call-context,
+  html[dir="rtl"] .breakdown-row,
+  html[dir="rtl"] .score-item,
+  html[dir="rtl"] .stats-row,
+  html[dir="rtl"] .actions-cell { direction: rtl; }
+  html[dir="rtl"] .done-icon { margin-left: 0; margin-right: 4px; }
+
+  .hidden { display: none !important; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 1024px) {
+    .orders-table { display: block; overflow-x: auto; }
+    .main-content { padding: 16px; }
+    .call-context { margin: 0 0 12px; }
+    .progress-strip { padding: 12px 16px; flex-wrap: wrap; }
+    .final-card { padding: 32px 20px; }
+  }
+
+  /* ===== LOGIN SCREEN ===== */
+  .login-screen { min-height: 100vh; display: flex; flex-direction: column; }
+  .login-body { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px; }
+  .login-card { background: white; border-radius: 16px; padding: 48px; max-width: 440px; width: 100%; text-align: center; border: 1px solid var(--border); box-shadow: 0 4px 24px rgba(0,0,0,0.04); }
+  .login-card .icon-big { width: 72px; height: 72px; background: #ede9fe; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 32px; margin-bottom: 20px; }
+  .login-card h1 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+  .login-card .desc { font-size: 14px; color: var(--text-secondary); margin-bottom: 24px; }
+  .login-field { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 10px; font-size: 14px; font-family: inherit; color: var(--text); background: #f8fafc; outline: none; transition: border-color 0.15s, box-shadow 0.15s; margin-bottom: 12px; }
+  .login-field:focus { border-color: var(--training-banner); box-shadow: 0 0 0 3px rgba(124,58,237,0.12); background: white; }
+  .login-error { color: var(--red); font-size: 13px; font-weight: 500; margin-bottom: 12px; display: none; }
+  .login-error.visible { display: block; }
+  .btn-login { background: var(--training-banner); color: white; border: none; padding: 14px 48px; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s; width: 100%; }
+  .btn-login:hover { background: #6d28d9; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(124,58,237,0.3); }
+  .save-status { text-align: center; padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; margin-top: 16px; display: none; }
+  .save-status.saving { display: block; background: #ede9fe; color: #7c3aed; }
+  .save-status.saved { display: block; background: var(--green-light); color: var(--green); }
+  .save-status.save-error { display: block; background: var(--red-light); color: var(--red); }
+  .agent-name-display { font-size: 16px; font-weight: 600; color: var(--training-banner); margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<!-- ==================== LOGIN SCREEN ==================== -->
+<div id="login-screen" class="login-screen">
+  <div class="training-banner">
+    <span class="pulse-dot"></span>
+    <span id="login-banner-text">Mode Formation &mdash; Statut des commandes</span>
+    <span class="pulse-dot"></span>
+  </div>
+  <div class="nav-bar" id="login-nav"></div>
+  <div class="login-body">
+    <div class="login-card">
+      <div class="icon-big">&#128100;</div>
+      <h1 id="login-title">Connexion Formation</h1>
+      <p class="desc" id="login-desc">Entrez votre nom et le mot de passe fourni par votre formateur.</p>
+      <input type="text" class="login-field" id="login-name" placeholder="Votre nom complet" autocomplete="off">
+      <input type="password" class="login-field" id="login-password" placeholder="Mot de passe" autocomplete="off">
+      <div class="login-error" id="login-error"></div>
+      <button class="btn-login" id="btn-login" onclick="handleLogin()">Se connecter</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== WELCOME SCREEN ==================== -->
+<div id="welcome-screen" class="welcome-screen hidden">
+  <div class="training-banner">
+    <span class="pulse-dot"></span>
+    Mode Formation &mdash; Statut des commandes
+    <span class="pulse-dot"></span>
+  </div>
+  <div class="nav-bar">
+    <span class="nav-logo">Order<span>*</span></span>
+    <a class="nav-link" href="#">Statistiques</a>
+    <a class="nav-link active" href="#">Commandes</a>
+    <a class="nav-link" href="#">Colis</a>
+    <a class="nav-link" href="#">Paiements</a>
+    <a class="nav-link" href="#">Transactions</a>
+    <a class="nav-link" href="#">Remarques</a>
+    <a class="nav-link" href="#">Applications</a>
+  </div>
+  <div class="welcome-body">
+    <div class="welcome-card">
+      <div class="icon-big">&#128203;</div>
+      <h1 id="welcome-title">Formation : Statut des commandes</h1>
+      <p class="desc" id="welcome-desc">Vous allez traiter 10 sc&eacute;narios de pratique. Apr&egrave;s chaque appel, vous devez choisir le bon statut et compl&eacute;ter les actions requises (commentaire, date, motif).</p>
+      <ul class="welcome-info" id="welcome-bullets">
+        <li>&#128222; 10 sc&eacute;narios bas&eacute;s sur des appels r&eacute;els</li>
+        <li>&#127919; Choisissez le bon statut dans la liste d&eacute;roulante</li>
+        <li>&#128221; Ajoutez un commentaire quand c'est n&eacute;cessaire</li>
+        <li>&#128197; Remplissez la date et les d&eacute;tails si report&eacute;</li>
+        <li>&#10060; S&eacute;lectionnez un motif si la commande est annul&eacute;e</li>
+        <li>&#128722; V&eacute;rifiez les commandes pr&eacute;c&eacute;dentes quand le badge appara&icirc;t</li>
+        <li>&#128200; Score final : il faut 90% pour &ecirc;tre certifi&eacute;</li>
+      </ul>
+      <button class="btn-start" id="btn-start" onclick="startTraining()">Commencer la formation</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TRAINING SCREEN ==================== -->
+<div id="training-screen" class="hidden">
+  <div class="training-banner" id="training-banner-text">
+    <span class="pulse-dot"></span>
+    Mode Formation &mdash; Aucune action r&eacute;elle ne sera effectu&eacute;e
+    <span class="pulse-dot"></span>
+  </div>
+  <div class="nav-bar" id="training-nav"></div>
+
+  <!-- Progress -->
+  <div class="progress-strip">
+    <span class="progress-label" id="progress-label">Formation Statut</span>
+    <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <span class="progress-count" id="progress-count">0/10</span>
+    <div class="timer-box">&#9201; <span id="timer">00:00</span></div>
+  </div>
+
+  <div class="main-content">
+    <!-- Page header -->
+    <div class="page-header">
+      <h2 id="page-title">Commandes (10)</h2>
+      <div class="btn-filter" id="btn-filter">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>
+        <span>Filtrer</span>
+      </div>
+    </div>
+
+    <!-- Status tabs -->
+    <div class="status-tabs" id="status-tabs"></div>
+
+    <!-- Search bar -->
+    <div class="search-bar">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="search-input" placeholder="Search" disabled>
+    </div>
+
+    <!-- Call context (shown when order selected) -->
+    <div class="call-context" id="call-context">
+      <div class="icon-box">&#128222;</div>
+      <div style="flex:1">
+        <h3 id="scenario-title"></h3>
+        <div class="call-text" id="call-text"></div>
+        <div class="call-hint" id="call-hint"></div>
+      </div>
+    </div>
+
+    <!-- All done banner -->
+    <div class="all-done-banner" id="all-done-banner">
+      <h3 id="all-done-text">Tous les sc&eacute;narios sont compl&eacute;t&eacute;s !</h3>
+      <button class="btn-final" id="btn-see-final" onclick="showFinalScore()">Voir le r&eacute;sultat final</button>
+    </div>
+
+    <!-- Orders table -->
+    <table class="orders-table" id="orders-table">
+      <thead><tr id="table-header"></tr></thead>
+      <tbody id="table-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ==================== COMMENT MODAL ==================== -->
+<div class="modal-overlay" id="comment-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="comment-modal-title">Commentaires</h3>
+      <button class="modal-close" onclick="closeCommentModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label id="comment-label">Votre commentaire</label>
+        <textarea id="input-comment" placeholder="&Eacute;crire un commentaire..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-modal-submit" id="btn-add-comment" onclick="saveComment()">Ajouter un commentaire</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== REPORT MODAL ==================== -->
+<div class="modal-overlay" id="report-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="report-modal-title">&#128197; Report de l'ordre</h3>
+      <button class="modal-close" onclick="closeReportModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label id="report-date-label">Date du report</label>
+        <input type="date" id="input-report-date">
+      </div>
+      <div class="form-group">
+        <label id="report-details-label">D&eacute;tails</label>
+        <textarea id="input-report-details" rows="2" placeholder="D&eacute;tails du report..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-modal-cancel" onclick="closeReportModal()">Annuler</button>
+      <button class="btn-modal-submit" id="btn-save-report" onclick="saveReport()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MOTIF MODAL ==================== -->
+<div class="modal-overlay" id="motif-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="motif-modal-title">&#10060; Motif de l'annulation</h3>
+      <button class="modal-close" onclick="closeMotifModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label id="motif-label">Raison de l'annulation</label>
+        <select id="input-motif">
+          <option value="">&mdash; Choisir un motif &mdash;</option>
+          <option value="changed-mind">Le client a chang&eacute; d'avis</option>
+          <option value="expensive">Le prix est &eacute;lev&eacute;</option>
+          <option value="found-cheaper">Le client a trouv&eacute; moins cher</option>
+          <option value="delivery-delay">D&eacute;lai de livraison trop long</option>
+          <option value="not-available">Produit non disponible</option>
+          <option value="ordered-by-mistake">Commande par erreur</option>
+          <option value="other">Autre</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-modal-cancel" onclick="closeMotifModal()">Annuler</button>
+      <button class="btn-modal-submit" id="btn-save-motif" onclick="saveMotif()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PREVIOUS ORDERS MODAL ==================== -->
+<div class="modal-overlay" id="prev-orders-modal">
+  <div class="modal-box" style="max-width:620px">
+    <div class="modal-header">
+      <h3 id="prev-orders-title">Commandes pr&eacute;c&eacute;dentes</h3>
+      <button class="modal-close" onclick="closePreviousOrdersModal()">&times;</button>
+    </div>
+    <div class="modal-body" id="prev-orders-body" style="padding:0;overflow-x:auto">
+    </div>
+    <div class="modal-footer">
+      <button class="btn-modal-submit" id="prev-orders-close-btn" onclick="closePreviousOrdersModal()">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCORING OVERLAY ==================== -->
+<div class="scoring-overlay" id="scoring-overlay">
+  <div class="scoring-card" id="scoring-card"></div>
+</div>
+
+<!-- ==================== FINAL OVERLAY ==================== -->
+<div class="scoring-overlay" id="final-overlay">
+  <div class="scoring-card">
+    <div class="final-card" id="final-card"></div>
+  </div>
+</div>
+
+<script>
+// ===================================================================
+// I18N DATA
+// ===================================================================
+var currentLang = 'fr';
+var TRAINING_PASSWORD = 'training2026';
+var API_URL = '/api/training/results';
+var agentName = '';
+
+var STATUS_I18N = {
+  fr: {
+    title: "Orderdz | Formation Statut",
+    langCurrent: "Français",
+    langMenu: { fr: "Français", ar: "العربية" },
+    nav: ["Statistiques", "Commandes", "Colis", "Paiements", "Transactions", "Remarques", "Applications"],
+    welcomeBanner: "Mode Formation — Statut des commandes",
+    trainingBanner: "Mode Formation — Aucune action réelle ne sera effectuée",
+    welcomeTitle: "Formation : Statut des commandes",
+    welcomeDescription: "Vous allez traiter 10 scénarios de pratique. Après chaque appel, vous devez choisir le bon statut et compléter les actions requises (commentaire, date, motif).",
+    welcomeBullets: [
+      "📞 10 scénarios basés sur des appels réels",
+      "🎯 Choisissez le bon statut dans la liste déroulante",
+      "📝 Ajoutez un commentaire quand c'est nécessaire",
+      "📅 Remplissez la date et les détails si reporté",
+      "❌ Sélectionnez un motif si la commande est annulée",
+      "🛒 Vérifiez les commandes précédentes quand le badge apparaît",
+      "📈 Score final : il faut 90% pour être certifié"
+    ],
+    startTraining: "Commencer la formation",
+    progressLabel: "Formation Statut",
+    pageTitle: function(c){ return "Commandes ("+c+")"; },
+    filterBtn: "Filtrer",
+    searchPlaceholder: "Rechercher...",
+    tableHeaders: ["Commande", "Vendeur / Boutique", "Client", "Produits", "Livraison", "Total", "Statut", "Actions"],
+    sellerLabel: "FORMATION",
+    storeLabel: "TRAINING",
+    shippingLabel: "Domicile",
+    commentModalTitle: "Commentaires",
+    commentLabel: "Votre commentaire",
+    commentPlaceholder: "Écrire un commentaire...",
+    addComment: "Ajouter un commentaire",
+    reportModalTitle: "📅 Report de l'ordre",
+    reportDateLabel: "Date du report",
+    reportDetailsLabel: "Détails",
+    reportDetailsPlaceholder: "Détails du report...",
+    reportSave: "Enregistrer",
+    reportCancel: "Annuler",
+    motifModalTitle: "❌ Motif de l'annulation",
+    motifLabel: "Raison de l'annulation",
+    motifChoose: "— Choisir un motif —",
+    motifOptions: {
+      "changed-mind": "Le client a changé d'avis",
+      "expensive": "Le prix est élevé",
+      "found-cheaper": "Le client a trouvé moins cher",
+      "delivery-delay": "Délai de livraison trop long",
+      "not-available": "Produit non disponible",
+      "ordered-by-mistake": "Commande par erreur",
+      "other": "Autre"
+    },
+    motifSave: "Enregistrer",
+    motifCancel: "Annuler",
+    submitBtn: "✓ Valider cette commande",
+    restartBtn: "Recommencer la formation",
+    explanationLabel: "Explication :",
+    nextBtn: "OK, suivant →",
+    finalBtn: "Voir le résultat final",
+    allDoneText: "Tous les scénarios sont complétés !",
+    allDoneBtn: "Voir le résultat final",
+    selectOrderHint: "Cliquez sur une commande pour voir le scénario",
+    badgeTextSingular: "commande précédente",
+    badgeTextPlural: "commandes précédentes",
+    prevOrdersTitle: "Commandes précédentes",
+    prevOrdersHeaders: ["Commande", "Date", "Produit", "Total", "Statut"],
+    prevOrdersClose: "Fermer",
+    badgeChecked: "✓ Vous avez vérifié les commandes précédentes",
+    badgeNotChecked: "⚠ Conseil : cliquez toujours sur le badge « commandes précédentes » pour vérifier avant de décider",
+    scoring: {
+      perfect: "Parfait !",
+      excellent: "Excellent !",
+      medium: "Peut mieux faire",
+      bad: "Insuffisant",
+      summary: function(c,t,time){ return c+"/"+t+" correct — Temps : "+time; },
+      finalTitle: "Résultat Final — Statut des commandes",
+      correctAnswers: function(c,t){ return c+"/"+t+" réponses correctes"; },
+      stats: ["Scénarios", "Temps moyen", "Corrects", "Badges vérifiés"],
+      details: "Détails par scénario",
+      pass: "✓ Certification réussie",
+      fail: "✗ Certification non réussie",
+      passDesc: "Cet agent maîtrise le choix des statuts pour traiter des commandes réelles.",
+      failDesc: "Cet agent doit refaire la formation. Score minimum requis : 90%."
+    },
+    corrections: {
+      commentRequired: "Un commentaire est obligatoire",
+      dateRequired: "Une date est obligatoire",
+      detailsRequired: "Les détails sont obligatoires",
+      motifRequired: "Un motif est obligatoire",
+      added: "Ajouté",
+      missing: "Manquant",
+      addedPlural: "Ajoutés",
+      missingPlural: "Manquants",
+      missingFem: "Manquante"
+    },
+    login: {
+      banner: "Mode Formation — Statut des commandes",
+      title: "Connexion Formation",
+      desc: "Entrez votre nom et le mot de passe fourni par votre formateur.",
+      namePlaceholder: "Votre nom complet",
+      passwordPlaceholder: "Mot de passe",
+      button: "Se connecter",
+      errorEmpty: "Veuillez entrer votre nom",
+      errorPassword: "Mot de passe incorrect"
+    },
+    save: {
+      saving: "Enregistrement des résultats...",
+      saved: "Résultats enregistrés avec succès !",
+      error: "Impossible d'enregistrer. Prenez une capture d'écran de vos résultats."
+    }
+  },
+  ar: {
+    title: "Orderdz | تدريب الحالة",
+    langCurrent: "العربية",
+    langMenu: { fr: "الفرنسية", ar: "العربية" },
+    nav: ["الإحصائيات", "الطلبات", "الطرود", "المدفوعات", "المعاملات", "ملاحظات", "التطبيقات"],
+    welcomeBanner: "وضع التدريب — حالة الطلبيات",
+    trainingBanner: "وضع التدريب — ما راح يصرا حتى إجراء حقيقي",
+    welcomeTitle: "تدريب: حالة الطلبيات",
+    welcomeDescription: "راح تعالج 10 حالات تدريبية. بعد كل مكالمة، لازم تختار الحالة الصحيحة وتكمّل الإجراءات المطلوبة (تعليق، تاريخ، سبب).",
+    welcomeBullets: [
+      "📞 10 حالات مبنية على مكالمات حقيقية",
+      "🎯 اختار الحالة الصحيحة من القائمة",
+      "📝 زيد تعليق كي يكون لازم",
+      "📅 عبّي التاريخ والتفاصيل إذا كان تأجيل",
+      "❌ اختار السبب إذا الطلبية ملغاة",
+      "🛒 تحقق من الطلبيات السابقة كي يظهر البادج",
+      "📈 النتيجة النهائية: لازم 90% باش تنجح"
+    ],
+    startTraining: "ابدأ التدريب",
+    progressLabel: "تدريب الحالة",
+    pageTitle: function(c){ return "الطلبات ("+c+")"; },
+    filterBtn: "تصفية",
+    searchPlaceholder: "بحث...",
+    tableHeaders: ["طلب", "البائع / المتجر", "العميل", "المنتجات", "الشحن", "الإجمالي", "الحالة", "الإجراءات"],
+    sellerLabel: "تدريب",
+    storeLabel: "TRAINING",
+    shippingLabel: "للمنزل",
+    commentModalTitle: "التعليقات",
+    commentLabel: "تعليقك",
+    commentPlaceholder: "اكتب تعليقاً...",
+    addComment: "أضف تعليق",
+    reportModalTitle: "📅 تأجيل الطلب",
+    reportDateLabel: "تاريخ التأجيل",
+    reportDetailsLabel: "التفاصيل",
+    reportDetailsPlaceholder: "تفاصيل التأجيل...",
+    reportSave: "حفظ",
+    reportCancel: "إلغاء",
+    motifModalTitle: "❌ سبب الإلغاء",
+    motifLabel: "سبب الإلغاء",
+    motifChoose: "— اختار السبب —",
+    motifOptions: {
+      "changed-mind": "الزبون بدّل رأيو",
+      "expensive": "السعر غالي",
+      "found-cheaper": "الزبون لقى أرخص",
+      "delivery-delay": "التوصيل يتأخر بزاف",
+      "not-available": "المنتج ماكانش",
+      "ordered-by-mistake": "طلبية غلط",
+      "other": "سبب آخر"
+    },
+    motifSave: "حفظ",
+    motifCancel: "إلغاء",
+    submitBtn: "✓ صادق على هذي الطلبية",
+    restartBtn: "عاود التدريب",
+    explanationLabel: "الشرح:",
+    nextBtn: "← التالي",
+    finalBtn: "شوف النتيجة النهائية",
+    allDoneText: "كمّلت كل الحالات !",
+    allDoneBtn: "شوف النتيجة النهائية",
+    selectOrderHint: "اضغط على طلبية باش تشوف الحالة",
+    badgeTextSingular: "طلبية سابقة",
+    badgeTextPlural: "طلبيات سابقة",
+    prevOrdersTitle: "الطلبيات السابقة",
+    prevOrdersHeaders: ["الطلب", "التاريخ", "المنتج", "الإجمالي", "الحالة"],
+    prevOrdersClose: "إغلاق",
+    badgeChecked: "✓ تحققت من الطلبيات السابقة",
+    badgeNotChecked: "⚠ نصيحة: دير كليك دايماً على بادج « الطلبيات السابقة » باش تتحقق قبل ما تقرر",
+    scoring: {
+      perfect: "هايل!",
+      excellent: "ممتاز!",
+      medium: "مليح بصح تقدر تدير خير",
+      bad: "مازال خاصك تراجع",
+      summary: function(c,t,time){ return c+"/"+t+" صحيح — الوقت: "+time; },
+      finalTitle: "النتيجة النهائية — حالة الطلبيات",
+      correctAnswers: function(c,t){ return c+"/"+t+" إجابات صحيحة"; },
+      stats: ["الحالات", "المعدل", "صحيح", "بادج مراجع"],
+      details: "التفاصيل حسب كل حالة",
+      pass: "✓ نجحت في الاعتماد",
+      fail: "✗ ما نجحتش في الاعتماد",
+      passDesc: "هذا العون ورّى بلي يعرف يختار الحالات الصحيحة.",
+      failDesc: "هذا العون لازم يعاود التدريب. أقل نتيجة مطلوبة هي 90%."
+    },
+    corrections: {
+      commentRequired: "التعليق لازم",
+      dateRequired: "التاريخ لازم",
+      detailsRequired: "التفاصيل لازمة",
+      motifRequired: "السبب لازم",
+      added: "مزاد",
+      missing: "ناقص",
+      addedPlural: "مزادين",
+      missingPlural: "ناقصين",
+      missingFem: "ناقصة"
+    },
+    login: {
+      banner: "وضع التدريب — حالة الطلبيات",
+      title: "تسجيل الدخول للتدريب",
+      desc: "دخّل اسمك وكلمة المرور اللي عطاهالك المدرب.",
+      namePlaceholder: "اسمك الكامل",
+      passwordPlaceholder: "كلمة المرور",
+      button: "دخول",
+      errorEmpty: "دخّل اسمك",
+      errorPassword: "كلمة المرور غالطة"
+    },
+    save: {
+      saving: "...جاري حفظ النتائج",
+      saved: "!تم حفظ النتائج بنجاح",
+      error: "ما قدرناش نحفظو النتائج. دير capture d'écran."
+    }
+  }
+};
+
+var STATUS_LABELS = {
+  fr: {
+    'pending':'En attente','under-confirmation':'En cours de confirmation','confirmed':'Confirmé',
+    'confirmed-postponed':'Confirmé-Reporté','postponed-not-confirmed':'Reporté non confirmé',
+    'shipping-delayed':'Expédition retardée','in-preparation':'En préparation',
+    'ready-to-ship':'Prêt à être expédié','shipped':'Expédié','shipped-postponed':'Expédié-Reporté',
+    'no-answer-for-delivery':'Pas de réponse pour la livraison','delivered':'Livré',
+    'returned':'Retourné','wrong':'Faux','no-answer':'Pas de réponse',
+    'canceled':'Annulé','duplicated':'Dupliqué','expired':'Expiré'
+  },
+  ar: {
+    'pending':'قيد الانتظار','under-confirmation':'قيد التأكيد','confirmed':'تم التأكيد',
+    'confirmed-postponed':'مأكد - مأجل','postponed-not-confirmed':'مأجل غير مأكد',
+    'shipping-delayed':'الشحن متأخر','in-preparation':'قيد التحضير',
+    'ready-to-ship':'جاهز للشحن','shipped':'تم الشحن','shipped-postponed':'مشحون - مأجل',
+    'no-answer-for-delivery':'لا يوجد رد للتسليم','delivered':'تم التسليم',
+    'returned':'تم الإرجاع','wrong':'خطأ','no-answer':'لا يوجد رد',
+    'canceled':'تم الإلغاء','duplicated':'مكرر','expired':'منتهي الصلاحية'
+  }
+};
+
+var STATUS_FILTER_TABS = {
+  fr: ["Tout","En attente","En cours de confirmation","Confirmé","Confirmé-Reporté","Reporté non confirmé","Faux","Pas de réponse","Annulé","Dupliqué","Expiré"],
+  ar: ["الكل","قيد الانتظار","قيد التأكيد","تم التأكيد","مأكد - مأجل","مأجل غير مأكد","خطأ","لا يوجد رد","تم الإلغاء","مكرر","منتهي الصلاحية"]
+};
+
+var STATUS_FIELD_LABELS = {
+  fr: {"Statut":"Statut","Commentaire":"Commentaire","Date de report":"Date de report","Détails du report":"Détails du report","Motif de l'annulation":"Motif de l'annulation"},
+  ar: {"Statut":"الحالة","Commentaire":"التعليق","Date de report":"تاريخ التأجيل","Détails du report":"تفاصيل التأجيل","Motif de l'annulation":"سبب الإلغاء"}
+};
+
+var STATUS_SCENARIO_COPY = {
+  fr: [
+    { title:"Commande #140201", callContext:"Vous avez appelé le client. Il a répondu et confirmé la commande sans aucun changement.", hint:"Le client est d'accord avec tout — quel statut correspond ?" },
+    { title:"Commande #140302", callContext:"Le client a répondu. Il dit : « Je n'ai rien commandé, c'est pas moi. Quelqu'un a dû mettre mon numéro par erreur. »", hint:"Ce n'est pas une vraie commande — quel statut ? N'oubliez pas le commentaire." },
+    { title:"Commande #140403", callContext:"Le client a répondu. Il dit : « J'ai changé d'avis, je ne veux plus de ce produit. Annulez ma commande. »", hint:"Le client a répondu et a choisi de ne plus vouloir la commande." },
+    { title:"Commande #140504", callContext:"Le client a répondu. Il dit : « Oui c'est bon, je confirme la commande. »", hint:"Vérifiez toutes les informations avant de valider." },
+    { title:"Commande #140605", callContext:"Le client a répondu. Il dit : « Oui, je confirme la commande. »", hint:"Vérifiez toutes les informations avant de valider." },
+    { title:"Commande #140706", callContext:"Le client dit : « Oui je veux la commande ! Mais je voyage jusqu'à jeudi. Envoyez-la jeudi. »", hint:"Le client a dit OUI mais veut la livraison plus tard." },
+    { title:"Commande #140807", callContext:"Le client dit : « Je dois d'abord vérifier avec ma femme. Elle est au travail. Rappelez-moi demain. »", hint:"Le client n'a pas encore dit oui ou non." },
+    { title:"Commande #140908", callContext:"Le client a répondu. Il dit : « Attendez, je regarde la page du produit maintenant. Je vous rappelle dans 5 minutes. »", hint:"Vous avez parlé au client — il est en train de réfléchir." },
+    { title:"Commande #141009", callContext:"Vous avez appelé le client 3 fois aujourd'hui. Le téléphone sonne mais personne ne répond.", hint:"Aucun contact avec le client — quel statut ?" },
+    { title:"Commande #141110", callContext:"Le client a répondu. Il dit : « Oui je confirme, j'en ai besoin. »", hint:"Vérifiez toutes les informations avant de valider." }
+  ],
+  ar: [
+    { title:"طلبية #140201", callContext:"عيّطتلو للزبون. جاوب وأكّد الطلبية بلا ما يبدل حتى حاجة.", hint:"الزبون موافق على كلش — واش هي الحالة الصحيحة؟" },
+    { title:"طلبية #140302", callContext:"الزبون جاوب. قال: «ما طلبت والو، ماشي أنا. شكون لي دار هاذ الطلبية بنمرتي.»", hint:"هاذي ماشي طلبية حقيقية — واش هي الحالة؟ ما تنساش التعليق." },
+    { title:"طلبية #140403", callContext:"الزبون جاوب. قال: «بدّلت رأيي، ما نحبش هذا المنتج. ألغي الطلبية.»", hint:"الزبون جاوب وهو لي اختار بلي ما يحبش الطلبية." },
+    { title:"طلبية #140504", callContext:"الزبون جاوب. قال: «إيه مليحة، أنا نأكّد الطلبية.»", hint:"تحقق من كلش قبل ما تصادق." },
+    { title:"طلبية #140605", callContext:"الزبون جاوب. قال: «إيه، نأكّد الطلبية.»", hint:"تحقق من كلش قبل ما تصادق." },
+    { title:"طلبية #140706", callContext:"الزبون قال: «إيه نحبها الطلبية! بصح أنا مسافر حتى ليوم الخميس. ابعثوهالي نهار الخميس.»", hint:"الزبون قال إيه بصح حب التوصيل من بعد." },
+    { title:"طلبية #140807", callContext:"الزبون قال: «لازم نشاور مرتي أول. هي في الخدمة. عاودو عيّطولي غدوة.»", hint:"الزبون مازال ما قالش إيه ولا لا." },
+    { title:"طلبية #140908", callContext:"الزبون جاوب. قال: «استنّى، راني نشوف صفحة المنتج دورك. نعاودلك في 5 دقايق.»", hint:"هدرت مع الزبون — راهو يفكّر." },
+    { title:"طلبية #141009", callContext:"عيّطتلو للزبون 3 مرات اليوم. التلفون يسوني بصح حتى واحد ما يفتح.", hint:"عمرك ما هدرت مع الزبون." },
+    { title:"طلبية #141110", callContext:"الزبون جاوب. قال: «إيه نأكّد، أنا محتاجها.»", hint:"تحقق من كلش قبل ما تصادق." }
+  ]
+};
+
+var STATUS_EXPLANATION_COPY = {
+  fr: [
+    "Le client a confirmé sans changement = <strong>Confirmé</strong>. Pas de commentaire nécessaire.",
+    "Le client dit que ce n'est pas sa commande = <strong>Faux</strong>. Un commentaire est obligatoire pour expliquer pourquoi (ex: « Le client dit que ce n'est pas lui »).",
+    "<strong>Annulé</strong> = le client a répondu et dit qu'il ne veut plus la commande. Il a changé d'avis → c'est un vrai client qui annule, pas un faux numéro.<br><strong>Faux</strong> = ce n'est PAS une vraie commande (mauvaise personne, faux numéro).<br>Ici, le client est réel mais a changé d'avis → <strong>Annulé</strong> + motif « Le client a changé d'avis ».",
+    "Ce client a une commande précédente pour <strong>le même produit</strong> (Mixeur électrique) qui est déjà <strong>Confirmée</strong>. C'est exactement le même client, même produit = <strong>Dupliqué</strong>.<br><br>Astuce : quand vous voyez le badge « commandes précédentes », cliquez toujours dessus pour vérifier le produit et le statut avant de décider.",
+    "Ce client a 2 commandes précédentes, mais pour des <strong>produits différents</strong> (Crème visage et Casque Bluetooth). Le même client peut commander plusieurs produits différents — ce n'est <strong>PAS</strong> un doublon.<br><br>Dupliqué = même client + même produit + commande active. Ici les produits sont différents → <strong>Confirmé</strong>.",
+    "<strong>Confirmé-Reporté</strong> = le client a CONFIRMÉ (dit oui) mais veut la livraison plus tard.<br><strong>Reporté non confirmé</strong> = le client n'a PAS confirmé et demande de rappeler plus tard.<br>Ici, il a dit « Oui je veux » → <strong>Confirmé-Reporté</strong> + date + détails.",
+    "<strong>Reporté non confirmé</strong> = le client n'a PAS dit oui, il veut réfléchir ou demander à quelqu'un.<br><strong>Confirmé-Reporté</strong> = le client a dit OUI mais veut la livraison plus tard.<br>Ici, il doit vérifier avec sa femme (pas encore confirmé) → <strong>Reporté non confirmé</strong> + date + détails.",
+    "<strong>En cours de confirmation</strong> = vous avez PARLÉ au client, il réfléchit ou vérifie quelque chose à court terme.<br><strong>Pas de réponse</strong> = le client n'a PAS RÉPONDU au téléphone.<br>Ici, le client a répondu et demande 5 minutes → <strong>En cours de confirmation</strong> + commentaire.",
+    "<strong>Pas de réponse</strong> = le client n'a PAS RÉPONDU au téléphone, vous n'avez jamais parlé.<br><strong>En cours de confirmation</strong> = vous avez PARLÉ au client, il demande du temps.<br>Ici, personne ne décroche → <strong>Pas de réponse</strong>.",
+    "Ce client a une commande précédente pour le même produit (Montre connectée), mais elle a été <strong>Annulée</strong>. Le client a peut-être changé d'avis et veut recommander = ce n'est <strong>PAS</strong> un doublon.<br><br>Dupliqué = même client + même produit + commande <strong>active</strong> (Confirmée, En préparation, etc.). Si la précédente est Annulée, Retournée, ou Faux → le client recommande = <strong>Confirmé</strong>."
+  ],
+  ar: [
+    "الزبون أكّد بلا ما يبدل حتى حاجة = <strong>تم التأكيد</strong>. ما يلزمش تعليق.",
+    "الزبون قال هاذي ماشي طلبيتو = <strong>خطأ</strong>. لازم تعليق تشرح فيه علاش (مثلاً: «الزبون قال ماشي هو»).",
+    "<strong>تم الإلغاء</strong> = الزبون جاوب وقال ما يحبش الطلبية. بدّل رأيو — هذا زبون حقيقي قرر يلغي، ماشي نمرة غالطة.<br><strong>خطأ</strong> = هاذي ماشي طلبية حقيقية (شخص غالط، نمرة فالصو).<br>هنا، الزبون حقيقي بصح بدّل رأيو ← <strong>تم الإلغاء</strong> + سبب «الزبون بدّل رأيو».",
+    "هذا الزبون عندو طلبية سابقة لـ<strong>نفس المنتج</strong> (Mixeur électrique) والحالة تاعها <strong>تم التأكيد</strong>. نفس الزبون، نفس المنتج = <strong>مكرر</strong>.<br><br>نصيحة: كي تشوف علامة «طلبيات سابقة»، دير عليها كليك ديما باش تتحقق من المنتج والحالة قبل ما تقرر.",
+    "هذا الزبون عندو طلبيتين سابقتين، بصح لـ<strong>منتجات مختلفة</strong> (Crème visage و Casque Bluetooth). نفس الزبون يقدر يطلب منتجات مختلفة — هاذي <strong>ماشي</strong> مكررة.<br><br>مكرر = نفس الزبون + نفس المنتج + طلبية نشطة. هنا المنتجات مختلفة ← <strong>تم التأكيد</strong>.",
+    "<strong>مأكد - مأجل</strong> = الزبون أكّد (قال إيه) بصح يحب التوصيل من بعد.<br><strong>مأجل غير مأكد</strong> = الزبون ما أكّدش وحب يعاودو يعيّطولو من بعد.<br>هنا، قال «إيه نحبها» ← <strong>مأكد - مأجل</strong> + تاريخ + تفاصيل.",
+    "<strong>مأجل غير مأكد</strong> = الزبون مازال ما قالش إيه، حب يفكّر ولا يشاور شكون.<br><strong>مأكد - مأجل</strong> = الزبون قال إيه بصح حب التوصيل من بعد.<br>هنا، لازم يشاور مرتو (مازال ما أكّدش) ← <strong>مأجل غير مأكد</strong> + تاريخ + تفاصيل.",
+    "<strong>قيد التأكيد</strong> = هدرت مع الزبون، راهو يفكّر ولا يتحقق من حاجة في وقت قصير.<br><strong>لا يوجد رد</strong> = الزبون ما جاوبش في التلفون أبداً.<br>هنا، الزبون جاوب وطلب 5 دقايق ← <strong>قيد التأكيد</strong> + تعليق.",
+    "<strong>لا يوجد رد</strong> = الزبون ما جاوبش في التلفون، عمرك ما هدرت معاه.<br><strong>قيد التأكيد</strong> = هدرت مع الزبون وطلب شوية وقت.<br>هنا، حتى واحد ما فتح ← <strong>لا يوجد رد</strong>.",
+    "هذا الزبون عندو طلبية سابقة لنفس المنتج (Montre connectée)، بصح حالتها <strong>تم الإلغاء</strong>. الزبون ربما بدّل رأيو وحب يعاود يطلب = هاذي <strong>ماشي</strong> مكررة.<br><br>مكرر = نفس الزبون + نفس المنتج + طلبية <strong>نشطة</strong> (تم التأكيد، قيد التحضير، إلخ). إذا السابقة ملغاة، مرجعة، أو خطأ ← الزبون يعاود يطلب = <strong>تم التأكيد</strong>."
+  ]
+};
+
+// ===================================================================
+// STATUS COLORS & SCENARIOS
+// ===================================================================
+var STATUS_COLORS = {
+  'pending':'#0080FF','under-confirmation':'#8080FF','confirmed':'#81D742',
+  'confirmed-postponed':'#77fd00','postponed-not-confirmed':'#804000',
+  'shipping-delayed':'#a50fdb','in-preparation':'#400080','ready-to-ship':'#FFFF00',
+  'shipped':'#FF8000','shipped-postponed':'#FF8000','no-answer-for-delivery':'#CD0A0A',
+  'delivered':'#008000','returned':'#999999','wrong':'#FF0000','no-answer':'#800000',
+  'canceled':'#FF0000','duplicated':'#000000','expired':'#ff0055'
+};
+var STATUS_DARK_TEXT = ['ready-to-ship','confirmed-postponed'];
+
+var SCENARIOS = [
+  // S1: Client confirms, no changes → Confirmé
+  { id:"#140201", type:"scenario", client:{name:"محمد بن يوسف",phone:"0555 12 34 56"}, product:"Ceinture amincissante", total:"2 850 DA", initialStatus:"pending", correctStatus:"confirmed", requiresComment:false, requiresReport:false, requiresMotif:false, hasBadge:false, badgeCount:0, previousOrders:[] },
+  // S2: "Never ordered, someone used my number" → Faux + comment
+  { id:"#140302", type:"scenario", client:{name:"أمين بوزيد",phone:"0551 23 48 90"}, product:"Tapis de yoga", total:"2 300 DA", initialStatus:"pending", correctStatus:"wrong", requiresComment:true, requiresReport:false, requiresMotif:false, hasBadge:false, badgeCount:0, previousOrders:[] },
+  // S3: "Changed my mind, cancel it" → Annulé + motif (changed-mind)
+  { id:"#140403", type:"scenario", client:{name:"ياسمينة حميدي",phone:"0555 98 76 54"}, product:"Sérum cheveux", total:"2 500 DA", initialStatus:"pending", correctStatus:"canceled", requiresComment:false, requiresReport:false, requiresMotif:true, correctMotif:"changed-mind", hasBadge:false, badgeCount:0, previousOrders:[] },
+  // S4: Client confirms (same product as previous, confirmed) → Dupliqué — BADGE
+  { id:"#140504", type:"scenario", client:{name:"فاطمة بن عمر",phone:"0662 34 56 78"}, product:"Mixeur électrique", total:"5 100 DA", initialStatus:"pending", correctStatus:"duplicated", requiresComment:false, requiresReport:false, requiresMotif:false, hasBadge:true, badgeCount:1, previousOrders:[{id:"#140195",date:"14/03 10:22",product:"Mixeur électrique",total:"5 100 DA",status:"confirmed"}] },
+  // S5: Client confirms (different products from previous) → Confirmé — BADGE
+  { id:"#140605", type:"scenario", client:{name:"سارة بلقاسم",phone:"0771 23 45 67"}, product:"Montre connectée", total:"3 700 DA", initialStatus:"pending", correctStatus:"confirmed", requiresComment:false, requiresReport:false, requiresMotif:false, hasBadge:true, badgeCount:2, previousOrders:[{id:"#139801",date:"10/03 14:05",product:"Crème visage",total:"1 900 DA",status:"delivered"},{id:"#140022",date:"12/03 11:30",product:"Casque Bluetooth",total:"3 200 DA",status:"delivered"}] },
+  // S6: "Yes I want it! But send Thursday" → Confirmé-Reporté + date + details
+  { id:"#140706", type:"scenario", client:{name:"عمر بوجمعة",phone:"0660 11 22 33"}, product:"Chaussures de sport", total:"4 200 DA", initialStatus:"pending", correctStatus:"confirmed-postponed", requiresComment:false, requiresReport:true, requiresMotif:false, hasBadge:false, badgeCount:0, previousOrders:[] },
+  // S7: "Must ask my wife. Call tomorrow" → Reporté non confirmé + date + details
+  { id:"#140807", type:"scenario", client:{name:"عبد الله بن علي",phone:"0550 99 88 77"}, product:"Table basse", total:"6 500 DA", initialStatus:"pending", correctStatus:"postponed-not-confirmed", requiresComment:false, requiresReport:true, requiresMotif:false, hasBadge:false, badgeCount:0, previousOrders:[] },
+  // S8: "Wait, checking the product page. 5 min" → En cours de confirmation + comment
+  { id:"#140908", type:"scenario", client:{name:"زينب حماني",phone:"0661 44 55 66"}, product:"Crème visage", total:"1 900 DA", initialStatus:"pending", correctStatus:"under-confirmation", requiresComment:true, requiresReport:false, requiresMotif:false, hasBadge:false, badgeCount:0, previousOrders:[] },
+  // S9: Phone rings 3x, nobody answers → Pas de réponse
+  { id:"#141009", type:"scenario", client:{name:"مريم بودياف",phone:"0770 22 11 00"}, product:"Sac à dos", total:"3 100 DA", initialStatus:"pending", correctStatus:"no-answer", requiresComment:false, requiresReport:false, requiresMotif:false, hasBadge:false, badgeCount:0, previousOrders:[] },
+  // S10: Client confirms (same product but previous was CANCELLED) → Confirmé — BADGE
+  { id:"#141110", type:"scenario", client:{name:"خالد مسعودي",phone:"0670 14 02 26"}, product:"Montre connectée", total:"3 700 DA", initialStatus:"pending", correctStatus:"confirmed", requiresComment:false, requiresReport:false, requiresMotif:false, hasBadge:true, badgeCount:1, previousOrders:[{id:"#139950",date:"11/03 09:45",product:"Montre connectée",total:"3 700 DA",status:"canceled"}] }
+];
+
+// ===================================================================
+// STATE
+// ===================================================================
+var activeOrder = -1;
+var timerInterval = null;
+var totalSeconds = 0;
+var orderTimers = [];
+var orderComments = [];
+var orderReportDates = [];
+var orderReportDetails = [];
+var orderMotifs = [];
+var orderDone = [];
+var orderBadgeClicked = [];
+var scenarioResults = [];
+
+for (var i = 0; i < SCENARIOS.length; i++) {
+  orderTimers.push(0);
+  orderComments.push('');
+  orderReportDates.push('');
+  orderReportDetails.push('');
+  orderMotifs.push('');
+  orderDone.push(false);
+  orderBadgeClicked.push(false);
+}
+
+// ===================================================================
+// BUILD TABLE
+// ===================================================================
+function buildTable() {
+  var copy = STATUS_I18N[currentLang];
+  var labels = STATUS_LABELS[currentLang];
+
+  // Header
+  var headerHtml = '';
+  for (var h = 0; h < copy.tableHeaders.length; h++) {
+    headerHtml += '<th>' + copy.tableHeaders[h] + '</th>';
+  }
+  document.getElementById('table-header').innerHTML = headerHtml;
+
+  // Rows
+  var bodyHtml = '';
+  for (var i = 0; i < SCENARIOS.length; i++) {
+    var sc = SCENARIOS[i];
+    var rowClass = '';
+    if (orderDone[i]) rowClass = 'done-row';
+    if (i === activeOrder && !orderDone[i]) rowClass = 'active-row';
+
+    bodyHtml += '<tr id="row-' + i + '" class="' + rowClass + '" onclick="selectOrder(' + i + ')">';
+
+    // Order ID + date
+    bodyHtml += '<td><span class="order-id-cell">' + sc.id + '</span><span class="order-date-cell">15/03 09:' + String(14 + i).padStart(2,'0') + '</span></td>';
+
+    // Seller / Store
+    bodyHtml += '<td class="seller-cell"><span class="seller-name">' + copy.sellerLabel + '</span><span class="store-name">' + copy.storeLabel + '</span></td>';
+
+    // Client + previous orders badge
+    bodyHtml += '<td class="client-cell"><span class="client-name">' + sc.client.name + '</span><span class="client-phone">' + sc.client.phone + '</span>';
+    if (sc.hasBadge) {
+      var badgeLabel = sc.badgeCount === 1 ? copy.badgeTextSingular : copy.badgeTextPlural;
+      bodyHtml += '<span class="previous-orders-link" onclick="event.stopPropagation();openPreviousOrdersModal(' + i + ')"><span class="badge-icon">&#128722;</span> ' + sc.badgeCount + ' ' + badgeLabel + '</span>';
+    }
+    bodyHtml += '</td>';
+
+    // Products
+    bodyHtml += '<td class="product-cell">x1 ' + sc.product + '</td>';
+
+    // Shipping
+    bodyHtml += '<td class="shipping-cell">' + copy.shippingLabel + '</td>';
+
+    // Total
+    bodyHtml += '<td class="total-cell">' + sc.total + '</td>';
+
+    // Status dropdown
+    bodyHtml += '<td>';
+    bodyHtml += '<select class="status-dropdown" id="status-' + i + '" onchange="onStatusChange(' + i + ')" onclick="event.stopPropagation()"' + (orderDone[i] ? ' disabled' : '') + '>';
+    var statusKeys = ['pending','under-confirmation','confirmed','confirmed-postponed','postponed-not-confirmed','shipping-delayed','in-preparation','ready-to-ship','shipped','shipped-postponed','no-answer-for-delivery','delivered','returned','wrong','no-answer','canceled','duplicated','expired'];
+    for (var s = 0; s < statusKeys.length; s++) {
+      var sKey = statusKeys[s];
+      var selected = (sKey === sc.initialStatus) ? ' selected' : '';
+      var disabled = (sKey === 'shipping-delayed') ? ' disabled' : '';
+      bodyHtml += '<option value="' + sKey + '"' + selected + disabled + '>' + (labels[sKey]||sKey) + '</option>';
+    }
+    bodyHtml += '</select></td>';
+
+    // Actions
+    bodyHtml += '<td><div class="actions-cell">';
+    bodyHtml += '<button class="action-btn yellow" onclick="event.stopPropagation();selectOrder(' + i + ')" title="Détail">&#128065;</button>';
+    bodyHtml += '<button class="action-btn blue-btn" onclick="event.stopPropagation();openCommentModal(' + i + ')" title="Commentaire"' + (orderDone[i] ? ' disabled' : '') + '>&#128172;</button>';
+    if (i === activeOrder && !orderDone[i]) {
+      bodyHtml += '<button class="btn-validate" onclick="event.stopPropagation();submitAnswer()">' + copy.submitBtn + '</button>';
+    }
+    if (orderDone[i]) bodyHtml += '<span class="done-icon">✓</span>';
+    bodyHtml += '</div></td>';
+
+    bodyHtml += '</tr>';
+  }
+  document.getElementById('table-body').innerHTML = bodyHtml;
+
+  // Restore status values and apply colors
+  for (var j = 0; j < SCENARIOS.length; j++) {
+    var sel = document.getElementById('status-' + j);
+    if (sel && orderDone[j]) {
+      var ri = getResultIndex(j);
+      if (ri >= 0) sel.value = scenarioResults[ri].selectedStatus;
+    }
+    applyStatusColor(j);
+  }
+}
+
+function getResultIndex(orderIdx) {
+  for (var i = 0; i < scenarioResults.length; i++) {
+    if (scenarioResults[i].scenarioIdx === orderIdx) return i;
+  }
+  return -1;
+}
+
+// ===================================================================
+// STATUS TABS
+// ===================================================================
+function buildStatusTabs() {
+  var tabs = STATUS_FILTER_TABS[currentLang];
+  var html = '';
+  for (var i = 0; i < tabs.length; i++) {
+    html += '<span class="status-tab' + (i === 0 ? ' active-tab' : '') + '">' + tabs[i] + '</span>';
+  }
+  document.getElementById('status-tabs').innerHTML = html;
+}
+
+// ===================================================================
+// APPLY STATUS COLOR
+// ===================================================================
+function applyStatusColor(idx) {
+  var sel = document.getElementById('status-' + idx);
+  if (!sel) return;
+  var val = sel.value;
+  var color = STATUS_COLORS[val] || '#e2e8f0';
+  sel.style.backgroundColor = color;
+  sel.style.borderColor = color;
+  sel.style.color = (STATUS_DARK_TEXT.indexOf(val) !== -1) ? '#1e293b' : '#ffffff';
+
+  var opts = sel.options;
+  for (var i = 0; i < opts.length; i++) {
+    var optColor = STATUS_COLORS[opts[i].value] || '#e2e8f0';
+    opts[i].style.backgroundColor = optColor;
+    opts[i].style.color = (STATUS_DARK_TEXT.indexOf(opts[i].value) !== -1) ? '#1e293b' : '#ffffff';
+  }
+}
+
+// ===================================================================
+// SELECT ORDER
+// ===================================================================
+function selectOrder(idx) {
+  if (orderDone[idx]) return;
+  activeOrder = idx;
+
+  // Rebuild table so validate button appears on the selected row
+  buildTable();
+
+  // Show call context
+  var scenarioCopy = STATUS_SCENARIO_COPY[currentLang][idx];
+  document.getElementById('scenario-title').textContent = scenarioCopy.title;
+  document.getElementById('call-text').textContent = scenarioCopy.callContext;
+  document.getElementById('call-hint').textContent = scenarioCopy.hint || '';
+  document.getElementById('call-context').classList.add('visible');
+
+  // Scroll to context
+  document.getElementById('call-context').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ===================================================================
+// ON STATUS CHANGE
+// ===================================================================
+function onStatusChange(idx) {
+  applyStatusColor(idx);
+  var val = document.getElementById('status-' + idx).value;
+
+  // Auto-select the order if not already active
+  if (activeOrder !== idx) selectOrder(idx);
+
+  // Show report modal if needed
+  if (val === 'confirmed-postponed' || val === 'postponed-not-confirmed') {
+    openReportModal(idx);
+  }
+  // Show motif modal if needed
+  if (val === 'canceled') {
+    openMotifModal(idx);
+  }
+}
+
+// ===================================================================
+// COMMENT MODAL
+// ===================================================================
+var commentForOrder = -1;
+function openCommentModal(idx) {
+  if (orderDone[idx]) return;
+  commentForOrder = idx;
+  if (activeOrder !== idx) selectOrder(idx);
+  var copy = STATUS_I18N[currentLang];
+  document.getElementById('comment-modal-title').textContent = copy.commentModalTitle;
+  document.getElementById('comment-label').textContent = copy.commentLabel;
+  document.getElementById('input-comment').placeholder = copy.commentPlaceholder;
+  document.getElementById('btn-add-comment').textContent = copy.addComment;
+  document.getElementById('input-comment').value = orderComments[idx] || '';
+  document.getElementById('comment-modal').classList.add('open');
+  document.getElementById('input-comment').focus();
+}
+function closeCommentModal() {
+  document.getElementById('comment-modal').classList.remove('open');
+}
+function saveComment() {
+  if (commentForOrder >= 0) {
+    orderComments[commentForOrder] = document.getElementById('input-comment').value.trim();
+  }
+  closeCommentModal();
+}
+
+// ===================================================================
+// REPORT MODAL
+// ===================================================================
+var reportForOrder = -1;
+function openReportModal(idx) {
+  reportForOrder = idx;
+  var copy = STATUS_I18N[currentLang];
+  document.getElementById('report-modal-title').textContent = copy.reportModalTitle;
+  document.getElementById('report-date-label').textContent = copy.reportDateLabel;
+  document.getElementById('report-details-label').textContent = copy.reportDetailsLabel;
+  document.getElementById('input-report-details').placeholder = copy.reportDetailsPlaceholder;
+  document.getElementById('btn-save-report').textContent = copy.reportSave;
+  document.querySelector('#report-modal .btn-modal-cancel').textContent = copy.reportCancel;
+  document.getElementById('input-report-date').value = orderReportDates[idx] || '';
+  document.getElementById('input-report-details').value = orderReportDetails[idx] || '';
+  document.getElementById('report-modal').classList.add('open');
+}
+function closeReportModal() {
+  document.getElementById('report-modal').classList.remove('open');
+}
+function saveReport() {
+  if (reportForOrder >= 0) {
+    orderReportDates[reportForOrder] = document.getElementById('input-report-date').value;
+    orderReportDetails[reportForOrder] = document.getElementById('input-report-details').value.trim();
+  }
+  closeReportModal();
+}
+
+// ===================================================================
+// MOTIF MODAL
+// ===================================================================
+var motifForOrder = -1;
+function openMotifModal(idx) {
+  motifForOrder = idx;
+  var copy = STATUS_I18N[currentLang];
+  document.getElementById('motif-modal-title').textContent = copy.motifModalTitle;
+  document.getElementById('motif-label').textContent = copy.motifLabel;
+  document.getElementById('btn-save-motif').textContent = copy.motifSave;
+  document.querySelector('#motif-modal .btn-modal-cancel').textContent = copy.motifCancel;
+  // Render motif options
+  var sel = document.getElementById('input-motif');
+  sel.options[0].textContent = copy.motifChoose;
+  for (var i = 1; i < sel.options.length; i++) {
+    var val = sel.options[i].value;
+    if (copy.motifOptions[val]) sel.options[i].textContent = copy.motifOptions[val];
+  }
+  sel.value = orderMotifs[idx] || '';
+  document.getElementById('motif-modal').classList.add('open');
+}
+function closeMotifModal() {
+  document.getElementById('motif-modal').classList.remove('open');
+}
+function saveMotif() {
+  if (motifForOrder >= 0) {
+    orderMotifs[motifForOrder] = document.getElementById('input-motif').value;
+  }
+  closeMotifModal();
+}
+
+// ===================================================================
+// PREVIOUS ORDERS MODAL
+// ===================================================================
+function openPreviousOrdersModal(idx) {
+  orderBadgeClicked[idx] = true;
+  var sc = SCENARIOS[idx];
+  var copy = STATUS_I18N[currentLang];
+  var labels = STATUS_LABELS[currentLang];
+
+  document.getElementById('prev-orders-title').textContent = copy.prevOrdersTitle;
+  document.getElementById('prev-orders-close-btn').textContent = copy.prevOrdersClose;
+
+  var headers = copy.prevOrdersHeaders;
+  var html = '<table class="prev-orders-table"><thead><tr>';
+  for (var h = 0; h < headers.length; h++) {
+    html += '<th>' + headers[h] + '</th>';
+  }
+  html += '</tr></thead><tbody>';
+
+  for (var i = 0; i < sc.previousOrders.length; i++) {
+    var po = sc.previousOrders[i];
+    var statusColor = STATUS_COLORS[po.status] || '#ccc';
+    var statusText = labels[po.status] || po.status;
+    var textColor = (STATUS_DARK_TEXT.indexOf(po.status) !== -1) ? '#1e293b' : '#ffffff';
+
+    html += '<tr>';
+    html += '<td style="font-weight:600;color:var(--blue)">' + po.id + '</td>';
+    html += '<td>' + po.date + '</td>';
+    html += '<td>' + po.product + '</td>';
+    html += '<td style="font-weight:600">' + po.total + '</td>';
+    html += '<td><span class="prev-status-badge" style="background:' + statusColor + ';color:' + textColor + '">' + statusText + '</span></td>';
+    html += '</tr>';
+  }
+
+  html += '</tbody></table>';
+  document.getElementById('prev-orders-body').innerHTML = html;
+  document.getElementById('prev-orders-modal').classList.add('open');
+}
+function closePreviousOrdersModal() {
+  document.getElementById('prev-orders-modal').classList.remove('open');
+}
+
+// ===================================================================
+// TIMER
+// ===================================================================
+function startTimer() {
+  totalSeconds = 0;
+  timerInterval = setInterval(function() {
+    totalSeconds++;
+    var m = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+    var s = (totalSeconds % 60).toString().padStart(2, '0');
+    document.getElementById('timer').textContent = m + ':' + s;
+  }, 1000);
+}
+
+// ===================================================================
+// LOGIN
+// ===================================================================
+function handleLogin() {
+  var name = document.getElementById('login-name').value.trim();
+  var password = document.getElementById('login-password').value;
+  var copy = STATUS_I18N[currentLang];
+  var errorEl = document.getElementById('login-error');
+
+  if (!name) {
+    errorEl.textContent = copy.login.errorEmpty;
+    errorEl.classList.add('visible');
+    return;
+  }
+  if (password !== TRAINING_PASSWORD) {
+    errorEl.textContent = copy.login.errorPassword;
+    errorEl.classList.add('visible');
+    return;
+  }
+
+  agentName = name;
+  errorEl.classList.remove('visible');
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('welcome-screen').classList.remove('hidden');
+}
+
+// ===================================================================
+// START TRAINING
+// ===================================================================
+function startTraining() {
+  document.getElementById('welcome-screen').classList.add('hidden');
+  document.getElementById('training-screen').classList.remove('hidden');
+  buildTable();
+  buildStatusTabs();
+  startTimer();
+  renderStaticText();
+}
+
+// ===================================================================
+// SUBMIT ANSWER
+// ===================================================================
+function submitAnswer() {
+  if (activeOrder < 0 || orderDone[activeOrder]) return;
+  var idx = activeOrder;
+  var sc = SCENARIOS[idx];
+  var selectedStatus = document.getElementById('status-' + idx).value;
+  var commentText = orderComments[idx];
+  var reportDate = orderReportDates[idx];
+  var reportDetails = orderReportDetails[idx];
+  var motif = orderMotifs[idx];
+  var time = document.getElementById('timer').textContent;
+
+  var checks = [];
+  var totalChecks = 0;
+  var correctChecks = 0;
+
+  // Check 1: Status
+  totalChecks++;
+  var statusCorrect = (selectedStatus === sc.correctStatus);
+  if (statusCorrect) correctChecks++;
+  checks.push({ field: STATUS_FIELD_LABELS[currentLang]['Statut'], correct: statusCorrect, correction: statusCorrect ? '' : getStatusLabel(sc.correctStatus), userAnswer: getStatusLabel(selectedStatus) });
+
+  // Check 2: Comment
+  if (sc.requiresComment) {
+    totalChecks++;
+    var commentOk = commentText.length > 0;
+    if (commentOk) correctChecks++;
+    var corr = STATUS_I18N[currentLang].corrections;
+    checks.push({ field: STATUS_FIELD_LABELS[currentLang]['Commentaire'], correct: commentOk, correction: commentOk ? '' : corr.commentRequired, userAnswer: commentOk ? corr.added : corr.missing });
+  }
+
+  // Check 3: Report
+  if (sc.requiresReport) {
+    var corr2 = STATUS_I18N[currentLang].corrections;
+    totalChecks++;
+    var dateOk = reportDate !== '';
+    if (dateOk) correctChecks++;
+    checks.push({ field: STATUS_FIELD_LABELS[currentLang]['Date de report'], correct: dateOk, correction: dateOk ? '' : corr2.dateRequired, userAnswer: dateOk ? reportDate : corr2.missingFem });
+    totalChecks++;
+    var detailsOk = reportDetails.length > 0;
+    if (detailsOk) correctChecks++;
+    checks.push({ field: STATUS_FIELD_LABELS[currentLang]['Détails du report'], correct: detailsOk, correction: detailsOk ? '' : corr2.detailsRequired, userAnswer: detailsOk ? corr2.addedPlural : corr2.missingPlural });
+  }
+
+  // Check 4: Motif
+  if (sc.requiresMotif) {
+    totalChecks++;
+    var motifOk = motif !== '';
+    if (motifOk) correctChecks++;
+    var corr3 = STATUS_I18N[currentLang].corrections;
+    checks.push({ field: STATUS_FIELD_LABELS[currentLang]["Motif de l'annulation"], correct: motifOk, correction: motifOk ? '' : corr3.motifRequired, userAnswer: motifOk ? getMotifLabel(motif) : corr3.missing });
+  }
+
+  var pct = totalChecks === 0 ? 100 : Math.round((correctChecks / totalChecks) * 100);
+
+  scenarioResults.push({
+    scenarioIdx: idx, score: correctChecks, total: totalChecks, pct: pct,
+    time: time, seconds: totalSeconds, checks: checks,
+    selectedStatus: selectedStatus,
+    badgeClicked: sc.hasBadge ? orderBadgeClicked[idx] : null
+  });
+
+  orderDone[idx] = true;
+  showScoring(checks, pct, correctChecks, totalChecks, time, sc, idx);
+}
+
+function getStatusLabel(val) { return STATUS_LABELS[currentLang][val] || val; }
+function getMotifLabel(val) { return STATUS_I18N[currentLang].motifOptions[val] || val; }
+
+// ===================================================================
+// SHOW SCORING
+// ===================================================================
+function showScoring(checks, pct, correct, total, time, sc, idx) {
+  var copy = STATUS_I18N[currentLang];
+  var cls = pct >= 90 ? 'good' : pct >= 60 ? 'medium' : 'bad';
+  var label = pct === 100 ? copy.scoring.perfect : pct >= 90 ? copy.scoring.excellent : pct >= 60 ? copy.scoring.medium : copy.scoring.bad;
+
+  var html = '<div class="scoring-header">';
+  html += '<div class="score-circle ' + cls + '">' + pct + '%</div>';
+  html += '<h3>' + label + '</h3>';
+  html += '<p>' + copy.scoring.summary(correct, total, time) + '</p></div>';
+
+  html += '<div class="scoring-details">';
+  for (var i = 0; i < checks.length; i++) {
+    var c = checks[i];
+    var icon = c.correct ? '<div class="score-icon correct">&#10003;</div>' : '<div class="score-icon wrong">&#10007;</div>';
+    html += '<div class="score-item">' + icon + '<span class="field-name">' + c.field + '</span>';
+    if (!c.correct && c.correction) html += '<span class="correction">' + c.correction + '</span>';
+    html += '</div>';
+  }
+
+  // Badge feedback (educational, not scored)
+  if (sc.hasBadge) {
+    var result = scenarioResults[scenarioResults.length - 1];
+    if (result.badgeClicked) {
+      html += '<div style="margin:12px 0 8px;padding:12px 16px;background:#dcfce7;border:1px solid #86efac;border-radius:8px">';
+      html += '<div style="font-size:13px;font-weight:600;color:#16a34a">' + copy.badgeChecked + '</div></div>';
+    } else {
+      html += '<div style="margin:12px 0 8px;padding:12px 16px;background:#fef3c7;border:1px solid #fbbf24;border-radius:8px">';
+      html += '<div style="font-size:13px;font-weight:600;color:#92400e">' + copy.badgeNotChecked + '</div></div>';
+    }
+  }
+
+  html += '<div class="explanation-box"><strong>' + copy.explanationLabel + '</strong><br>' + STATUS_EXPLANATION_COPY[currentLang][idx] + '</div>';
+  html += '</div>';
+
+  html += '<div class="scoring-footer"><button class="btn-next" onclick="closeScoring()">' + copy.nextBtn + '</button></div>';
+
+  document.getElementById('scoring-card').innerHTML = html;
+  document.getElementById('scoring-overlay').classList.add('open');
+}
+
+function closeScoring() {
+  document.getElementById('scoring-overlay').classList.remove('open');
+  document.getElementById('call-context').classList.remove('visible');
+  activeOrder = -1;
+  updateProgress();
+  buildTable();
+
+  // Check if all done
+  var allDone = true;
+  for (var i = 0; i < orderDone.length; i++) { if (!orderDone[i]) { allDone = false; break; } }
+  if (allDone) {
+    var copy = STATUS_I18N[currentLang];
+    document.getElementById('all-done-text').textContent = copy.allDoneText;
+    document.getElementById('btn-see-final').textContent = copy.allDoneBtn;
+    document.getElementById('all-done-banner').classList.add('visible');
+  }
+}
+
+// ===================================================================
+// UPDATE PROGRESS
+// ===================================================================
+function updateProgress() {
+  var done = 0;
+  for (var i = 0; i < orderDone.length; i++) { if (orderDone[i]) done++; }
+  var pct = Math.round((done / SCENARIOS.length) * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-count').textContent = done + '/' + SCENARIOS.length;
+}
+
+// ===================================================================
+// SHOW FINAL SCORE
+// ===================================================================
+function showFinalScore() {
+  clearInterval(timerInterval);
+  var copy = STATUS_I18N[currentLang];
+
+  var totalCorrect = 0, totalChecks = 0, totalSec = 0, badgeTotal = 0, badgesChecked = 0;
+  for (var i = 0; i < scenarioResults.length; i++) {
+    var r = scenarioResults[i];
+    totalCorrect += r.score;
+    totalChecks += r.total;
+    totalSec += r.seconds;
+    if (SCENARIOS[r.scenarioIdx].hasBadge) {
+      badgeTotal++;
+      if (r.badgeClicked) badgesChecked++;
+    }
+  }
+
+  var finalPct = totalChecks === 0 ? 100 : Math.round((totalCorrect / totalChecks) * 100);
+  var passed = finalPct >= 90;
+  var avgTime = Math.round(totalSec / scenarioResults.length);
+  var avgMin = String(Math.floor(avgTime / 60)).padStart(2, '0');
+  var avgSec = String(avgTime % 60).padStart(2, '0');
+
+  var breakdownHtml = '';
+  for (var j = 0; j < scenarioResults.length; j++) {
+    var res = scenarioResults[j];
+    var bCls = res.pct >= 90 ? 'pass' : res.pct >= 60 ? 'partial' : 'fail';
+    breakdownHtml += '<div class="breakdown-row"><span class="order-label">' + SCENARIOS[res.scenarioIdx].id + '</span><span>' + res.time + '</span><span class="badge ' + bCls + '">' + res.pct + '%</span></div>';
+  }
+
+  var html = '<div class="icon-big" style="margin-bottom:8px">' + (passed ? '&#127942;' : '&#128218;') + '</div>';
+  html += '<div class="agent-name-display">' + agentName + '</div>';
+  html += '<h1 style="font-size:20px;font-weight:700;margin-bottom:4px">' + copy.scoring.finalTitle + '</h1>';
+  html += '<div class="big-score ' + (passed ? 'pass' : 'fail') + '">' + finalPct + '%</div>';
+  html += '<p class="subtitle">' + copy.scoring.correctAnswers(totalCorrect, totalChecks) + '</p>';
+
+  html += '<div class="stats-row">';
+  html += '<div class="stat-box"><div class="num">' + scenarioResults.length + '</div><div class="lbl">' + copy.scoring.stats[0] + '</div></div>';
+  html += '<div class="stat-box"><div class="num">' + avgMin + ':' + avgSec + '</div><div class="lbl">' + copy.scoring.stats[1] + '</div></div>';
+  html += '<div class="stat-box"><div class="num">' + totalCorrect + '</div><div class="lbl">' + copy.scoring.stats[2] + '</div></div>';
+  html += '<div class="stat-box"><div class="num">' + badgesChecked + '/' + badgeTotal + '</div><div class="lbl">' + copy.scoring.stats[3] + '</div></div>';
+  html += '</div>';
+
+  html += '<div class="order-breakdown"><h4>' + copy.scoring.details + '</h4>' + breakdownHtml + '</div>';
+  html += '<div class="certificate-box ' + (passed ? 'certified' : 'not-certified') + '"><h3>' + (passed ? copy.scoring.pass : copy.scoring.fail) + '</h3><p>' + (passed ? copy.scoring.passDesc : copy.scoring.failDesc) + '</p></div>';
+  html += '<div class="save-status" id="save-status"></div>';
+  html += '<button class="btn-restart" onclick="restart()">' + copy.restartBtn + '</button>';
+
+  document.getElementById('final-card').innerHTML = html;
+  document.getElementById('final-overlay').classList.add('open');
+
+  // Submit results to Google Sheets
+  var trapsFell = 0, trapsTotal = 0;
+  for (var t = 0; t < scenarioResults.length; t++) {
+    if (SCENARIOS[scenarioResults[t].scenarioIdx].trap) {
+      trapsTotal++;
+      var trapRes = scenarioResults[t];
+      // Check if agent fell for the trap (got the status wrong)
+      if (trapRes.pct < 100) trapsFell++;
+    }
+  }
+
+  submitResultsToSheet({
+    agentName: agentName,
+    module: 'status',
+    language: currentLang,
+    finalScore: finalPct,
+    passed: passed,
+    totalCorrect: totalCorrect,
+    totalChecks: totalChecks,
+    totalSeconds: totalSec,
+    avgSeconds: Math.round(totalSec / scenarioResults.length),
+    scenarioCount: scenarioResults.length,
+    trapsFell: trapsFell,
+    trapsTotal: trapsTotal,
+    detailsJson: JSON.stringify(scenarioResults)
+  });
+}
+
+// ===================================================================
+// SUBMIT RESULTS TO GOOGLE SHEETS
+// ===================================================================
+function submitResultsToSheet(data) {
+  if (!API_URL) {
+    console.log('No API URL configured. Results:', data);
+    return;
+  }
+
+  var saveEl = document.getElementById('save-status');
+  var copy = STATUS_I18N[currentLang];
+  saveEl.className = 'save-status saving';
+  saveEl.textContent = copy.save.saving;
+
+  fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(result) {
+    if (result.success) {
+      saveEl.className = 'save-status saved';
+      saveEl.textContent = copy.save.saved;
+    } else {
+      saveEl.className = 'save-status error';
+      saveEl.textContent = copy.save.error;
+    }
+  })
+  .catch(function() {
+    saveEl.className = 'save-status error';
+    saveEl.textContent = copy.save.error;
+  });
+}
+
+// ===================================================================
+// RESTART
+// ===================================================================
+function restart() {
+  scenarioResults = [];
+  activeOrder = -1;
+  for (var i = 0; i < SCENARIOS.length; i++) {
+    orderDone[i] = false;
+    orderComments[i] = '';
+    orderReportDates[i] = '';
+    orderReportDetails[i] = '';
+    orderMotifs[i] = '';
+    orderTimers[i] = 0;
+    orderBadgeClicked[i] = false;
+  }
+  document.getElementById('final-overlay').classList.remove('open');
+  document.getElementById('scoring-overlay').classList.remove('open');
+  document.getElementById('call-context').classList.remove('visible');
+  document.getElementById('all-done-banner').classList.remove('visible');
+  updateProgress();
+  buildTable();
+  startTimer();
+}
+
+// ===================================================================
+// LANGUAGE SWITCHING
+// ===================================================================
+function closeLanguageMenus() {
+  document.querySelectorAll('.lang-menu').forEach(function(m){ m.classList.remove('open'); });
+}
+function toggleLanguageMenu(screen, event) {
+  if (event) event.stopPropagation();
+  var menu = document.getElementById(screen + '-lang-menu');
+  if (!menu) return;
+  var shouldOpen = !menu.classList.contains('open');
+  closeLanguageMenus();
+  if (shouldOpen) menu.classList.add('open');
+}
+
+function navMarkup(screen) {
+  var copy = STATUS_I18N[currentLang];
+  var html = '<span class="nav-logo">Order<span>*</span></span>';
+  for (var i = 0; i < copy.nav.length; i++) {
+    html += '<a class="nav-link' + (i === 1 ? ' active' : '') + '" href="#">' + copy.nav[i] + '</a>';
+  }
+  html += '<div class="nav-spacer"></div>';
+  html += '<div class="lang-switcher">';
+  html += '<button class="lang-trigger" type="button" onclick="toggleLanguageMenu(\'' + screen + '\',event)">';
+  html += '<span>' + copy.langCurrent + '</span><span aria-hidden="true">&#9662;</span></button>';
+  html += '<div class="lang-menu" id="' + screen + '-lang-menu">';
+  html += '<button class="lang-option' + (currentLang === 'fr' ? ' active' : '') + '" type="button" onclick="setLanguage(\'fr\')">' + copy.langMenu.fr + '</button>';
+  html += '<button class="lang-option' + (currentLang === 'ar' ? ' active' : '') + '" type="button" onclick="setLanguage(\'ar\')">' + copy.langMenu.ar + '</button>';
+  html += '</div></div>';
+  return html;
+}
+
+function renderStaticText() {
+  var copy = STATUS_I18N[currentLang];
+  document.title = copy.title;
+  document.documentElement.lang = currentLang === 'ar' ? 'ar' : 'fr';
+  document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+
+  // Login screen
+  var loginBanner = document.getElementById('login-banner-text');
+  if (loginBanner) loginBanner.textContent = copy.login.banner;
+  var loginNav = document.getElementById('login-nav');
+  if (loginNav) loginNav.innerHTML = navMarkup('login');
+  var loginTitle = document.getElementById('login-title');
+  if (loginTitle) loginTitle.textContent = copy.login.title;
+  var loginDesc = document.getElementById('login-desc');
+  if (loginDesc) loginDesc.textContent = copy.login.desc;
+  var loginName = document.getElementById('login-name');
+  if (loginName) loginName.placeholder = copy.login.namePlaceholder;
+  var loginPwd = document.getElementById('login-password');
+  if (loginPwd) loginPwd.placeholder = copy.login.passwordPlaceholder;
+  var loginBtn = document.getElementById('btn-login');
+  if (loginBtn) loginBtn.textContent = copy.login.button;
+
+  // Banners (welcome + training — login banner handled above by ID)
+  var welcomeBannerEl = document.querySelector('#welcome-screen .training-banner');
+  if (welcomeBannerEl) welcomeBannerEl.innerHTML = '<span class="pulse-dot"></span>' + copy.welcomeBanner + '<span class="pulse-dot"></span>';
+  var trainingBannerEl = document.getElementById('training-banner-text');
+  if (trainingBannerEl) trainingBannerEl.innerHTML = '<span class="pulse-dot"></span>' + copy.trainingBanner + '<span class="pulse-dot"></span>';
+
+  // Nav bars
+  var welcomeNav = document.querySelector('#welcome-screen .nav-bar');
+  if (welcomeNav) welcomeNav.innerHTML = navMarkup('welcome');
+  document.getElementById('training-nav').innerHTML = navMarkup('training');
+
+  // Welcome screen
+  document.getElementById('welcome-title').textContent = copy.welcomeTitle;
+  document.getElementById('welcome-desc').textContent = copy.welcomeDescription;
+  var bullets = document.querySelectorAll('#welcome-bullets li');
+  for (var i = 0; i < bullets.length && i < copy.welcomeBullets.length; i++) {
+    bullets[i].textContent = copy.welcomeBullets[i];
+  }
+  document.getElementById('btn-start').textContent = copy.startTraining;
+
+  // Progress
+  document.getElementById('progress-label').textContent = copy.progressLabel;
+
+  // Page title — uses dynamic count
+  document.getElementById('page-title').textContent = copy.pageTitle(SCENARIOS.length);
+
+  // Filter button
+  document.querySelector('#btn-filter span').textContent = copy.filterBtn;
+
+  // Search
+  document.getElementById('search-input').placeholder = copy.searchPlaceholder;
+
+  // Build table and tabs with new language
+  if (!document.getElementById('training-screen').classList.contains('hidden')) {
+    buildStatusTabs();
+    buildTable();
+    // Re-render active scenario if any
+    if (activeOrder >= 0 && !orderDone[activeOrder]) {
+      selectOrder(activeOrder);
+    }
+  }
+}
+
+function setLanguage(lang) {
+  currentLang = lang;
+  closeLanguageMenus();
+  renderStaticText();
+}
+
+document.addEventListener('click', function(event) {
+  if (!event.target.closest('.lang-switcher')) closeLanguageMenus();
+});
+
+// ===================================================================
+// INIT
+// ===================================================================
+document.getElementById('login-password').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') handleLogin();
+});
+renderStaticText();
+</script>
+</body>
+</html>
