@@ -462,7 +462,7 @@
 // ===================================================================
 // CONFIGURATION
 // ===================================================================
-var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw3C0s8m0L-dIyRJoN7P2sIDP9jrSCA10FumA-dusU5NNyJL8gXTCAx-rtotNxwyl0azA/exec';
+var API_URL = '/api/training/results';
 var currentLang = 'fr';
 var allResults = [];
 var filteredResults = [];
@@ -744,18 +744,12 @@ document.getElementById('login-password').addEventListener('keydown', function(e
 // DATA FETCHING
 // ===================================================================
 function fetchData() {
-  if (!APPS_SCRIPT_URL) {
-    document.getElementById('loading-state').classList.add('hidden');
-    document.getElementById('dashboard-content').classList.remove('hidden');
-    showDemoData();
-    return;
-  }
-
   document.getElementById('loading-state').classList.remove('hidden');
   document.getElementById('dashboard-content').classList.add('hidden');
 
-  var url = APPS_SCRIPT_URL + '?action=getResults&password=' + encodeURIComponent(adminPassword);
-  fetch(url)
+  fetch(API_URL, {
+    headers: { 'X-Admin-Key': adminPassword }
+  })
     .then(function(r) { return r.json(); })
     .then(function(data) {
       if (data.error) {

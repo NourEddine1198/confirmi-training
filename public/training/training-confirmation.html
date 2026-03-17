@@ -2410,7 +2410,7 @@ const SANDBOX_I18N = {
 
 let sandboxLang = "fr";
 const TRAINING_PASSWORD = 'training2026';
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw3C0s8m0L-dIyRJoN7P2sIDP9jrSCA10FumA-dusU5NNyJL8gXTCAx-rtotNxwyl0azA/exec';
+const API_URL = '/api/training/results';
 let agentName = '';
 
 // Hub mode: if launched from Training Hub, skip login and redirect at the end
@@ -3212,14 +3212,9 @@ function showFinalScore() {
       detailsJson: JSON.stringify(orderResults)
     };
     localStorage.setItem('trainingHub_confirmationResult', JSON.stringify(resultData));
-    // Fire API call (image GET to avoid CORS on file:// URLs)
-    var sendData = {};
-    for (var k in resultData) {
-      if (k !== 'detailsJson') sendData[k] = resultData[k];
-    }
-    sendData.detailsJson = '';
-    var img = new Image();
-    img.src = APPS_SCRIPT_URL + '?action=saveResult&data=' + encodeURIComponent(JSON.stringify(sendData));
+    // Fire API call (keepalive ensures it completes even after navigation)
+    fetch(API_URL, { method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(resultData), keepalive: true });
     // Go back to Hub — agent sees combined results there
     window.location.href = 'training-hub.html';
     return;
@@ -3272,40 +3267,32 @@ function showFinalScore() {
   }
 }
 
-// SUBMIT RESULTS TO GOOGLE SHEETS
+// SUBMIT RESULTS TO API
 function submitResultsToSheet(data) {
-  if (!APPS_SCRIPT_URL) {
-    console.log('No Apps Script URL configured. Results:', data);
-    return;
-  }
-
   const saveEl = document.getElementById('save-status');
   const copy = sandboxCopy();
   saveEl.className = 'save-status saving';
   saveEl.textContent = copy.save.saving;
 
-  // Remove detailsJson for URL (too large) — send core data only
-  const sendData = {};
-  for (const k in data) {
-    if (k !== 'detailsJson') sendData[k] = data[k];
-  }
-  sendData.detailsJson = '';
-
-  // Use image GET request — works from local files, no CORS issues
-  const img = new Image();
-  img.onload = () => {
-    saveEl.className = 'save-status saved';
-    saveEl.textContent = copy.save.saved;
-  };
-  img.onerror = () => {
-    // Apps Script returns JSON not an image, so onerror fires BUT the request still went through
-    saveEl.className = 'save-status saved';
-    saveEl.textContent = copy.save.saved;
-  };
-  img.src = APPS_SCRIPT_URL + '?action=saveResult&data=' + encodeURIComponent(JSON.stringify(sendData));
-  setTimeout(() => {
-    if (iframe.parentNode) document.body.removeChild(iframe);
-  }, 10000);
+  fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  })
+  .then(r => r.json())
+  .then(res => {
+    if (res.success) {
+      saveEl.className = 'save-status saved';
+      saveEl.textContent = copy.save.saved;
+    } else {
+      saveEl.className = 'save-status save-error';
+      saveEl.textContent = copy.save.error || 'Error saving';
+    }
+  })
+  .catch(() => {
+    saveEl.className = 'save-status save-error';
+    saveEl.textContent = copy.save.error || 'Error saving';
+  });
 }
 
 function restart() {
