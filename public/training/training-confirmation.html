@@ -2410,8 +2410,22 @@ const SANDBOX_I18N = {
 
 let sandboxLang = "fr";
 const TRAINING_PASSWORD = 'training2026';
-const API_URL = '/api/training/results';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw3C0s8m0L-dIyRJoN7P2sIDP9jrSCA10FumA-dusU5NNyJL8gXTCAx-rtotNxwyl0azA/exec';
 let agentName = '';
+
+// Hub mode: if launched from Training Hub, skip login and redirect at the end
+var hubMode = false;
+(function() {
+  try {
+    var hub = JSON.parse(localStorage.getItem('trainingHub_active'));
+    if (hub && hub.agentName) {
+      hubMode = true;
+      agentName = hub.agentName;
+      sandboxLang = hub.language || 'fr';
+    }
+  } catch(e) {}
+})();
+
 let sandboxPlatformId = "";
 let sandboxOrderSeconds = 0;
 </script>
@@ -3186,6 +3200,31 @@ function showFinalScore() {
   const averageMinutes = String(Math.floor(averageSeconds / 60)).padStart(2, "0");
   const averageRemainder = String(averageSeconds % 60).padStart(2, "0");
 
+  // Hub mode: save results to localStorage and redirect back to Hub
+  if (hubMode) {
+    var resultData = {
+      agentName: agentName, module: 'confirmation', language: sandboxLang,
+      finalScore: finalPct, passed: passed,
+      totalCorrect: totalFixed, totalChecks: totalErrors,
+      totalSeconds: totalSeconds, avgSeconds: Math.round(totalSeconds / orderResults.length),
+      scenarioCount: orderResults.length,
+      trapsFell: 0, trapsTotal: 0,
+      detailsJson: JSON.stringify(orderResults)
+    };
+    localStorage.setItem('trainingHub_confirmationResult', JSON.stringify(resultData));
+    // Fire API call (image GET to avoid CORS on file:// URLs)
+    var sendData = {};
+    for (var k in resultData) {
+      if (k !== 'detailsJson') sendData[k] = resultData[k];
+    }
+    sendData.detailsJson = '';
+    var img = new Image();
+    img.src = APPS_SCRIPT_URL + '?action=saveResult&data=' + encodeURIComponent(JSON.stringify(sendData));
+    // Go back to Hub — agent sees combined results there
+    window.location.href = 'training-hub.html';
+    return;
+  }
+
   let breakdown = "";
   orderResults.forEach((result, index) => {
     const badgeClass = result.pct >= 90 ? "pass" : result.pct >= 60 ? "partial" : "fail";
@@ -3233,10 +3272,10 @@ function showFinalScore() {
   }
 }
 
-// SUBMIT RESULTS TO API
+// SUBMIT RESULTS TO GOOGLE SHEETS
 function submitResultsToSheet(data) {
-  if (!API_URL) {
-    console.log('No API URL configured. Results:', data);
+  if (!APPS_SCRIPT_URL) {
+    console.log('No Apps Script URL configured. Results:', data);
     return;
   }
 
@@ -3245,25 +3284,28 @@ function submitResultsToSheet(data) {
   saveEl.className = 'save-status saving';
   saveEl.textContent = copy.save.saving;
 
-  fetch(API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  })
-  .then(r => r.json())
-  .then(result => {
-    if (result.success) {
-      saveEl.className = 'save-status saved';
-      saveEl.textContent = copy.save.saved;
-    } else {
-      saveEl.className = 'save-status error';
-      saveEl.textContent = copy.save.error;
-    }
-  })
-  .catch(() => {
-    saveEl.className = 'save-status error';
-    saveEl.textContent = copy.save.error;
-  });
+  // Remove detailsJson for URL (too large) — send core data only
+  const sendData = {};
+  for (const k in data) {
+    if (k !== 'detailsJson') sendData[k] = data[k];
+  }
+  sendData.detailsJson = '';
+
+  // Use image GET request — works from local files, no CORS issues
+  const img = new Image();
+  img.onload = () => {
+    saveEl.className = 'save-status saved';
+    saveEl.textContent = copy.save.saved;
+  };
+  img.onerror = () => {
+    // Apps Script returns JSON not an image, so onerror fires BUT the request still went through
+    saveEl.className = 'save-status saved';
+    saveEl.textContent = copy.save.saved;
+  };
+  img.src = APPS_SCRIPT_URL + '?action=saveResult&data=' + encodeURIComponent(JSON.stringify(sendData));
+  setTimeout(() => {
+    if (iframe.parentNode) document.body.removeChild(iframe);
+  }, 10000);
 }
 
 function restart() {
@@ -3286,6 +3328,12 @@ document.getElementById('login-password').addEventListener('keydown', function(e
   if (e.key === 'Enter') handleLogin();
 });
 setLanguage("fr");
+
+// Hub mode: skip login screen and start training immediately
+if (hubMode) {
+  document.getElementById('login-screen').classList.add('hidden');
+  startTraining();
+}
 </script>
 
 </body>

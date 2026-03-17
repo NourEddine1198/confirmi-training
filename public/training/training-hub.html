@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orderdz | Formation Complète</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
+
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  :root {
+    --nav-bg: #1e293b;
+    --page-bg: #f1f5f9;
+    --card-bg: #ffffff;
+    --border: #e2e8f0;
+    --text: #1e293b;
+    --text-secondary: #64748b;
+    --blue: #0052FF;
+    --green: #16a34a;
+    --green-light: #dcfce7;
+    --red: #dc2626;
+    --red-light: #fee2e2;
+    --training-banner: #7c3aed;
+  }
+
+  body {
+    font-family: 'Source Sans 3', system-ui, -apple-system, sans-serif;
+    background: var(--page-bg);
+    color: var(--text);
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ===== TRAINING BANNER ===== */
+  .training-banner {
+    background: var(--training-banner);
+    color: white;
+    text-align: center;
+    padding: 10px 16px;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+  .training-banner .pulse-dot {
+    width: 10px; height: 10px;
+    background: #a78bfa;
+    border-radius: 50%;
+    animation: pulse-ring 1.5s infinite;
+  }
+  @keyframes pulse-ring {
+    0% { box-shadow: 0 0 0 0 rgba(167,139,250,0.6); }
+    70% { box-shadow: 0 0 0 8px rgba(167,139,250,0); }
+    100% { box-shadow: 0 0 0 0 rgba(167,139,250,0); }
+  }
+
+  /* ===== NAV BAR ===== */
+  .nav-bar {
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    height: 52px;
+    gap: 28px;
+  }
+  .nav-logo { font-weight: 700; font-size: 20px; color: var(--text); font-style: italic; margin-right: 8px; }
+  .nav-logo span { color: var(--blue); }
+  .nav-spacer { flex: 1; }
+
+  /* ===== LANGUAGE SWITCHER ===== */
+  .lang-switcher { position: relative; }
+  .lang-btn {
+    background: #f1f5f9; border: 1px solid var(--border); border-radius: 8px;
+    padding: 6px 14px; font-size: 13px; font-weight: 500; cursor: pointer;
+    font-family: inherit; color: var(--text); display: flex; align-items: center; gap: 6px;
+  }
+  .lang-btn:hover { background: #e2e8f0; }
+  .lang-menu {
+    display: none; position: absolute; top: 100%; right: 0; margin-top: 4px;
+    background: white; border: 1px solid var(--border); border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1); min-width: 140px; z-index: 100; overflow: hidden;
+  }
+  .lang-menu.open { display: block; }
+  .lang-option {
+    padding: 8px 14px; font-size: 13px; cursor: pointer;
+    transition: background 0.1s; display: block; width: 100%; border: none;
+    background: none; text-align: left; font-family: inherit; color: var(--text);
+  }
+  .lang-option:hover { background: #f1f5f9; }
+
+  .hidden { display: none !important; }
+
+  /* ===== LOGIN SCREEN ===== */
+  .login-screen { min-height: 100vh; display: flex; flex-direction: column; }
+  .login-body { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px; }
+  .login-card { background: white; border-radius: 16px; padding: 48px; max-width: 440px; width: 100%; text-align: center; border: 1px solid var(--border); box-shadow: 0 4px 24px rgba(0,0,0,0.04); }
+  .login-card .icon-big { width: 72px; height: 72px; background: #ede9fe; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 32px; margin-bottom: 20px; }
+  .login-card h1 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+  .login-card .desc { font-size: 14px; color: var(--text-secondary); margin-bottom: 24px; }
+  .login-field { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 10px; font-size: 14px; font-family: inherit; color: var(--text); background: #f8fafc; outline: none; transition: border-color 0.15s, box-shadow 0.15s; margin-bottom: 12px; }
+  .login-field:focus { border-color: var(--training-banner); box-shadow: 0 0 0 3px rgba(124,58,237,0.12); background: white; }
+  .login-error { color: var(--red); font-size: 13px; font-weight: 500; margin-bottom: 12px; display: none; }
+  .login-error.visible { display: block; }
+  .btn-login { background: var(--training-banner); color: white; border: none; padding: 14px 48px; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s; width: 100%; }
+  .btn-login:hover { background: #6d28d9; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(124,58,237,0.3); }
+
+  /* ===== WELCOME SCREEN ===== */
+  .welcome-screen { min-height: 100vh; display: flex; flex-direction: column; }
+  .welcome-body { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px; }
+  .welcome-card { background: white; border-radius: 16px; padding: 48px; max-width: 560px; width: 100%; text-align: center; border: 1px solid var(--border); box-shadow: 0 4px 24px rgba(0,0,0,0.04); }
+  .welcome-card .icon-big { font-size: 48px; margin-bottom: 16px; }
+  .welcome-card h1 { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+  .welcome-card .desc { font-size: 15px; color: var(--text-secondary); margin-bottom: 24px; line-height: 1.6; }
+  .welcome-card .phases { text-align: left; margin-bottom: 28px; }
+  .phase-item { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border-radius: 10px; margin-bottom: 8px; }
+  .phase-item.status { background: #ede9fe; }
+  .phase-item.confirm { background: #dbeafe; }
+  .phase-icon { font-size: 24px; flex-shrink: 0; }
+  .phase-info h3 { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
+  .phase-info p { font-size: 13px; color: var(--text-secondary); }
+  .cert-note { font-size: 14px; color: var(--training-banner); font-weight: 600; margin-bottom: 24px; padding: 12px; background: #ede9fe; border-radius: 10px; }
+  .btn-start { background: var(--training-banner); color: white; border: none; padding: 16px 48px; border-radius: 12px; font-size: 18px; font-weight: 700; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+  .btn-start:hover { background: #6d28d9; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(124,58,237,0.3); }
+
+  /* ===== RESULTS SCREEN ===== */
+  .results-screen { min-height: 100vh; display: flex; flex-direction: column; }
+  .results-body { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px; }
+  .results-card { background: white; border-radius: 16px; padding: 48px; max-width: 700px; width: 100%; text-align: center; border: 1px solid var(--border); box-shadow: 0 4px 24px rgba(0,0,0,0.04); }
+  .results-card .icon-big { font-size: 56px; margin-bottom: 12px; }
+  .results-card .agent-name { font-size: 18px; font-weight: 600; color: var(--training-banner); margin-bottom: 8px; }
+  .results-card h1 { font-size: 22px; font-weight: 700; margin-bottom: 24px; }
+
+  .score-cards { display: flex; gap: 16px; margin-bottom: 28px; justify-content: center; flex-wrap: wrap; }
+  .score-card { flex: 1; min-width: 160px; max-width: 200px; padding: 20px 16px; border-radius: 14px; border: 2px solid var(--border); }
+  .score-card.status-card { border-color: #c4b5fd; background: #faf5ff; }
+  .score-card.confirm-card { border-color: #93c5fd; background: #eff6ff; }
+  .score-card.overall-card { border-color: #86efac; background: #f0fdf4; }
+  .score-card.overall-card.fail { border-color: #fca5a5; background: #fef2f2; }
+  .score-card .card-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary); margin-bottom: 8px; }
+  .score-card .card-score { font-size: 36px; font-weight: 800; }
+  .score-card.status-card .card-score { color: #7c3aed; }
+  .score-card.confirm-card .card-score { color: #2563eb; }
+  .score-card.overall-card .card-score { color: var(--green); }
+  .score-card.overall-card.fail .card-score { color: var(--red); }
+  .score-card .card-detail { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+
+  .stats-row { display: flex; justify-content: center; gap: 20px; margin-bottom: 24px; flex-wrap: wrap; }
+  .stat-box { text-align: center; min-width: 80px; }
+  .stat-box .num { font-size: 22px; font-weight: 700; color: var(--text); }
+  .stat-box .lbl { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
+
+  .certificate-box { padding: 20px 28px; border-radius: 12px; margin-bottom: 24px; }
+  .certificate-box.certified { background: var(--green-light); border: 2px solid var(--green); }
+  .certificate-box.not-certified { background: var(--red-light); border: 2px solid var(--red); }
+  .certificate-box h3 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .certificate-box.certified h3 { color: var(--green); }
+  .certificate-box.not-certified h3 { color: var(--red); }
+  .certificate-box p { font-size: 14px; color: var(--text-secondary); }
+
+  .btn-restart { background: var(--training-banner); color: white; border: none; padding: 14px 40px; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+  .btn-restart:hover { background: #6d28d9; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(124,58,237,0.3); }
+
+  /* ===== RTL SUPPORT ===== */
+  html[dir="rtl"] .phases { text-align: right; }
+  html[dir="rtl"] .phase-item { flex-direction: row-reverse; }
+  html[dir="rtl"] .lang-menu { right: auto; left: 0; }
+  html[dir="rtl"] .lang-option { text-align: right; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 600px) {
+    .login-card, .welcome-card, .results-card { padding: 32px 20px; }
+    .score-cards { flex-direction: column; align-items: center; }
+    .score-card { max-width: 100%; }
+  }
+
+  .numeric-ltr { direction: ltr; unicode-bidi: isolate; }
+</style>
+</head>
+<body>
+
+<!-- ==================== LOGIN SCREEN ==================== -->
+<div id="login-screen" class="login-screen">
+  <div class="training-banner">
+    <span class="pulse-dot"></span>
+    <span id="login-banner-text">Mode Formation &mdash; Parcours Complet</span>
+    <span class="pulse-dot"></span>
+  </div>
+  <div class="nav-bar">
+    <span class="nav-logo">Order<span>*</span></span>
+    <span class="nav-spacer"></span>
+    <div class="lang-switcher">
+      <button class="lang-btn" id="lang-btn" onclick="toggleLangMenu()">
+        <span id="lang-current">Fran&ccedil;ais</span> &#9662;
+      </button>
+      <div class="lang-menu" id="lang-menu">
+        <button class="lang-option" onclick="setLanguage('fr')">Fran&ccedil;ais</button>
+        <button class="lang-option" onclick="setLanguage('ar')">&#1575;&#1604;&#1593;&#1585;&#1576;&#1610;&#1577;</button>
+      </div>
+    </div>
+  </div>
+  <div class="login-body">
+    <div class="login-card">
+      <div class="icon-big">&#127891;</div>
+      <h1 id="login-title">Formation Compl&egrave;te</h1>
+      <p class="desc" id="login-desc">Entrez votre nom et le mot de passe fourni par votre formateur.</p>
+      <input type="text" class="login-field" id="login-name" placeholder="Votre nom complet" autocomplete="off">
+      <input type="password" class="login-field" id="login-password" placeholder="Mot de passe" autocomplete="off">
+      <div class="login-error" id="login-error"></div>
+      <button class="btn-login" id="btn-login" onclick="handleLogin()">Se connecter</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== WELCOME SCREEN ==================== -->
+<div id="welcome-screen" class="welcome-screen hidden">
+  <div class="training-banner">
+    <span class="pulse-dot"></span>
+    <span id="welcome-banner-text">Mode Formation &mdash; Parcours Complet</span>
+    <span class="pulse-dot"></span>
+  </div>
+  <div class="nav-bar">
+    <span class="nav-logo">Order<span>*</span></span>
+    <span class="nav-spacer"></span>
+  </div>
+  <div class="welcome-body">
+    <div class="welcome-card">
+      <div class="icon-big">&#127891;</div>
+      <h1 id="welcome-title"></h1>
+      <p class="desc" id="welcome-desc"></p>
+      <div class="phases">
+        <div class="phase-item status">
+          <span class="phase-icon">&#128203;</span>
+          <div class="phase-info">
+            <h3 id="phase1-title"></h3>
+            <p id="phase1-desc"></p>
+          </div>
+        </div>
+        <div class="phase-item confirm">
+          <span class="phase-icon">&#128221;</span>
+          <div class="phase-info">
+            <h3 id="phase2-title"></h3>
+            <p id="phase2-desc"></p>
+          </div>
+        </div>
+      </div>
+      <div class="cert-note" id="cert-note"></div>
+      <button class="btn-start" id="btn-start" onclick="startHub()"></button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== RESULTS SCREEN ==================== -->
+<div id="results-screen" class="results-screen hidden">
+  <div class="training-banner">
+    <span class="pulse-dot"></span>
+    <span id="results-banner-text">Mode Formation &mdash; R&eacute;sultats</span>
+    <span class="pulse-dot"></span>
+  </div>
+  <div class="nav-bar">
+    <span class="nav-logo">Order<span>*</span></span>
+    <span class="nav-spacer"></span>
+  </div>
+  <div class="results-body">
+    <div class="results-card" id="results-card">
+      <!-- Filled by JavaScript -->
+    </div>
+  </div>
+</div>
+
+<script>
+// ===================================================================
+// CONFIGURATION
+// ===================================================================
+var TRAINING_PASSWORD = 'training2026';
+var currentLang = 'fr';
+var agentName = '';
+
+// ===================================================================
+// TRANSLATIONS (French / Arabic)
+// ===================================================================
+var HUB_I18N = {
+  fr: {
+    bannerLogin: "Mode Formation \u2014 Parcours Complet",
+    bannerWelcome: "Mode Formation \u2014 Parcours Complet",
+    bannerResults: "Mode Formation \u2014 R\u00e9sultats",
+    langCurrent: "Fran\u00e7ais",
+    loginTitle: "Formation Compl\u00e8te",
+    loginDesc: "Entrez votre nom et le mot de passe fourni par votre formateur.",
+    loginNamePlaceholder: "Votre nom complet",
+    loginPasswordPlaceholder: "Mot de passe",
+    loginBtn: "Se connecter",
+    errorEmpty: "Veuillez entrer votre nom.",
+    errorPassword: "Mot de passe incorrect.",
+    welcomeTitle: function(name) { return "Bienvenue, " + name + " !"; },
+    welcomeDesc: "Vous allez passer deux \u00e9preuves sans interruption. Votre score final combine les deux.",
+    phase1Title: "Phase 1 : Statut des commandes",
+    phase1Desc: "10 sc\u00e9narios \u2014 Choisissez le bon statut apr\u00e8s chaque appel",
+    phase2Title: "Phase 2 : Confirmation des commandes",
+    phase2Desc: "8 sc\u00e9narios \u2014 V\u00e9rifiez et corrigez les erreurs dans chaque commande",
+    certNote: "\u2705 Il faut 90% au score global pour \u00eatre certifi\u00e9",
+    startBtn: "Commencer la formation",
+    resultsTitle: "R\u00e9sultats de la formation",
+    statusLabel: "Statut",
+    confirmLabel: "Confirmation",
+    overallLabel: "Score Global",
+    correctOf: function(c, t) { return c + " / " + t + " corrects"; },
+    statScenarios: "Sc\u00e9narios",
+    statTime: "Temps total",
+    statCorrect: "Bonnes r\u00e9ponses",
+    statErrors: "Erreurs",
+    certPass: "\u2705 Certifi\u00e9 !",
+    certPassDesc: "F\u00e9licitations ! Vous avez r\u00e9ussi la formation avec un score global de 90% ou plus.",
+    certFail: "\u274c Non certifi\u00e9",
+    certFailDesc: "Votre score global est inf\u00e9rieur \u00e0 90%. Recommencez pour am\u00e9liorer votre r\u00e9sultat.",
+    restartBtn: "Recommencer"
+  },
+  ar: {
+    bannerLogin: "\u0648\u0636\u0639 \u0627\u0644\u062a\u062f\u0631\u064a\u0628 \u2014 \u0627\u0644\u0645\u0633\u0627\u0631 \u0627\u0644\u0643\u0627\u0645\u0644",
+    bannerWelcome: "\u0648\u0636\u0639 \u0627\u0644\u062a\u062f\u0631\u064a\u0628 \u2014 \u0627\u0644\u0645\u0633\u0627\u0631 \u0627\u0644\u0643\u0627\u0645\u0644",
+    bannerResults: "\u0648\u0636\u0639 \u0627\u0644\u062a\u062f\u0631\u064a\u0628 \u2014 \u0627\u0644\u0646\u062a\u0627\u0626\u062c",
+    langCurrent: "\u0627\u0644\u0639\u0631\u0628\u064a\u0629",
+    loginTitle: "\u0627\u0644\u062a\u062f\u0631\u064a\u0628 \u0627\u0644\u0643\u0627\u0645\u0644",
+    loginDesc: "\u0623\u062f\u062e\u0644 \u0627\u0633\u0645\u0643 \u0648\u0643\u0644\u0645\u0629 \u0627\u0644\u0645\u0631\u0648\u0631 \u0627\u0644\u062a\u064a \u0623\u0639\u0637\u0627\u0647\u0627 \u0644\u0643 \u0627\u0644\u0645\u062f\u0631\u0628.",
+    loginNamePlaceholder: "\u0627\u0633\u0645\u0643 \u0627\u0644\u0643\u0627\u0645\u0644",
+    loginPasswordPlaceholder: "\u0643\u0644\u0645\u0629 \u0627\u0644\u0645\u0631\u0648\u0631",
+    loginBtn: "\u062a\u0633\u062c\u064a\u0644 \u0627\u0644\u062f\u062e\u0648\u0644",
+    errorEmpty: "\u064a\u0631\u062c\u0649 \u0625\u062f\u062e\u0627\u0644 \u0627\u0633\u0645\u0643.",
+    errorPassword: "\u0643\u0644\u0645\u0629 \u0627\u0644\u0645\u0631\u0648\u0631 \u063a\u064a\u0631 \u0635\u062d\u064a\u062d\u0629.",
+    welcomeTitle: function(name) { return "\u0645\u0631\u062d\u0628\u0627\u064b\u060c " + name + " !"; },
+    welcomeDesc: "\u0633\u062a\u062c\u062a\u0627\u0632 \u0627\u062e\u062a\u0628\u0627\u0631\u064a\u0646 \u0645\u062a\u062a\u0627\u0644\u064a\u064a\u0646 \u0628\u062f\u0648\u0646 \u0627\u0646\u0642\u0637\u0627\u0639. \u0627\u0644\u0646\u062a\u064a\u062c\u0629 \u0627\u0644\u0646\u0647\u0627\u0626\u064a\u0629 \u062a\u062c\u0645\u0639 \u0627\u0644\u0627\u062b\u0646\u064a\u0646.",
+    phase1Title: "\u0627\u0644\u0645\u0631\u062d\u0644\u0629 1 : \u062d\u0627\u0644\u0629 \u0627\u0644\u0637\u0644\u0628\u064a\u0627\u062a",
+    phase1Desc: "10 \u0633\u064a\u0646\u0627\u0631\u064a\u0648\u0647\u0627\u062a \u2014 \u0627\u062e\u062a\u0631 \u0627\u0644\u062d\u0627\u0644\u0629 \u0627\u0644\u0635\u062d\u064a\u062d\u0629 \u0628\u0639\u062f \u0643\u0644 \u0645\u0643\u0627\u0644\u0645\u0629",
+    phase2Title: "\u0627\u0644\u0645\u0631\u062d\u0644\u0629 2 : \u062a\u0623\u0643\u064a\u062f \u0627\u0644\u0637\u0644\u0628\u064a\u0627\u062a",
+    phase2Desc: "8 \u0633\u064a\u0646\u0627\u0631\u064a\u0648\u0647\u0627\u062a \u2014 \u062a\u062d\u0642\u0642 \u0648\u0635\u062d\u062d \u0627\u0644\u0623\u062e\u0637\u0627\u0621 \u0641\u064a \u0643\u0644 \u0637\u0644\u0628\u064a\u0629",
+    certNote: "\u2705 \u064a\u062c\u0628 \u0627\u0644\u062d\u0635\u0648\u0644 \u0639\u0644\u0649 90% \u0641\u064a \u0627\u0644\u0645\u062c\u0645\u0648\u0639 \u0644\u0644\u062d\u0635\u0648\u0644 \u0639\u0644\u0649 \u0627\u0644\u0634\u0647\u0627\u062f\u0629",
+    startBtn: "\u0628\u062f\u0621 \u0627\u0644\u062a\u062f\u0631\u064a\u0628",
+    resultsTitle: "\u0646\u062a\u0627\u0626\u062c \u0627\u0644\u062a\u062f\u0631\u064a\u0628",
+    statusLabel: "\u0627\u0644\u062d\u0627\u0644\u0629",
+    confirmLabel: "\u0627\u0644\u062a\u0623\u0643\u064a\u062f",
+    overallLabel: "\u0627\u0644\u0646\u062a\u064a\u062c\u0629 \u0627\u0644\u0625\u062c\u0645\u0627\u0644\u064a\u0629",
+    correctOf: function(c, t) { return c + " / " + t + " \u0635\u062d\u064a\u062d"; },
+    statScenarios: "\u0633\u064a\u0646\u0627\u0631\u064a\u0648\u0647\u0627\u062a",
+    statTime: "\u0627\u0644\u0648\u0642\u062a \u0627\u0644\u0625\u062c\u0645\u0627\u0644\u064a",
+    statCorrect: "\u0625\u062c\u0627\u0628\u0627\u062a \u0635\u062d\u064a\u062d\u0629",
+    statErrors: "\u0623\u062e\u0637\u0627\u0621",
+    certPass: "\u2705 \u0645\u0639\u062a\u0645\u062f !",
+    certPassDesc: "\u062a\u0647\u0627\u0646\u064a\u0646\u0627 ! \u0644\u0642\u062f \u0646\u062c\u062d\u062a \u0641\u064a \u0627\u0644\u062a\u062f\u0631\u064a\u0628 \u0628\u0646\u062a\u064a\u062c\u0629 \u0625\u062c\u0645\u0627\u0644\u064a\u0629 90% \u0623\u0648 \u0623\u0643\u062b\u0631.",
+    certFail: "\u274c \u063a\u064a\u0631 \u0645\u0639\u062a\u0645\u062f",
+    certFailDesc: "\u0646\u062a\u064a\u062c\u062a\u0643 \u0627\u0644\u0625\u062c\u0645\u0627\u0644\u064a\u0629 \u0623\u0642\u0644 \u0645\u0646 90%. \u0623\u0639\u062f \u0627\u0644\u0645\u062d\u0627\u0648\u0644\u0629 \u0644\u062a\u062d\u0633\u064a\u0646 \u0646\u062a\u064a\u062c\u062a\u0643.",
+    restartBtn: "\u0625\u0639\u0627\u062f\u0629 \u0627\u0644\u062a\u062f\u0631\u064a\u0628"
+  }
+};
+
+// ===================================================================
+// LANGUAGE
+// ===================================================================
+function setLanguage(lang) {
+  currentLang = lang;
+  var copy = HUB_I18N[lang];
+  var isAr = lang === 'ar';
+
+  document.documentElement.lang = isAr ? 'ar' : 'fr';
+  document.documentElement.dir = isAr ? 'rtl' : 'ltr';
+
+  // Login screen
+  document.getElementById('login-banner-text').textContent = copy.bannerLogin;
+  document.getElementById('lang-current').textContent = copy.langCurrent;
+  document.getElementById('login-title').textContent = copy.loginTitle;
+  document.getElementById('login-desc').textContent = copy.loginDesc;
+  document.getElementById('login-name').placeholder = copy.loginNamePlaceholder;
+  document.getElementById('login-password').placeholder = copy.loginPasswordPlaceholder;
+  document.getElementById('btn-login').textContent = copy.loginBtn;
+
+  // Welcome screen (update even if hidden — will show after login)
+  document.getElementById('welcome-banner-text').textContent = copy.bannerWelcome;
+  document.getElementById('phase1-title').textContent = copy.phase1Title;
+  document.getElementById('phase1-desc').textContent = copy.phase1Desc;
+  document.getElementById('phase2-title').textContent = copy.phase2Title;
+  document.getElementById('phase2-desc').textContent = copy.phase2Desc;
+  document.getElementById('cert-note').textContent = copy.certNote;
+  document.getElementById('btn-start').textContent = copy.startBtn;
+
+  // Results banner
+  document.getElementById('results-banner-text').textContent = copy.bannerResults;
+
+  closeLangMenu();
+}
+
+function toggleLangMenu() {
+  document.getElementById('lang-menu').classList.toggle('open');
+}
+
+function closeLangMenu() {
+  document.getElementById('lang-menu').classList.remove('open');
+}
+
+// ===================================================================
+// LOGIN
+// ===================================================================
+function handleLogin() {
+  var name = document.getElementById('login-name').value.trim();
+  var password = document.getElementById('login-password').value;
+  var copy = HUB_I18N[currentLang];
+  var errorEl = document.getElementById('login-error');
+
+  if (!name) {
+    errorEl.textContent = copy.errorEmpty;
+    errorEl.classList.add('visible');
+    return;
+  }
+  if (password !== TRAINING_PASSWORD) {
+    errorEl.textContent = copy.errorPassword;
+    errorEl.classList.add('visible');
+    return;
+  }
+
+  agentName = name;
+  errorEl.classList.remove('visible');
+
+  // Clear any old hub data from previous sessions
+  localStorage.removeItem('trainingHub_active');
+  localStorage.removeItem('trainingHub_statusResult');
+  localStorage.removeItem('trainingHub_confirmationResult');
+
+  // Write hub active flag so the training modules know to skip their own login
+  localStorage.setItem('trainingHub_active', JSON.stringify({
+    agentName: agentName,
+    language: currentLang,
+    startedAt: new Date().toISOString()
+  }));
+
+  // Show welcome screen
+  var copy = HUB_I18N[currentLang];
+  document.getElementById('welcome-title').textContent = copy.welcomeTitle(agentName);
+  document.getElementById('welcome-desc').textContent = copy.welcomeDesc;
+
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('welcome-screen').classList.remove('hidden');
+}
+
+// ===================================================================
+// START HUB — Navigate to Status module
+// ===================================================================
+function startHub() {
+  window.location.href = 'training-status.html';
+}
+
+// ===================================================================
+// SHOW RESULTS — Called when both modules are complete
+// ===================================================================
+function showResults() {
+  var copy = HUB_I18N[currentLang];
+  var statusResult = JSON.parse(localStorage.getItem('trainingHub_statusResult'));
+  var confirmResult = JSON.parse(localStorage.getItem('trainingHub_confirmationResult'));
+
+  // Calculate overall score across ALL 18 scenarios
+  var totalCorrect = statusResult.totalCorrect + confirmResult.totalCorrect;
+  var totalChecks = statusResult.totalChecks + confirmResult.totalChecks;
+  var overallPct = totalChecks === 0 ? 100 : Math.round((totalCorrect / totalChecks) * 100);
+  var passed = overallPct >= 90;
+
+  // Total time
+  var totalSeconds = statusResult.totalSeconds + confirmResult.totalSeconds;
+  var totalMin = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+  var totalSec = String(totalSeconds % 60).padStart(2, '0');
+
+  // Total scenarios
+  var totalScenarios = statusResult.scenarioCount + confirmResult.scenarioCount;
+  var totalErrors = totalChecks - totalCorrect;
+
+  var html = '';
+  html += '<div class="icon-big">' + (passed ? '&#127942;' : '&#128218;') + '</div>';
+  html += '<div class="agent-name">' + agentName + '</div>';
+  html += '<h1>' + copy.resultsTitle + '</h1>';
+
+  // Three score cards
+  html += '<div class="score-cards">';
+  html += '<div class="score-card status-card">';
+  html += '<div class="card-label">' + copy.statusLabel + '</div>';
+  html += '<div class="card-score">' + statusResult.finalScore + '%</div>';
+  html += '<div class="card-detail">' + copy.correctOf(statusResult.totalCorrect, statusResult.totalChecks) + '</div>';
+  html += '</div>';
+
+  html += '<div class="score-card confirm-card">';
+  html += '<div class="card-label">' + copy.confirmLabel + '</div>';
+  html += '<div class="card-score">' + confirmResult.finalScore + '%</div>';
+  html += '<div class="card-detail">' + copy.correctOf(confirmResult.totalCorrect, confirmResult.totalChecks) + '</div>';
+  html += '</div>';
+
+  html += '<div class="score-card overall-card' + (passed ? '' : ' fail') + '">';
+  html += '<div class="card-label">' + copy.overallLabel + '</div>';
+  html += '<div class="card-score">' + overallPct + '%</div>';
+  html += '<div class="card-detail">' + copy.correctOf(totalCorrect, totalChecks) + '</div>';
+  html += '</div>';
+  html += '</div>';
+
+  // Stats row
+  html += '<div class="stats-row">';
+  html += '<div class="stat-box"><div class="num">' + totalScenarios + '</div><div class="lbl">' + copy.statScenarios + '</div></div>';
+  html += '<div class="stat-box"><div class="num numeric-ltr">' + totalMin + ':' + totalSec + '</div><div class="lbl">' + copy.statTime + '</div></div>';
+  html += '<div class="stat-box"><div class="num">' + totalCorrect + '</div><div class="lbl">' + copy.statCorrect + '</div></div>';
+  html += '<div class="stat-box"><div class="num">' + totalErrors + '</div><div class="lbl">' + copy.statErrors + '</div></div>';
+  html += '</div>';
+
+  // Certificate
+  html += '<div class="certificate-box ' + (passed ? 'certified' : 'not-certified') + '">';
+  html += '<h3>' + (passed ? copy.certPass : copy.certFail) + '</h3>';
+  html += '<p>' + (passed ? copy.certPassDesc : copy.certFailDesc) + '</p>';
+  html += '</div>';
+
+  html += '<button class="btn-restart" onclick="restart()">' + copy.restartBtn + '</button>';
+
+  document.getElementById('results-card').innerHTML = html;
+
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('welcome-screen').classList.add('hidden');
+  document.getElementById('results-screen').classList.remove('hidden');
+}
+
+// ===================================================================
+// RESTART — Clear data and go back to login
+// ===================================================================
+function restart() {
+  localStorage.removeItem('trainingHub_active');
+  localStorage.removeItem('trainingHub_statusResult');
+  localStorage.removeItem('trainingHub_confirmationResult');
+
+  document.getElementById('results-screen').classList.add('hidden');
+  document.getElementById('login-screen').classList.remove('hidden');
+  document.getElementById('login-name').value = '';
+  document.getElementById('login-password').value = '';
+}
+
+// ===================================================================
+// INIT — Check if returning from completed training
+// ===================================================================
+(function init() {
+  // Check if both results exist (agent just finished both modules)
+  var statusResult = null;
+  var confirmResult = null;
+  var hubActive = null;
+
+  try { hubActive = JSON.parse(localStorage.getItem('trainingHub_active')); } catch(e) {}
+  try { statusResult = JSON.parse(localStorage.getItem('trainingHub_statusResult')); } catch(e) {}
+  try { confirmResult = JSON.parse(localStorage.getItem('trainingHub_confirmationResult')); } catch(e) {}
+
+  if (hubActive && statusResult && confirmResult) {
+    // Both modules complete — show results
+    agentName = hubActive.agentName;
+    currentLang = hubActive.language || 'fr';
+    setLanguage(currentLang);
+    showResults();
+  } else {
+    // Normal state — show login
+    setLanguage('fr');
+  }
+})();
+
+// Close language menu when clicking outside
+document.addEventListener('click', function(event) {
+  if (!event.target.closest('.lang-switcher')) closeLangMenu();
+});
+
+// Enter key on password field triggers login
+document.getElementById('login-password').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') handleLogin();
+});
+</script>
+
+</body>
+</html>

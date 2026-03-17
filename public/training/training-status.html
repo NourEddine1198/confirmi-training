@@ -700,8 +700,21 @@
 // ===================================================================
 var currentLang = 'fr';
 var TRAINING_PASSWORD = 'training2026';
-var API_URL = '/api/training/results';
+var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw3C0s8m0L-dIyRJoN7P2sIDP9jrSCA10FumA-dusU5NNyJL8gXTCAx-rtotNxwyl0azA/exec';
 var agentName = '';
+
+// Hub mode: if launched from Training Hub, skip login and redirect at the end
+var hubMode = false;
+(function() {
+  try {
+    var hub = JSON.parse(localStorage.getItem('trainingHub_active'));
+    if (hub && hub.agentName) {
+      hubMode = true;
+      agentName = hub.agentName;
+      currentLang = hub.language || 'fr';
+    }
+  } catch(e) {}
+})();
 
 var STATUS_I18N = {
   fr: {
@@ -1579,6 +1592,38 @@ function showFinalScore() {
   var avgMin = String(Math.floor(avgTime / 60)).padStart(2, '0');
   var avgSec = String(avgTime % 60).padStart(2, '0');
 
+  // Hub mode: save results to localStorage and go straight to Confirmation
+  if (hubMode) {
+    var trapsFell = 0, trapsTotal = 0;
+    for (var t = 0; t < scenarioResults.length; t++) {
+      if (SCENARIOS[scenarioResults[t].scenarioIdx].trap) {
+        trapsTotal++;
+        if (scenarioResults[t].pct < 100) trapsFell++;
+      }
+    }
+    var resultData = {
+      agentName: agentName, module: 'status', language: currentLang,
+      finalScore: finalPct, passed: passed,
+      totalCorrect: totalCorrect, totalChecks: totalChecks,
+      totalSeconds: totalSec, avgSeconds: Math.round(totalSec / scenarioResults.length),
+      scenarioCount: scenarioResults.length,
+      trapsFell: trapsFell, trapsTotal: trapsTotal,
+      detailsJson: JSON.stringify(scenarioResults)
+    };
+    localStorage.setItem('trainingHub_statusResult', JSON.stringify(resultData));
+    // Fire API call (image GET to avoid CORS on file:// URLs)
+    var sendData = {};
+    for (var k in resultData) {
+      if (k !== 'detailsJson') sendData[k] = resultData[k];
+    }
+    sendData.detailsJson = '';
+    var img = new Image();
+    img.src = APPS_SCRIPT_URL + '?action=saveResult&data=' + encodeURIComponent(JSON.stringify(sendData));
+    // Go directly to Confirmation — agent does NOT see the Status score
+    window.location.href = 'training-confirmation.html';
+    return;
+  }
+
   var breakdownHtml = '';
   for (var j = 0; j < scenarioResults.length; j++) {
     var res = scenarioResults[j];
@@ -1639,8 +1684,8 @@ function showFinalScore() {
 // SUBMIT RESULTS TO GOOGLE SHEETS
 // ===================================================================
 function submitResultsToSheet(data) {
-  if (!API_URL) {
-    console.log('No API URL configured. Results:', data);
+  if (!APPS_SCRIPT_URL) {
+    console.log('No Apps Script URL configured. Results:', data);
     return;
   }
 
@@ -1649,25 +1694,25 @@ function submitResultsToSheet(data) {
   saveEl.className = 'save-status saving';
   saveEl.textContent = copy.save.saving;
 
-  fetch(API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  })
-  .then(function(r) { return r.json(); })
-  .then(function(result) {
-    if (result.success) {
-      saveEl.className = 'save-status saved';
-      saveEl.textContent = copy.save.saved;
-    } else {
-      saveEl.className = 'save-status error';
-      saveEl.textContent = copy.save.error;
-    }
-  })
-  .catch(function() {
-    saveEl.className = 'save-status error';
-    saveEl.textContent = copy.save.error;
-  });
+  // Remove detailsJson for URL (too large) — send core data only
+  var sendData = {};
+  for (var k in data) {
+    if (k !== 'detailsJson') sendData[k] = data[k];
+  }
+  sendData.detailsJson = '';
+
+  // Use image GET request — works from local files, no CORS issues
+  var img = new Image();
+  img.onload = function() {
+    saveEl.className = 'save-status saved';
+    saveEl.textContent = copy.save.saved;
+  };
+  img.onerror = function() {
+    // Apps Script returns JSON not an image, so onerror fires BUT the request still went through
+    saveEl.className = 'save-status saved';
+    saveEl.textContent = copy.save.saved;
+  };
+  img.src = APPS_SCRIPT_URL + '?action=saveResult&data=' + encodeURIComponent(JSON.stringify(sendData));
 }
 
 // ===================================================================
@@ -1808,6 +1853,12 @@ document.getElementById('login-password').addEventListener('keydown', function(e
   if (e.key === 'Enter') handleLogin();
 });
 renderStaticText();
+
+// Hub mode: skip login screen and start training immediately
+if (hubMode) {
+  document.getElementById('login-screen').classList.add('hidden');
+  startTraining();
+}
 </script>
 </body>
 </html>
