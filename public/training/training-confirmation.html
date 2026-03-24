@@ -673,6 +673,29 @@
   .save-status.saved { display: block; background: var(--green-light); color: var(--green); }
   .save-status.save-error { display: block; background: var(--red-light); color: var(--red); }
   .agent-name-display { font-size: 16px; font-weight: 600; color: var(--training-banner); margin-bottom: 8px; }
+
+  /* ===== JOURNEY BAR (hub mode only) ===== */
+  .journey-bar { display: none; background: #faf8ff; border-bottom: 1px solid #e9d5ff; padding: 10px 32px; align-items: center; justify-content: center; gap: 0; }
+  .journey-bar.visible { display: flex; }
+  .journey-step { display: flex; align-items: center; gap: 8px; }
+  .journey-circle { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; border: 2px solid #cbd5e1; color: #94a3b8; background: white; transition: all 0.3s; flex-shrink: 0; }
+  .journey-step.active .journey-circle { border-color: var(--training-banner); background: var(--training-banner); color: white; }
+  .journey-step.completed .journey-circle { border-color: var(--green); background: var(--green); color: white; }
+  .journey-label { font-size: 13px; font-weight: 500; color: #94a3b8; white-space: nowrap; }
+  .journey-step.active .journey-label { color: #5b21b6; font-weight: 600; }
+  .journey-step.completed .journey-label { color: var(--green); font-weight: 600; }
+  .journey-connector { flex: 0 0 60px; height: 2px; background: #e2e8f0; margin: 0 16px; border-radius: 1px; }
+  .journey-connector.done { background: var(--green); }
+
+  /* ===== PHASE 2 INTRO OVERLAY (hub mode) ===== */
+  .phase-intro-overlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.82); backdrop-filter: blur(6px); z-index: 300; align-items: center; justify-content: center; }
+  .phase-intro-overlay.open { display: flex; }
+  .phase-intro-card { background: white; border-radius: 20px; max-width: 440px; width: 90%; padding: 48px 40px; text-align: center; box-shadow: 0 32px 64px rgba(0,0,0,0.2); animation: intro-card-in 0.5s cubic-bezier(0.22,1,0.36,1); }
+  @keyframes intro-card-in { from { opacity: 0; transform: translateY(20px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  .phase-intro-badge { width: 64px; height: 64px; border-radius: 50%; background: #2563eb; color: white; display: inline-flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 800; margin-bottom: 20px; }
+  .phase-intro-highlight { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; padding: 14px 20px; margin: 20px 0 28px; font-size: 15px; font-weight: 600; color: #1e40af; }
+  .btn-letsgo { background: var(--training-banner); color: white; border: none; padding: 16px 48px; border-radius: 12px; font-size: 18px; font-weight: 700; cursor: pointer; font-family: inherit; transition: all 0.2s; width: 100%; }
+  .btn-letsgo:hover { background: #6d28d9; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(124,58,237,0.3); }
 </style>
 </head>
 <body>
@@ -741,6 +764,20 @@
     Mode Formation — Aucune action r&eacute;elle ne sera effectu&eacute;e
     <span class="pulse-dot"></span>
   </div>
+
+  <!-- Journey Bar: shows Phase 1 completed, Phase 2 active (hub mode only) -->
+  <div class="journey-bar" id="journey-bar">
+    <div class="journey-step completed" id="journey-step-1">
+      <span class="journey-circle" id="journey-circle-1">&#10003;</span>
+      <span class="journey-label" id="journey-label-1">Phase 1 : Statut</span>
+    </div>
+    <div class="journey-connector done" id="journey-connector"></div>
+    <div class="journey-step active" id="journey-step-2">
+      <span class="journey-circle" id="journey-circle-2">2</span>
+      <span class="journey-label" id="journey-label-2">Phase 2 : Confirmation</span>
+    </div>
+  </div>
+
   <div class="nav-bar">
     <span class="nav-logo">Order<span>*</span></span>
     <a class="nav-link" href="#">Statistiques</a>
@@ -1227,6 +1264,17 @@
 <div class="scoring-overlay" id="final-overlay">
   <div class="scoring-card">
     <div class="final-card" id="final-card"></div>
+  </div>
+</div>
+
+<!-- Phase 2 Intro Overlay (hub mode only) -->
+<div class="phase-intro-overlay" id="phase-intro-overlay">
+  <div class="phase-intro-card">
+    <div class="phase-intro-badge">2</div>
+    <h2 id="intro-title" style="font-size:22px;font-weight:700;margin-bottom:4px">Vous y &ecirc;tes presque !</h2>
+    <p id="intro-subtitle" style="color:#64748b;font-size:15px;margin:8px 0 0;line-height:1.6"></p>
+    <div class="phase-intro-highlight" id="intro-highlight"></div>
+    <button class="btn-letsgo" id="btn-letsgo" onclick="dismissIntro()">C'est parti !</button>
   </div>
 </div>
 
@@ -2323,11 +2371,17 @@ const SANDBOX_I18N = {
     todayTime: "Aujourd'hui 09:14",
     historyEvent: "En cours de confirmation",
     variantWarning: (productPrice, deliveryPrice, expectedTotal, total) => `⚠️ Attention : Le prix du produit (${productPrice}) + livraison (${deliveryPrice}) = ${expectedTotal} ≠ Total (${total}). Vérifiez les variantes du produit.`,
-    score: { excellent: "Excellent !", medium: "Peut mieux faire", bad: "Insuffisant", none: "Aucune erreur à corriger", summary: (fixed, total, time) => `${fixed}/${total} erreurs corrigées — Temps : ${time}`, changedCorrect: "⚠ Vous avez modifié un champ qui était correct", nothingBroken: "Tous les champs étaient corrects et vous n’avez rien cassé !", next: "Commande suivante →", final: "Voir le résultat final", critical: "CRITIQUE", finalTitle: "Résultat final", stats: ["Commandes", "Temps moyen", "Corrigées", "Manquées"], details: "Détails par commande", pass: "✓ Certification réussie", fail: "✗ Certification non réussie", passDescription: "Cet agent a démontré une maîtrise suffisante pour traiter des commandes réelles.", failDescription: "Cet agent doit refaire la formation. Score minimum requis : 90%." },
+    score: { excellent: "Excellent !", medium: "Peut mieux faire", bad: "Insuffisant", none: "Aucune erreur à corriger", summary: (fixed, total, time) => `${fixed}/${total} erreurs corrigées — Temps : ${time}`, changedCorrect: "⚠ Vous avez modifié un champ qui était correct", nothingBroken: "Tous les champs étaient corrects et vous n’avez rien cassé !", next: "Commande suivante →", final: "Voir le résultat final", critical: "CRITIQUE", criticalFixed: "🛡 Sensible ✓", criticalMissed: "⚠ Sensible", criticalAllCorrect: "Bravo ! Tous les champs sensibles bien traités !", criticalAllCorrectSub: function(n) { return n + "/" + n + " champs à impact financier — zéro erreur"; }, criticalSomeMissed: function(missed, total) { return missed + "/" + total + " champs sensibles manqués"; }, criticalSomeMissedSub: "En conditions réelles, ces erreurs auraient un impact financier :", finalTitle: "Résultat final", stats: ["Commandes", "Temps moyen", "Corrigées", "Manquées"], details: "Détails par commande", pass: "✓ Certification réussie", fail: "✗ Certification non réussie", passDescription: "Cet agent a démontré une maîtrise suffisante pour traiter des commandes réelles.", failDescription: "Cet agent doit refaire la formation. Score minimum requis : 90%." },
     corrections: { shouldBe: value => `Devrait être : ${value}`, checked: "Devrait être coché", contains: value => `Devrait contenir : ${value}`, empty: "Ce champ doit rester vide", unchanged: "Ne pas modifier ce champ", product2Missing: "Produit 2 manquant" },
     login: { banner: "Mode Formation — Environnement de pratique", title: "Connexion Formation", desc: "Entrez votre nom et le mot de passe fourni par votre formateur.", namePlaceholder: "Votre nom complet", passwordPlaceholder: "Mot de passe", button: "Se connecter", errorEmpty: "Veuillez entrer votre nom", errorPassword: "Mot de passe incorrect" },
     save: { saving: "Enregistrement des résultats...", saved: "Résultats enregistrés avec succès !", error: "Impossible d'enregistrer. Prenez une capture d'écran de vos résultats." },
-    empty: "—"
+    empty: "—",
+    journeyPhase1: "Phase 1 : Statut",
+    journeyPhase2: "Phase 2 : Confirmation",
+    introTitle: "Vous y êtes presque !",
+    introSubtitle: "Phase 2 : Vérifiez et corrigez 8 commandes avant de les envoyer en livraison.",
+    introHighlight: "📝 8 commandes à traiter",
+    introButton: "C'est parti !"
   },
   ar: {
     title: "Orderdz | وضع التدريب",
@@ -2400,11 +2454,17 @@ const SANDBOX_I18N = {
     todayTime: "اليوم 09:14",
     historyEvent: "قيد التأكيد",
     variantWarning: (productPrice, deliveryPrice, expectedTotal, total) => `⚠️ تنبيه: سعر المنتج (${productPrice}) + الشحن (${deliveryPrice}) = ${expectedTotal} ≠ المجموع (${total}). راجع متغيرات المنتج.`,
-    score: { excellent: "هايل!", medium: "مليح بصح تقدر تدير خير", bad: "مازال خاصك تراجع", none: "ماكان حتى خطأ تصلّحو", summary: (fixed, total, time) => `${fixed}/${total} أخطاء تصلحو — الوقت: ${time}`, changedCorrect: "⚠ بدلت خانة كانت صحيحة", nothingBroken: "كل الخانات كانوا صح وما خربت حتى حاجة!", next: "← الطلبية التالية", final: "شوف النتيجة النهائية", critical: "خطير", finalTitle: "النتيجة النهائية", stats: ["الطلبيات", "المتوسط", "تصلحو", "تفلتو"], details: "التفاصيل حسب كل طلبية", pass: "✓ نجحت في الاعتماد", fail: "✗ ما نجحتش في الاعتماد", passDescription: "هذا العون ورّى بلي يقدر يخدم على طلبيات حقيقية.", failDescription: "هذا العون لازم يعاود التدريب. أقل نتيجة مطلوبة هي 90%." },
+    score: { excellent: "هايل!", medium: "مليح بصح تقدر تدير خير", bad: "مازال خاصك تراجع", none: "ماكان حتى خطأ تصلّحو", summary: (fixed, total, time) => `${fixed}/${total} أخطاء تصلحو — الوقت: ${time}`, changedCorrect: "⚠ بدلت خانة كانت صحيحة", nothingBroken: "كل الخانات كانوا صح وما خربت حتى حاجة!", next: "← الطلبية التالية", final: "شوف النتيجة النهائية", critical: "خطير", criticalFixed: "🛡 حساس ✓", criticalMissed: "⚠ حساس", criticalAllCorrect: "برافو! كل الخانات الحساسة صح!", criticalAllCorrectSub: function(n) { return n + "/" + n + " خانات مالية — ولا غلطة"; }, criticalSomeMissed: function(missed, total) { return missed + "/" + total + " خانات حساسة فاتوك"; }, criticalSomeMissedSub: "في الواقع، هاذ الأخطاء راح تأثر مالياً :", finalTitle: "النتيجة النهائية", stats: ["الطلبيات", "المتوسط", "تصلحو", "تفلتو"], details: "التفاصيل حسب كل طلبية", pass: "✓ نجحت في الاعتماد", fail: "✗ ما نجحتش في الاعتماد", passDescription: "هذا العون ورّى بلي يقدر يخدم على طلبيات حقيقية.", failDescription: "هذا العون لازم يعاود التدريب. أقل نتيجة مطلوبة هي 90%." },
     corrections: { shouldBe: value => `خاصو يكون: ${value}`, checked: "خاصها تكون معلّمة", contains: value => `خاصو يحتوي على: ${value}`, empty: "خلي هاذ الخانة فارغة", unchanged: "ما تبدلش هاذ الخانة", product2Missing: "المنتج الثاني ناقص" },
     login: { banner: "وضع التدريب — فضاء تجريبي", title: "تسجيل الدخول للتدريب", desc: "دخّل اسمك وكلمة المرور اللي عطاهالك المدرب.", namePlaceholder: "اسمك الكامل", passwordPlaceholder: "كلمة المرور", button: "دخول", errorEmpty: "دخّل اسمك", errorPassword: "كلمة المرور غالطة" },
     save: { saving: "...جاري حفظ النتائج", saved: "!تم حفظ النتائج بنجاح", error: "ما قدرناش نحفظو النتائج. دير capture d'écran." },
-    empty: "—"
+    empty: "—",
+    journeyPhase1: "المرحلة 1 : الحالة",
+    journeyPhase2: "المرحلة 2 : التأكيد",
+    introTitle: "قريب تكمّل !",
+    introSubtitle: "المرحلة 2 : راجع وصحّح 8 طلبيات قبل ما تبعثهم للشحن.",
+    introHighlight: "📝 8 طلبيات لازم تعالجهم",
+    introButton: "يلّا نبداو !"
   }
 };
 
@@ -2532,6 +2592,8 @@ function sandboxRenderChrome() {
   if (banners[2]) {
     banners[2].innerHTML = `<span class="pulse-dot"></span><span class="training-banner-text">${copy.trainingBanner}</span><span class="pulse-dot"></span>`;
   }
+  // Refresh journey bar labels after language switch (hub mode only)
+  if (typeof hubMode !== 'undefined' && hubMode) showJourneyBar();
 
   const navBars = document.querySelectorAll(".nav-bar");
   if (navBars[0]) navBars[0].innerHTML = sandboxNavMarkup("login");
@@ -2838,7 +2900,42 @@ function handleLogin() {
 function startTraining() {
   document.getElementById("welcome-screen").classList.add("hidden");
   document.getElementById("training-screen").classList.remove("hidden");
-  loadOrder(0);
+
+  if (hubMode) {
+    // Hub mode: show journey bar + Phase 2 intro before starting
+    showJourneyBar();
+    showPhase2Intro();
+    // loadOrder(0) is called when intro is dismissed — timer starts then
+  } else {
+    loadOrder(0);
+  }
+}
+
+// ===================================================================
+// JOURNEY BAR — shows Phase 1 completed, Phase 2 active (hub mode)
+// ===================================================================
+function showJourneyBar() {
+  var copy = SANDBOX_I18N[sandboxLang];
+  document.getElementById('journey-label-1').textContent = copy.journeyPhase1;
+  document.getElementById('journey-label-2').textContent = copy.journeyPhase2;
+  document.getElementById('journey-bar').classList.add('visible');
+}
+
+// ===================================================================
+// PHASE 2 INTRO — motivational overlay before starting (hub mode)
+// ===================================================================
+function showPhase2Intro() {
+  var copy = SANDBOX_I18N[sandboxLang];
+  document.getElementById('intro-title').textContent = copy.introTitle;
+  document.getElementById('intro-subtitle').textContent = copy.introSubtitle;
+  document.getElementById('intro-highlight').textContent = copy.introHighlight;
+  document.getElementById('btn-letsgo').textContent = copy.introButton;
+  document.getElementById('phase-intro-overlay').classList.add('open');
+}
+
+function dismissIntro() {
+  document.getElementById('phase-intro-overlay').classList.remove('open');
+  loadOrder(0); // Start Phase 2 — timer begins now
 }
 
 function openInfoModal(type) {
@@ -3153,24 +3250,58 @@ function showScoring(errorChecks, brokenChecks, pct, errorsFixed, totalErrors, t
     label = copy.score.none;
   }
 
-  const criticalTag = isCritical => isCritical ? ` <span style="color:var(--red);font-size:11px;font-weight:600">${copy.score.critical}</span>` : "";
+  // Adaptive critical tag: positive (blue) when fixed, warning (red) when missed
+  const criticalTag = (isCritical, isFixed) => {
+    if (!isCritical) return "";
+    if (isFixed) return ` <span style="color:#2563eb;font-size:11px;font-weight:600">${copy.score.criticalFixed}</span>`;
+    return ` <span style="color:var(--red);font-size:11px;font-weight:600">${copy.score.criticalMissed}</span>`;
+  };
   let html = `<div class="scoring-header"><div class="score-circle ${circleClass}">${pct}%</div><h3>${label}</h3><p>${copy.score.summary(errorsFixed, totalErrors, time)}</p></div><div class="scoring-details">`;
 
   errorChecks.forEach(check => {
     const icon = check.fixed ? `<div class="score-icon correct">&#10003;</div>` : `<div class="score-icon wrong">&#10007;</div>`;
-    html += `<div class="score-item">${icon}<span class="field-name">${sandboxTranslateField(check.field)}${criticalTag(check.critical)}</span>${check.correction ? `<span class="correction">${check.correction}</span>` : ""}</div>`;
+    html += `<div class="score-item">${icon}<span class="field-name">${sandboxTranslateField(check.field)}${criticalTag(check.critical, check.fixed)}</span>${check.correction ? `<span class="correction">${check.correction}</span>` : ""}</div>`;
   });
 
   if (brokenChecks.length > 0) {
     html += `<div style="margin-top:12px;padding:10px 14px;background:#fef3c7;border:1px solid #fbbf24;border-radius:8px"><div style="font-size:13px;font-weight:600;color:#92400e;margin-bottom:6px">${copy.score.changedCorrect}</div>`;
     brokenChecks.forEach(check => {
-      html += `<div class="score-item" style="border-bottom-color:#fde68a"><div class="score-icon wrong">&#10007;</div><span class="field-name">${sandboxTranslateField(check.field)}${criticalTag(check.critical)}</span></div>`;
+      html += `<div class="score-item" style="border-bottom-color:#fde68a"><div class="score-icon wrong">&#10007;</div><span class="field-name">${sandboxTranslateField(check.field)}${criticalTag(check.critical, false)}</span></div>`;
     });
     html += `</div>`;
   }
 
   if (errorChecks.length === 0 && brokenChecks.length === 0) {
     html += `<div style="text-align:center;padding:16px;color:var(--green);font-weight:500">${copy.score.nothingBroken}</div>`;
+  }
+
+  // Critical fields summary card — celebration or warning
+  var criticalTotal = 0, criticalCorrect = 0, missedFieldNames = [];
+  errorChecks.forEach(function(c) {
+    if (c.critical) { criticalTotal++; if (c.fixed) criticalCorrect++; else missedFieldNames.push(sandboxTranslateField(c.field)); }
+  });
+  brokenChecks.forEach(function(c) {
+    if (c.critical) { criticalTotal++; missedFieldNames.push(sandboxTranslateField(c.field)); }
+  });
+
+  if (criticalTotal > 0) {
+    var criticalMissed = criticalTotal - criticalCorrect;
+    if (criticalMissed === 0) {
+      // All critical fields correct — celebrate!
+      html += `<div style="margin-top:16px;padding:16px 20px;background:#f0fdf4;border:2px solid #22c55e;border-radius:12px;text-align:center">`;
+      html += `<div style="font-size:22px;margin-bottom:6px">🎯</div>`;
+      html += `<div style="font-size:14px;font-weight:700;color:#15803d">${copy.score.criticalAllCorrect}</div>`;
+      html += `<div style="font-size:12px;color:#16a34a;margin-top:4px">${copy.score.criticalAllCorrectSub(criticalTotal)}</div>`;
+      html += `</div>`;
+    } else {
+      // Some critical fields missed — educational warning
+      html += `<div style="margin-top:16px;padding:16px 20px;background:#fffbeb;border:2px solid #f59e0b;border-radius:12px">`;
+      html += `<div style="font-size:14px;font-weight:700;color:#92400e;margin-bottom:4px">⚠ ${copy.score.criticalSomeMissed(criticalMissed, criticalTotal)}</div>`;
+      html += `<div style="font-size:12px;color:#78716c;margin-bottom:8px">${copy.score.criticalSomeMissedSub}</div>`;
+      html += `<div style="font-size:13px;color:#92400e">`;
+      missedFieldNames.forEach(function(name) { html += `<div style="padding:2px 0">• ${name}</div>`; });
+      html += `</div></div>`;
+    }
   }
 
   html += `</div><div class="scoring-footer"><button class="btn-next" onclick="${isLast ? "showFinalScore()" : "nextOrder()"}">${isLast ? copy.score.final : copy.score.next}</button></div>`;

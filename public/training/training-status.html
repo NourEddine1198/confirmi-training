@@ -474,6 +474,42 @@
   .save-status.saved { display: block; background: var(--green-light); color: var(--green); }
   .save-status.save-error { display: block; background: var(--red-light); color: var(--red); }
   .agent-name-display { font-size: 16px; font-weight: 600; color: var(--training-banner); margin-bottom: 8px; }
+
+  /* ===== JOURNEY BAR (hub mode only) ===== */
+  .journey-bar { display: none; background: #faf8ff; border-bottom: 1px solid #e9d5ff; padding: 10px 32px; align-items: center; justify-content: center; gap: 0; }
+  .journey-bar.visible { display: flex; }
+  .journey-step { display: flex; align-items: center; gap: 8px; }
+  .journey-circle { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; border: 2px solid #cbd5e1; color: #94a3b8; background: white; transition: all 0.3s; flex-shrink: 0; }
+  .journey-step.active .journey-circle { border-color: var(--training-banner); background: var(--training-banner); color: white; }
+  .journey-step.completed .journey-circle { border-color: var(--green); background: var(--green); color: white; }
+  .journey-label { font-size: 13px; font-weight: 500; color: #94a3b8; white-space: nowrap; }
+  .journey-step.active .journey-label { color: #5b21b6; font-weight: 600; }
+  .journey-step.completed .journey-label { color: var(--green); font-weight: 600; }
+  .journey-connector { flex: 0 0 60px; height: 2px; background: #e2e8f0; margin: 0 16px; border-radius: 1px; }
+  .journey-connector.done { background: var(--green); }
+
+  /* ===== PHASE TRANSITION OVERLAY (hub mode) ===== */
+  .phase-transition-overlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.82); backdrop-filter: blur(6px); z-index: 300; align-items: center; justify-content: center; }
+  .phase-transition-overlay.open { display: flex; }
+  .phase-transition-card { background: white; border-radius: 20px; max-width: 480px; width: 90%; padding: 48px 40px; text-align: center; box-shadow: 0 32px 64px rgba(0,0,0,0.2); animation: transition-card-in 0.5s cubic-bezier(0.22,1,0.36,1); }
+  @keyframes transition-card-in { from { opacity: 0; transform: translateY(20px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+  .transition-check { margin-bottom: 20px; }
+  .transition-check-bg { stroke-dasharray: 157; stroke-dashoffset: 157; animation: draw-circle 0.6s 0.2s ease forwards; }
+  .transition-check-mark { stroke-dasharray: 50; stroke-dashoffset: 50; animation: draw-check 0.4s 0.7s ease forwards; }
+  @keyframes draw-circle { to { stroke-dashoffset: 0; } }
+  @keyframes draw-check { to { stroke-dashoffset: 0; } }
+
+  .transition-next-card { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; display: flex; align-items: center; gap: 14px; padding: 16px 18px; margin: 24px 0; text-align: left; }
+  .transition-next-card strong { font-size: 14px; color: #1e293b; display: block; }
+  .transition-countdown { margin: 20px 0 24px; }
+  .transition-countdown-track { width: 100%; height: 4px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
+  .transition-countdown-fill { height: 100%; background: var(--training-banner); border-radius: 4px; transition: width 1s linear; }
+  .btn-continue { background: var(--training-banner); color: white; border: none; padding: 14px 32px; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s; width: 100%; }
+  .btn-continue:hover { background: #6d28d9; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(124,58,237,0.3); }
+
+  /* RTL adjustments for journey bar + transition */
+  html[dir="rtl"] .transition-next-card { flex-direction: row-reverse; text-align: right; }
 </style>
 </head>
 <body>
@@ -542,6 +578,20 @@
     Mode Formation &mdash; Aucune action r&eacute;elle ne sera effectu&eacute;e
     <span class="pulse-dot"></span>
   </div>
+
+  <!-- Journey Bar: shows Phase 1/2 progress in hub mode only -->
+  <div class="journey-bar" id="journey-bar">
+    <div class="journey-step active" id="journey-step-1">
+      <span class="journey-circle" id="journey-circle-1">1</span>
+      <span class="journey-label" id="journey-label-1">Phase 1 : Statut</span>
+    </div>
+    <div class="journey-connector" id="journey-connector"></div>
+    <div class="journey-step" id="journey-step-2">
+      <span class="journey-circle" id="journey-circle-2">2</span>
+      <span class="journey-label" id="journey-label-2">Phase 2 : Confirmation</span>
+    </div>
+  </div>
+
   <div class="nav-bar" id="training-nav"></div>
 
   <!-- Progress -->
@@ -682,6 +732,34 @@
   </div>
 </div>
 
+<!-- ==================== PHASE TRANSITION OVERLAY (hub mode) ==================== -->
+<div class="phase-transition-overlay" id="phase-transition-overlay">
+  <div class="phase-transition-card">
+    <div class="transition-check">
+      <svg viewBox="0 0 52 52" width="72" height="72">
+        <circle cx="26" cy="26" r="25" fill="none" stroke="#16a34a" stroke-width="2" class="transition-check-bg"/>
+        <path d="M14 27l8 8 16-16" fill="none" stroke="#16a34a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="transition-check-mark"/>
+      </svg>
+    </div>
+    <h2 id="transition-title" style="font-size:22px;font-weight:700;margin-bottom:4px">Phase 1 termin&eacute;e !</h2>
+    <p id="transition-subtitle" style="color:#64748b;font-size:15px;margin:8px 0 0;line-height:1.5"></p>
+    <div class="transition-next-card">
+      <span style="font-size:28px;flex-shrink:0">&#128221;</span>
+      <div>
+        <strong id="transition-next-title"></strong>
+        <p id="transition-next-desc" style="font-size:13px;color:#64748b;margin:2px 0 0"></p>
+      </div>
+    </div>
+    <div class="transition-countdown">
+      <div class="transition-countdown-track">
+        <div class="transition-countdown-fill" id="transition-countdown-fill" style="width:100%"></div>
+      </div>
+      <div id="transition-countdown-text" style="font-size:13px;color:#94a3b8;margin-top:8px;text-align:center"></div>
+    </div>
+    <button class="btn-continue" id="btn-continue" onclick="goToPhase2()"></button>
+  </div>
+</div>
+
 <!-- ==================== SCORING OVERLAY ==================== -->
 <div class="scoring-overlay" id="scoring-overlay">
   <div class="scoring-card" id="scoring-card"></div>
@@ -775,6 +853,14 @@ var STATUS_I18N = {
     finalBtn: "Voir le résultat final",
     allDoneText: "Tous les scénarios sont complétés !",
     allDoneBtn: "Voir le résultat final",
+    journeyPhase1: "Phase 1 : Statut",
+    journeyPhase2: "Phase 2 : Confirmation",
+    transitionTitle: "Phase 1 terminée !",
+    transitionSubtitle: "Bien joué ! Vous passez maintenant à la vérification des commandes.",
+    transitionNextTitle: "Phase 2 : Confirmation des commandes",
+    transitionNextDesc: "8 commandes à vérifier et corriger",
+    transitionCountdown: function(s) { return "Redirection dans " + s + "s..."; },
+    transitionSkip: "Continuer maintenant →",
     selectOrderHint: "Cliquez sur une commande pour voir le scénario",
     badgeTextSingular: "commande précédente",
     badgeTextPlural: "commandes précédentes",
@@ -883,6 +969,14 @@ var STATUS_I18N = {
     finalBtn: "شوف النتيجة النهائية",
     allDoneText: "كمّلت كل الحالات !",
     allDoneBtn: "شوف النتيجة النهائية",
+    journeyPhase1: "المرحلة 1 : الحالة",
+    journeyPhase2: "المرحلة 2 : التأكيد",
+    transitionTitle: "المرحلة 1 كملت !",
+    transitionSubtitle: "برافو! دورك تنتقل لمراجعة الطلبيات.",
+    transitionNextTitle: "المرحلة 2 : تأكيد الطلبيات",
+    transitionNextDesc: "8 طلبيات لازم تراجعها وتصحّحها",
+    transitionCountdown: function(s) { return "إعادة توجيه في " + s + " ثواني..."; },
+    transitionSkip: "← تابع دورك",
     selectOrderHint: "اضغط على طلبية باش تشوف الحالة",
     badgeTextSingular: "طلبية سابقة",
     badgeTextPlural: "طلبيات سابقة",
@@ -1069,6 +1163,7 @@ var orderReportDetails = [];
 var orderMotifs = [];
 var orderDone = [];
 var orderBadgeClicked = [];
+var orderSelectedStatus = [];
 var scenarioResults = [];
 
 for (var i = 0; i < SCENARIOS.length; i++) {
@@ -1079,6 +1174,7 @@ for (var i = 0; i < SCENARIOS.length; i++) {
   orderMotifs.push('');
   orderDone.push(false);
   orderBadgeClicked.push(false);
+  orderSelectedStatus.push(SCENARIOS[i].initialStatus);
 }
 
 // ===================================================================
@@ -1134,7 +1230,8 @@ function buildTable() {
     var statusKeys = ['pending','under-confirmation','confirmed','confirmed-postponed','postponed-not-confirmed','shipping-delayed','in-preparation','ready-to-ship','shipped','shipped-postponed','no-answer-for-delivery','delivered','returned','wrong','no-answer','canceled','duplicated','expired'];
     for (var s = 0; s < statusKeys.length; s++) {
       var sKey = statusKeys[s];
-      var selected = (sKey === sc.initialStatus) ? ' selected' : '';
+      var currentStatus = orderSelectedStatus[i] || sc.initialStatus;
+      var selected = (sKey === currentStatus) ? ' selected' : '';
       var disabled = (sKey === 'shipping-delayed') ? ' disabled' : '';
       bodyHtml += '<option value="' + sKey + '"' + selected + disabled + '>' + (labels[sKey]||sKey) + '</option>';
     }
@@ -1229,8 +1326,9 @@ function selectOrder(idx) {
 // ON STATUS CHANGE
 // ===================================================================
 function onStatusChange(idx) {
-  applyStatusColor(idx);
   var val = document.getElementById('status-' + idx).value;
+  orderSelectedStatus[idx] = val; // Track the agent's selection so buildTable can restore it
+  applyStatusColor(idx);
 
   // Auto-select the order if not already active
   if (activeOrder !== idx) selectOrder(idx);
@@ -1549,10 +1647,16 @@ function closeScoring() {
   var allDone = true;
   for (var i = 0; i < orderDone.length; i++) { if (!orderDone[i]) { allDone = false; break; } }
   if (allDone) {
-    var copy = STATUS_I18N[currentLang];
-    document.getElementById('all-done-text').textContent = copy.allDoneText;
-    document.getElementById('btn-see-final').textContent = copy.allDoneBtn;
-    document.getElementById('all-done-banner').classList.add('visible');
+    if (hubMode) {
+      // Hub mode: show animated transition overlay instead of green banner
+      showPhaseTransition();
+    } else {
+      // Standalone mode: show the green "all done" banner as before
+      var copy = STATUS_I18N[currentLang];
+      document.getElementById('all-done-text').textContent = copy.allDoneText;
+      document.getElementById('btn-see-final').textContent = copy.allDoneBtn;
+      document.getElementById('all-done-banner').classList.add('visible');
+    }
   }
 }
 
@@ -1720,6 +1824,7 @@ function restart() {
     orderMotifs[i] = '';
     orderTimers[i] = 0;
     orderBadgeClicked[i] = false;
+    orderSelectedStatus[i] = SCENARIOS[i].initialStatus;
   }
   document.getElementById('final-overlay').classList.remove('open');
   document.getElementById('scoring-overlay').classList.remove('open');
@@ -1789,6 +1894,8 @@ function renderStaticText() {
   if (welcomeBannerEl) welcomeBannerEl.innerHTML = '<span class="pulse-dot"></span>' + copy.welcomeBanner + '<span class="pulse-dot"></span>';
   var trainingBannerEl = document.getElementById('training-banner-text');
   if (trainingBannerEl) trainingBannerEl.innerHTML = '<span class="pulse-dot"></span>' + copy.trainingBanner + '<span class="pulse-dot"></span>';
+  // Refresh journey bar labels after language switch (hub mode only)
+  if (hubMode) showJourneyBar();
 
   // Nav bars
   var welcomeNav = document.querySelector('#welcome-screen .nav-bar');
@@ -1845,10 +1952,104 @@ document.getElementById('login-password').addEventListener('keydown', function(e
 });
 renderStaticText();
 
+// ===================================================================
+// JOURNEY BAR — shows Phase 1/2 stepper (hub mode only)
+// ===================================================================
+function showJourneyBar() {
+  var copy = STATUS_I18N[currentLang];
+  document.getElementById('journey-label-1').textContent = copy.journeyPhase1;
+  document.getElementById('journey-label-2').textContent = copy.journeyPhase2;
+  document.getElementById('journey-bar').classList.add('visible');
+}
+
+// ===================================================================
+// PHASE TRANSITION — animated overlay when Phase 1 is done (hub mode)
+// ===================================================================
+var transitionCountdownInterval = null;
+
+function showPhaseTransition() {
+  clearInterval(timerInterval); // Stop the training timer
+
+  var copy = STATUS_I18N[currentLang];
+
+  // Fill in all the text
+  document.getElementById('transition-title').textContent = copy.transitionTitle;
+  document.getElementById('transition-subtitle').textContent = copy.transitionSubtitle;
+  document.getElementById('transition-next-title').textContent = copy.transitionNextTitle;
+  document.getElementById('transition-next-desc').textContent = copy.transitionNextDesc;
+  document.getElementById('btn-continue').textContent = copy.transitionSkip;
+
+  // Show the overlay
+  document.getElementById('phase-transition-overlay').classList.add('open');
+
+  // Start 5-second countdown
+  var secondsLeft = 5;
+  document.getElementById('transition-countdown-text').textContent = copy.transitionCountdown(secondsLeft);
+  document.getElementById('transition-countdown-fill').style.width = '100%';
+
+  // Animate the progress bar down in steps (each second, shrink by 20%)
+  transitionCountdownInterval = setInterval(function() {
+    secondsLeft--;
+    if (secondsLeft <= 0) {
+      clearInterval(transitionCountdownInterval);
+      goToPhase2();
+      return;
+    }
+    var pct = (secondsLeft / 5) * 100;
+    document.getElementById('transition-countdown-fill').style.width = pct + '%';
+    document.getElementById('transition-countdown-text').textContent = copy.transitionCountdown(secondsLeft);
+  }, 1000);
+}
+
+function goToPhase2() {
+  clearInterval(transitionCountdownInterval);
+
+  // Save Phase 1 results to localStorage (same logic as showFinalScore hub branch)
+  var totalCorrect = 0, totalChecks = 0, totalSec = totalSeconds;
+  for (var i = 0; i < scenarioResults.length; i++) {
+    totalCorrect += scenarioResults[i].score;
+    totalChecks += scenarioResults[i].total;
+  }
+  var finalPct = totalChecks === 0 ? 100 : Math.round((totalCorrect / totalChecks) * 100);
+  var passed = finalPct >= 90;
+
+  var trapsFell = 0, trapsTotal = 0;
+  for (var t = 0; t < scenarioResults.length; t++) {
+    if (SCENARIOS[scenarioResults[t].scenarioIdx].trap) {
+      trapsTotal++;
+      if (scenarioResults[t].pct < 100) trapsFell++;
+    }
+  }
+
+  var resultData = {
+    agentName: agentName, module: 'status', language: currentLang,
+    finalScore: finalPct, passed: passed,
+    totalCorrect: totalCorrect, totalChecks: totalChecks,
+    totalSeconds: totalSec, avgSeconds: Math.round(totalSec / scenarioResults.length),
+    scenarioCount: scenarioResults.length,
+    trapsFell: trapsFell, trapsTotal: trapsTotal,
+    detailsJson: JSON.stringify(scenarioResults)
+  };
+  localStorage.setItem('trainingHub_statusResult', JSON.stringify(resultData));
+
+  // Fire API call (image GET to avoid CORS on file:// URLs)
+  var sendData = {};
+  for (var k in resultData) {
+    if (k !== 'detailsJson') sendData[k] = resultData[k];
+  }
+  sendData.detailsJson = '';
+  var img = new Image();
+  img.src = APPS_SCRIPT_URL + '?action=saveResult&data=' + encodeURIComponent(JSON.stringify(sendData));
+
+  // Navigate to Phase 2
+  window.location.href = 'Training - Confimation.html';
+}
+
 // Hub mode: skip login screen and start training immediately
 if (hubMode) {
   document.getElementById('login-screen').classList.add('hidden');
   startTraining();
+  showJourneyBar();
 }
 </script>
 </body>
