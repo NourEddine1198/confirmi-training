@@ -2032,14 +2032,9 @@ function goToPhase2() {
   };
   localStorage.setItem('trainingHub_statusResult', JSON.stringify(resultData));
 
-  // Fire API call (image GET to avoid CORS on file:// URLs)
-  var sendData = {};
-  for (var k in resultData) {
-    if (k !== 'detailsJson') sendData[k] = resultData[k];
-  }
-  sendData.detailsJson = '';
-  var img = new Image();
-  img.src = APPS_SCRIPT_URL + '?action=saveResult&data=' + encodeURIComponent(JSON.stringify(sendData));
+  // Fire API call (keepalive ensures it completes even after navigation)
+  fetch(API_URL, { method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(resultData), keepalive: true });
 
   // Navigate to Phase 2
   window.location.href = 'training-confirmation.html';
